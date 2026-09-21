@@ -1,0 +1,16 @@
+import { chromium } from 'playwright'
+const b = await chromium.launch({ channel: 'chrome' })
+const p = await b.newPage({ viewport: { width: 1440, height: 900 } })
+const bad = []
+p.on('response', (r) => { if (r.status() >= 400) bad.push(r.status() + ' ' + r.url()) })
+await p.goto('http://127.0.0.1:8082/', { waitUntil: 'networkidle' })
+await p.waitForTimeout(3000)
+console.log('failed:', bad)
+await p.emulateMedia({ reducedMotion: 'reduce' })
+await p.goto('http://127.0.0.1:8082/?static=1', { waitUntil: 'networkidle' })
+await p.waitForTimeout(1500)
+await p.screenshot({ path: 'shots/home-static-desk.png' })
+await p.goto('http://127.0.0.1:8082/compound/bpc-157?static=1', { waitUntil: 'networkidle' })
+await p.waitForTimeout(1500)
+await p.screenshot({ path: 'shots/dossier-static-desk.png' })
+await b.close()

@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Lod0Canvas } from '~/scenes/Canvas'
-import { useCanvasAllowed } from '~/motion/useReducedMotion'
+import { useCanvasAllowed, useVisualStore } from '~/motion/useReducedMotion'
 import { createScrub } from '~/motion/timeline'
 import { SceneLoader } from './SceneLoader'
 
@@ -23,6 +23,7 @@ const CAPTIONS: Array<{ from: number; to: number; k: string; v: string }> = [
  */
 export function Hero() {
   const allowed = useCanvasAllowed()
+  const isStatic = useVisualStore((s) => s.mode === 'static')
   const section = useRef<HTMLElement>(null)
   const progress = useRef(0)
   const pointer = useRef({ x: 0, y: 0 })
@@ -75,8 +76,10 @@ export function Hero() {
 
   return (
     <section ref={section} className="relative h-[100vh] w-full overflow-hidden bg-obsidian grain" aria-label="Hero">
+      <picture>
+        <source media="(max-aspect-ratio: 4/5)" srcSet="/posters/hero-portrait.jpg" />
       <img
-        src="/posters/hero.svg"
+        src="/posters/hero.jpg"
         alt="A sequence-derived visualization of the BPC-157 chain: fifteen residues with a three-proline hinge, drawn in cyan and violet against near-black"
         width={1440}
         height={900}
@@ -85,6 +88,7 @@ export function Hero() {
         className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1400ms]"
         style={{ opacity: firstFrame ? 0 : 1 }}
       />
+      </picture>
       {allowed && (
         <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} onFirstFrame={() => setFirstFrame(true)} cameraZ={16}>
           <Suspense fallback={null}>
@@ -135,7 +139,7 @@ export function Hero() {
         <div ref={barRef} className="h-full bg-cyan origin-left" style={{ transform: 'scaleX(0)' }} />
       </div>
       <div ref={hintRef} className="absolute bottom-3 inset-x-0 flex justify-center pointer-events-none z-10">
-        <span className="label !text-bone/35">Scroll to move through the structure</span>
+        <span className="label !text-bone/35">{isStatic ? 'Static render · sequence-derived, not measured' : 'Scroll to move through the structure'}</span>
       </div>
     </section>
   )

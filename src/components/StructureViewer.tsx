@@ -55,14 +55,14 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
         <SequenceSVG geometry={geometry} tint={tint} className="absolute inset-0 w-full h-full p-8" label />
       )}
       {ready && allowed && <Suspense fallback={<SceneLoader />}><span /></Suspense>}
-      {/* controls */}
-      <div className="absolute left-3 bottom-3 flex flex-wrap gap-1.5 z-10" role="group" aria-label="3D controls">
+      {/* controls (only when a live scene exists; the static SVG needs none) */}
+      {ready && allowed && <div className="absolute left-3 bottom-3 flex flex-wrap gap-1.5 z-10" role="group" aria-label="3D controls">
         <button className="btn btn-sm" aria-pressed={autoRotate} onClick={() => setAutoRotate((v) => !v)}>Rotate</button>
         <button className="btn btn-sm" onClick={() => { resetKey.current++; setRk(resetKey.current) }}>Reset</button>
         <button className="btn btn-sm" aria-pressed={labels} onClick={() => setLabels((v) => !v)}>Labels</button>
         <button className="btn btn-sm" aria-pressed={reduced} onClick={() => setReduced((v) => !v)}>Reduced effects</button>
         <button className="btn btn-sm" aria-pressed={showProv} onClick={() => setShowProv((v) => !v)}>Provenance</button>
-      </div>
+      </div>}
       <div className="absolute right-3 top-3 z-10 text-right max-w-[60%]">
         <ProvenanceLabel compound={compound} />
       </div>

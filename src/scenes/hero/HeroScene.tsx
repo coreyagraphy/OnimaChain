@@ -326,7 +326,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
 
       {/* typography in space: behind the hinge, in front of the far residues */}
       {textTex && (
-        <mesh ref={text} position={[2.1, -3.1, -6.2]} rotation={[0.18, 0.08, 0]} scale={[11, 2.75, 1]} visible={false} renderOrder={2}>
+        <mesh ref={text} position={[3.2, -3.1, -6.2]} rotation={[0.18, 0.08, 0]} scale={[11, 2.75, 1]} visible={false} renderOrder={2}>
           <planeGeometry />
           <meshBasicMaterial map={textTex} transparent opacity={0} depthWrite={false} toneMapped={false} />
         </mesh>
