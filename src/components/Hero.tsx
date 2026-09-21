@@ -21,7 +21,7 @@ export function Hero() {
   useEffect(() => {
     if (!section.current || isStatic || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
     if (copyRef.current) copyRef.current.style.opacity = '0'
-    const cleanup = createScrub({ trigger: section.current, end: '+=220%', pin: true, scrub: .85, onProgress: (p) => {
+    const cleanup = createScrub({ trigger: section.current, end: '+=220%', pin: true, scrub: true, onProgress: (p) => {
       progress.current = p
       if (copyRef.current) { const k=Math.max(0,Math.min(1,(p-.79)/.15)); copyRef.current.style.opacity=String(k); copyRef.current.style.transform=`translateY(${(1-k)*42}px) scale(${.96+k*.04})`; copyRef.current.style.pointerEvents=k<.8?'none':'auto' }
       if (copyPlateRef.current) copyPlateRef.current.style.opacity=String(Math.max(0,Math.min(.82,(p-.77)/.16)))

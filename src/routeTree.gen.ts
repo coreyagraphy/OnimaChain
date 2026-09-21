@@ -28,6 +28,7 @@ import { Route as ClaimIdRouteImport } from './routes/claim.$id'
 import { Route as CompoundSlugRouteImport } from './routes/compound.$slug'
 import { Route as LearnSlugRouteImport } from './routes/learn.$slug'
 import { Route as StatusCompoundRouteImport } from './routes/status.$compound'
+import { Route as StudyPmidRouteImport } from './routes/study.$pmid'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -124,6 +125,11 @@ const StatusCompoundRoute = StatusCompoundRouteImport.update({
   path: '/status/$compound',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudyPmidRoute = StudyPmidRouteImport.update({
+  id: '/study/$pmid',
+  path: '/study/$pmid',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
   '/status/$compound': typeof StatusCompoundRoute
+  '/study/$pmid': typeof StudyPmidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
   '/status/$compound': typeof StatusCompoundRoute
+  '/study/$pmid': typeof StudyPmidRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
   '/status/$compound': typeof StatusCompoundRoute
+  '/study/$pmid': typeof StudyPmidRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/compound/$slug'
     | '/learn/$slug'
     | '/status/$compound'
+    | '/study/$pmid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/compound/$slug'
     | '/learn/$slug'
     | '/status/$compound'
+    | '/study/$pmid'
   id:
     | '__root__'
     | '/'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/compound/$slug'
     | '/learn/$slug'
     | '/status/$compound'
+    | '/study/$pmid'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -274,6 +286,7 @@ export interface RootRouteChildren {
   ClaimIdRoute: typeof ClaimIdRoute
   CompoundSlugRoute: typeof CompoundSlugRoute
   StatusCompoundRoute: typeof StatusCompoundRoute
+  StudyPmidRoute: typeof StudyPmidRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -411,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StatusCompoundRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/study/$pmid': {
+      id: '/study/$pmid'
+      path: '/study/$pmid'
+      fullPath: '/study/$pmid'
+      preLoaderRoute: typeof StudyPmidRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -443,6 +463,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClaimIdRoute: ClaimIdRoute,
   CompoundSlugRoute: CompoundSlugRoute,
   StatusCompoundRoute: StatusCompoundRoute,
+  StudyPmidRoute: StudyPmidRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
