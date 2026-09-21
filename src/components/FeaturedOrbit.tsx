@@ -18,8 +18,9 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
   const stage = useRef<HTMLDivElement>(null)
   const cards = useRef<Array<HTMLDivElement | null>>([])
   const [copies, setCopies] = useState(1)
-  const [cardW, setCardW] = useState(320)
-  const s = useRef({ offset: 0, pending: 0, speed: SPEED, hold: false, holdUntil: 0, hovered: -1, down: false, dragging: false, lastX: 0, lastT: 0, vel: 0, t: 0, suppress: false })
+  const [cardW, setCardW] = useState(440)
+  const [current, setCurrent] = useState(0)
+  const s = useRef({ offset: 0, pending: 0, speed: SPEED, hold: false, holdUntil: 0, hovered: -1, down: false, dragging: false, lastX: 0, lastT: 0, vel: 0, t: 0, suppress: false, shown: -1 })
   const items = Array.from({ length: copies }, () => compounds).flat()
 
   // enough copies that the loop never shows a gap, even on very wide screens
@@ -27,7 +28,8 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
     if (reduced) return
     const fit = () => {
       const vw = stage.current?.clientWidth ?? window.innerWidth
-      const w = vw < 640 ? 272 : 320
+      // two to three cards on screen: phones show one plus the edges of its neighbours
+      const w = vw < 640 ? Math.round(vw * 0.74) : vw < 1024 ? Math.round(vw / 2.25 - GAP) : Math.min(480, Math.round(vw / 2.85 - GAP))
       setCardW(w)
       setCopies(Math.max(1, Math.ceil((vw + 2 * (w + GAP)) / (compounds.length * (w + GAP)))))
     }
@@ -67,6 +69,8 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
         c.style.transform = `translate3d(${x}px,${y}px,${z}px) rotateY(${rotY}deg) rotateZ(${rotZ}deg)`
         c.style.zIndex = String(Math.round(200 - Math.abs(d) * 100 + lift))
       })
+      const idx = ((Math.round((st.offset + vw / 2 - cardW / 2 + step) / step) % items.length) + items.length) % items.length % compounds.length
+      if (idx !== st.shown) { st.shown = idx; setCurrent(idx) }
       raf = requestAnimationFrame(tick)
     }
     const start = () => { cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(tick) }
@@ -76,7 +80,7 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
     const onVis = () => { if (document.visibilityState === 'hidden') cancelAnimationFrame(raf) }
     document.addEventListener('visibilitychange', onVis)
     return () => { cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener('visibilitychange', onVis) }
-  }, [reduced, cardW, items.length])
+  }, [reduced, cardW, items.length, compounds.length])
 
   if (reduced) {
     return <div className="mt-12 overflow-x-auto rail pb-8"><div className="wrap flex gap-5 items-end w-max">{compounds.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} />)}</div></div>
@@ -100,7 +104,7 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
     // touch has no hover: stay still a moment so the person can tap the card they stopped on
     if (e.pointerType !== 'mouse') st.holdUntil = performance.now() + 3500
   }
-  const nudge = (dir: number) => { st.pending += dir * (cardW + GAP); st.holdUntil = performance.now() + 2500 }
+  const nudge = (dir: number) => { st.pending += dir * (cardW + GAP); st.vel = 0; st.holdUntil = performance.now() + 4000 }
   const center = (j: number) => {
     const c = cards.current[j], el = stage.current
     if (!c || !el) return
@@ -109,12 +113,13 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
   }
 
   return (
-    <div className="orbit mt-8">
+    <div className="orbit relative mt-8">
       <div
         ref={stage}
         className="orbit-stage"
         style={{ '--card-w': `${cardW}px` } as React.CSSProperties}
         onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
+        onDragStart={(e) => e.preventDefault()}
         onClickCapture={(e) => { if (st.suppress) { e.preventDefault(); e.stopPropagation(); st.suppress = false } }}
         onFocus={() => { st.hold = true }} onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) st.hold = false }}
         aria-roledescription="carousel" aria-label="Featured peptides"
@@ -133,12 +138,11 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
           </div>
         ))}
       </div>
-      <div className="wrap mt-4 flex items-center justify-between gap-4">
-        <p className="text-[13px] text-bone/55">Drag or swipe to spin. Stop on one to open it.</p>
-        <div className="flex gap-2">
-          <button className="orbit-arrow" onClick={() => nudge(-1)} aria-label="Previous peptide">‹</button>
-          <button className="orbit-arrow" onClick={() => nudge(1)} aria-label="Next peptide">›</button>
-        </div>
+      <button className="orbit-arrow orbit-arrow-prev" onClick={() => nudge(-1)} aria-label="Previous peptide"><svg viewBox="0 0 24 24" aria-hidden><path d="M15 5l-7 7 7 7" /></svg></button>
+      <button className="orbit-arrow orbit-arrow-next" onClick={() => nudge(1)} aria-label="Next peptide"><svg viewBox="0 0 24 24" aria-hidden><path d="M9 5l7 7-7 7" /></svg></button>
+      <div className="wrap mt-2 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+        <div className="orbit-dots" aria-hidden>{compounds.map((c, i) => <i key={c.slug} data-on={i === current ? '1' : undefined} />)}</div>
+        <p className="text-[13px] text-bone/60" aria-live="polite">{current + 1} of {compounds.length} · Use the arrows, or drag the cards</p>
       </div>
     </div>
   )

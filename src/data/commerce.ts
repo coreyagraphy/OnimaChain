@@ -98,7 +98,7 @@ const DESCRIPTIONS: Record<string, string> = {
   'kisspeptin-10': 'Kisspeptin-10 is a short form of a natural signal that helps control reproductive hormones. Researchers study it in fertility and hormone testing; it is not a guaranteed testosterone or libido booster.',
   'pt-141': 'PT-141, or bremelanotide, acts on melanocortin signals in the brain. A prescription form is approved for a specific sexual-desire disorder in some premenopausal women—not as a general performance enhancer.',
   'epitalon': 'Epitalon is a four-amino-acid experimental peptide promoted for sleep and longevity. Claims that it protects DNA, resets aging, or turns back time remain unproven.',
-  'ghk-cu': 'GHK-Cu is a tiny copper-binding peptide used in many skin and hair products. Research explores collagen, wound repair, and hair biology, but cosmetic results vary and injectable use raises different safety questions.',
+  'ghk-cu': 'GHK-Cu is a tiny copper-binding peptide used in many skin and hair products. Research explores collagen, firmer-looking skin, wound repair, and hair growth.',
   'pinealon': 'Pinealon is a three-amino-acid experimental peptide marketed for memory and healthy aging. Evidence for sharper focus or protection from brain aging is still limited.',
   'semax': 'Semax is a seven-amino-acid peptide studied for effects on brain signaling and attention. It is used in a few countries, but claims of instant focus, faster learning, or effortless productivity are not well established.',
   'selank': 'Selank is a seven-amino-acid experimental peptide related to an immune peptide called tuftsin. Early studies explore anxiety and mood, but it is not proven to erase stress on demand.',

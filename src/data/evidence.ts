@@ -18,7 +18,7 @@ export type GenomeDimension =
   | 'replication'
   | 'independent-groups'
   | 'mechanistic'
-  | 'safety'
+
   | 'research-age'
 
 export interface GenomeCell {
@@ -47,7 +47,6 @@ export const GENOME_DIMENSIONS: Array<{ id: GenomeDimension; label: string; how:
   { id: 'replication', label: 'Repeated by others', how: 'Not checked yet — we do not track repeat studies yet.' },
   { id: 'independent-groups', label: 'Separate research teams', how: 'How many different senior authors the checked studies have. A rough stand-in for separate teams.' },
   { id: 'mechanistic', label: 'How it works', how: 'Checked studies that looked at the mechanism, based on their summary.' },
-  { id: 'safety', label: 'Safety', how: 'Not checked yet — no safety study has been added.' },
   { id: 'research-age', label: 'Years of research', how: 'From the oldest to the newest checked study.' },
 ]
 
@@ -75,7 +74,6 @@ export function evidenceGenome(slug: string): GenomeCell[] {
     cell('replication', [], null, true),
     { ...cell('independent-groups', studies), count: groups.length, value: groups.length ? groups.join(' · ') : null },
     cell('mechanistic', pick((s) => s.tags.includes('mechanistic'))),
-    cell('safety', [], null, true),
     { ...cell('research-age', studies), count: years.length ? Math.max(...years) - Math.min(...years) : null, value: years.length ? `${Math.min(...years)}–${Math.max(...years)}` : null },
   ]
 }
