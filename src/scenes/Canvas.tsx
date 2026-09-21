@@ -74,7 +74,7 @@ export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, came
   useEffect(() => {
     const el = wrap.current
     if (!el || typeof IntersectionObserver === 'undefined') return
-    const io = new IntersectionObserver((entries) => setOnScreen(entries.some((e) => e.isIntersecting)), { rootMargin: '120px 0px' })
+    const io = new IntersectionObserver((entries) => setOnScreen(entries.some((e) => e.isIntersecting)), { rootMargin: '80% 0px' })
     io.observe(el)
     return () => io.disconnect()
   }, [])

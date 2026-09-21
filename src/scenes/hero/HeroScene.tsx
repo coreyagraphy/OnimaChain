@@ -10,12 +10,15 @@ import { ChainRenderer, type Highlight } from '../chain/ChainRenderer'
 import { buildChain, mulberry32 } from '../chain/geometry'
 import { COMPOUND_BY_SLUG } from '~/data/compounds'
 import { usePostAllowed, useQuality } from '~/motion/useReducedMotion'
+import { heroStoryMap } from '~/motion/timeline'
 
 interface Props {
   progress: RefObject<number>
   pointer: RefObject<{ x: number; y: number }>
   /** Called with the normalised phase so DOM captions can react without React re-renders. */
   onPhase?: (p: number) => void
+  /** Fires once the molecule is actually lit — not merely when the canvas exists. */
+  onRevealed?: () => void
 }
 
 const FIT = 5.6 // world radius of the chain
@@ -135,7 +138,7 @@ const RESOLVE: Array<{ kind: 'research' | 'claim' | 'signal'; off: [number, numb
   { kind: 'signal', off: [5.1, 1.3, 14.5], color: '#B9A2FF', k: 'What is still unknown', sub: 'No made-up answers or customer stories' },
 ]
 
-export function HeroScene({ progress, pointer, onPhase }: Props) {
+export function HeroScene({ progress, pointer, onPhase, onRevealed }: Props) {
   const post = usePostAllowed()
   const q = useQuality()
   const gl = useThree((s) => s.gl)
@@ -193,20 +196,28 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
 
   const born = useRef(-1)
   const t = useRef(0)
+  const revealed = useRef(false)
   useFrame((state, dt) => {
-    t.current += dt
+    const d = Math.min(dt, 1 / 30)
+    t.current += d
     if (born.current < 0) born.current = state.clock.elapsedTime
     const age = state.clock.elapsedTime - born.current
     // STATE 1: the screen begins almost black; the molecule emerges from darkness over ~2.8 s.
     const reveal = smooth01(0.15, 2.9, age)
     gl.toneMappingExposure = 0.05 + 0.95 * reveal
+    if (!revealed.current && reveal > 0.72) {
+      revealed.current = true
+      onRevealed?.()
+    }
 
     const s = smooth.current
-    const target = progress.current ?? 0
-    // weighted, slightly lagging camera so the scrub never feels twitchy; progress, never velocity
-    s.p += (target - s.p) * Math.min(1, dt * 4.2)
-    s.px += ((pointer.current?.x ?? 0) - s.px) * Math.min(1, dt * 2.6)
-    s.py += ((pointer.current?.y ?? 0) - s.py) * Math.min(1, dt * 2.6)
+    const target = heroStoryMap(progress.current ?? 0)
+    // Follow scroll, but never teleport — a fling cannot skip the threshold in one frame.
+    const maxStep = d * 0.85
+    const delta = THREE.MathUtils.clamp(target - s.p, -maxStep, maxStep)
+    s.p += delta
+    s.px += ((pointer.current?.x ?? 0) - s.px) * Math.min(1, d * 2.6)
+    s.py += ((pointer.current?.y ?? 0) - s.py) * Math.min(1, d * 2.6)
     const p = THREE.MathUtils.clamp(s.p, 0, 1)
     onPhase?.(p)
 

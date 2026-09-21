@@ -19,7 +19,7 @@ export function startLenis(): Lenis | null {
   }
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
   if (reduced) return null
-  lenis = new Lenis({ lerp: 0.1, smoothWheel: true })
+  lenis = new Lenis({ lerp: 0.12, smoothWheel: true, wheelMultiplier: 0.72, touchMultiplier: 0.9 })
   lenis.on('scroll', ScrollTrigger.update)
   const tick = (t: number) => lenis?.raf(t * 1000)
   gsap.ticker.add(tick)
@@ -31,3 +31,8 @@ export function stopLenis() {
   lenis?.destroy()
   lenis = null
 }
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => stopLenis())
+}
+
