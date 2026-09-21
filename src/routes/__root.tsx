@@ -1,4 +1,4 @@
-import { createRootRoute, HeadContent, Link, Outlet, Scripts } from '@tanstack/react-router'
+import { createRootRoute, HeadContent, Link, Outlet, Scripts, useRouterState } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 import appCss from '../styles/app.css?url'
 import { Nav } from '~/components/Nav'
@@ -47,6 +47,8 @@ function NotFound() {
 }
 
 function RootComponent() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const universe = universeFor(pathname)
   useEffect(() => {
     initVisualMode()
     startLenis()
@@ -56,12 +58,24 @@ function RootComponent() {
     <RootDocument>
       <Nav />
       <GlobalCanvas />
-      <main className="min-h-screen">
+      <main className="min-h-screen" data-universe={universe}>
         <Outlet />
       </main>
       <Footer />
     </RootDocument>
   )
+}
+
+function universeFor(pathname: string) {
+  if (pathname === '/') return 'home'
+  if (pathname.startsWith('/compound/')) return 'molecule'
+  if (pathname === '/claims' || pathname.startsWith('/claim/')) return 'lineage'
+  if (pathname === '/signal') return 'signal'
+  if (pathname === '/compare') return 'compare'
+  if (pathname === '/timeline' || pathname === '/corrections' || pathname.startsWith('/status/')) return 'chronology'
+  if (pathname === '/explore') return 'atlas'
+  if (pathname.startsWith('/learn') || pathname === '/methodology' || pathname === '/coverage') return 'archive'
+  return 'quiet'
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {

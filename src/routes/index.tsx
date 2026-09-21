@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
 import { CompoundCard } from '~/components/CompoundCard'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
@@ -50,7 +50,7 @@ function ThreeWorlds() {
           })}
         </svg>
         {WORLDS.map((w, i) => (
-          <Link key={w.id} to={w.to} className="panel-flat relative p-7 md:p-9 min-h-[300px] flex flex-col justify-between card-tilt overflow-hidden" onPointerEnter={() => setHover(i)} onPointerLeave={() => setHover(null)} style={{ borderColor: hover === i ? `${w.color}66` : undefined }}>
+          <Link key={w.id} to={w.to} className="panel-flat neon-card relative p-7 md:p-9 min-h-[300px] flex flex-col justify-between card-tilt overflow-hidden" onPointerEnter={() => setHover(i)} onPointerLeave={() => setHover(null)} style={{ '--panel-accent': w.color, '--panel-accent-2': i === 0 ? '#33F0C8' : i === 1 ? '#FF4FD8' : '#FFB547', borderColor: hover === i ? `${w.color}88` : undefined } as CSSProperties}>
             <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl" style={{ background: w.color, opacity: hover === i ? 0.16 : 0.06, transition: 'opacity .6s' }} />
             <div>
               <p className="label" style={{ color: w.color }}>{w.k}</p>
@@ -125,7 +125,7 @@ function FeaturedTrace() {
                     </svg>
                     <p className="label" style={{ color: st.color }}>{s.k}</p>
                   </div>
-                  <div className={`panel-flat p-5 mt-4 min-h-[210px] ${s.hollow ? 'border-dashed' : ''}`}>
+                  <div className={`panel-flat neon-card p-5 mt-4 min-h-[210px] ${s.hollow ? 'border-dashed' : ''}`} style={{ '--panel-accent': st.color } as CSSProperties}>
                     <p className={`${i === 0 ? 'text-sm' : 'display-md text-xl'} text-bone/95`}>{i === 0 ? s.title : `“${s.title}”`}</p>
                     {s.quote && i === 0 && <p className="mt-3 text-[12px] text-bone/65 italic border-l-2 border-cyan/40 pl-3">&ldquo;{s.quote}&rdquo;</p>}
                     {s.sub && <p className="mt-3 mono text-[11px] text-bone/50">{s.sub}</p>}

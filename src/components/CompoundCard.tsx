@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState, type CSSProperties } from 'react'
 import { displayName, type Compound } from '~/data/compounds'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { distributionFor, latestChangeFor } from '~/data/evidence'
@@ -42,8 +42,8 @@ export function CompoundCard({ compound, index, layout, fluid = false }: Props) 
     <Link
       to="/compound/$slug"
       params={{ slug: compound.slug }}
-      className={`card-tilt group block relative shrink-0 rounded-2xl overflow-hidden panel-flat ${fluid ? 'w-full h-[340px]' : SIZE[lay]}`}
-      style={{ transform: hover ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-4px)` : undefined }}
+      className={`card-tilt neon-card group block relative shrink-0 rounded-2xl overflow-hidden panel-flat ${fluid ? 'w-full h-[340px]' : SIZE[lay]}`}
+      style={{ '--panel-accent': v.tint, '--panel-accent-2': v.accent, transform: hover ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px) scale(1.012)` : undefined } as CSSProperties}
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }}
       onPointerMove={(e) => {
@@ -58,7 +58,7 @@ export function CompoundCard({ compound, index, layout, fluid = false }: Props) 
         fallback={<SequenceSVG geometry={geometry} tint={v.tint} className="absolute inset-0 w-full h-full p-4 opacity-90" />}
       >
         <Suspense fallback={null}>
-          <DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 1.6 : 1} />
+          <DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.15 : 1.18} />
         </Suspense>
       </SceneView>
       <div className="absolute inset-x-0 top-0 p-4 flex items-start justify-between pointer-events-none">

@@ -85,6 +85,8 @@ export function ChainRenderer({
   const dash = useRef<THREE.Line>(null)
   const markers = useRef<THREE.Group>(null)
   const decor = useRef<THREE.Group>(null)
+  const signalOrb = useRef<THREE.Mesh>(null)
+  const signalLight = useRef<THREE.PointLight>(null)
 
   const n = g.length
   const fixedScale = fit / g.bounds.radius
@@ -230,6 +232,15 @@ export function ChainRenderer({
       markers.current.scale.setScalar(pulse)
       markers.current.visible = p > 0.97
     }
+    // A single travelling excitation gives the chain a readable pulse without making every residue glow.
+    if (signalOrb.current) {
+      const u = (tRef.current * (0.045 + tempo * 0.025)) % 1
+      signalOrb.current.position.copy(curve.getPointAt(u))
+      const pulse = 0.72 + Math.sin(tRef.current * 4.2) * 0.18
+      signalOrb.current.scale.setScalar(pulse * (lod === 2 ? 0.58 : 0.86))
+      signalOrb.current.visible = p > 0.82
+      if (signalLight.current) signalLight.current.intensity = (2.4 + 1.2 * Math.sin(tRef.current * 4.2)) * intensity
+    }
     if (hbond.current) {
       const m = hbond.current.material as THREE.LineBasicMaterial
       m.opacity = 0.2 * Math.max(0, (p - 0.92) / 0.08)
@@ -311,6 +322,11 @@ export function ChainRenderer({
         <group rotation={[0, Math.PI / 2, 0]} position={centerOffsetRotated}>
           {/* backbone */}
           <mesh ref={tube} geometry={tubeGeo} material={tubeMat} frustumCulled={false} />
+          <mesh ref={signalOrb} visible={false}>
+            <sphereGeometry args={[0.72, lod === 2 ? 10 : 18, lod === 2 ? 8 : 12]} />
+            <meshBasicMaterial color={tint} toneMapped={false} transparent opacity={0.95} />
+            {lod <= 1 && <pointLight ref={signalLight} color={tint} distance={9} decay={1.8} />}
+          </mesh>
           {dashLine && <primitive ref={dash} object={dashLine} />}
           {hbondGeo && (
             <lineSegments ref={hbond} geometry={hbondGeo} visible={false}>

@@ -75,7 +75,7 @@ export function Hero() {
   }, [])
 
   return (
-    <section ref={section} className="relative h-[100vh] w-full overflow-hidden bg-obsidian grain" aria-label="Hero">
+    <section ref={section} className="hero-shell relative h-[100vh] w-full overflow-hidden bg-obsidian grain" aria-label="Hero">
       <picture>
         <source media="(max-aspect-ratio: 4/5)" srcSet="/posters/hero-portrait.jpg" />
       <img
@@ -89,6 +89,9 @@ export function Hero() {
         style={{ opacity: firstFrame ? 0 : 1 }}
       />
       </picture>
+      <div className="hero-chroma" aria-hidden />
+      <div className="hero-orbit hero-orbit-a" aria-hidden />
+      <div className="hero-orbit hero-orbit-b" aria-hidden />
       {allowed && (
         <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} onFirstFrame={() => setFirstFrame(true)} cameraZ={16}>
           <Suspense fallback={null}>
@@ -105,7 +108,7 @@ export function Hero() {
       {/* copy */}
       <div ref={copyRef} className="relative z-10 h-full wrap flex flex-col justify-end pb-[10vh] md:pb-[12vh]">
         <p className="label label-cyan mb-6">The Molecular Evidence &amp; Signal Atlas</p>
-        <h1 className="display text-[clamp(3rem,8vw,7.6rem)] text-bone">
+        <h1 className="display hero-title text-[clamp(3rem,8vw,7.6rem)] text-bone">
           Trace the signal.
           <br />
           <span className="text-bone/70">Follow the evidence.</span>
