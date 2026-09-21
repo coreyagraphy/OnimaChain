@@ -20,6 +20,7 @@ import { ScrollTrigger } from '~/motion/timeline'
 import { BRAND } from '~/brand'
 import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
 import { useCommerceStore } from '~/stores/commerce'
+import { officialSourcesFor } from '~/data/official-sources'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
@@ -68,6 +69,7 @@ function Dossier() {
     return () => st.kill()
   }, [])
   const events = claims.flatMap((cl) => cl.changeHistory.map((e) => ({ ...e, claim: cl.id })))
+  const official = officialSourcesFor(slug)
 
   return (
     <article className="pt-[72px] compound-world" style={{ '--product': productTheme.primary, '--product-2': productTheme.secondary, '--product-3': productTheme.tertiary } as CSSProperties}>
@@ -213,8 +215,30 @@ function Dossier() {
       </Section>
 
       {/* L — sources */}
-      <Section id="sources" k="L" title="Sources" lede="Fully traceable bibliography. Only build-time-verified PMIDs are rendered as citations.">
-        {studies.length ? <div className="grid md:grid-cols-2 gap-3">{studies.map((s) => <StudyCard key={s.pmid} study={s} />)}</div> : <EmptyState title={CORPUS_ABSENCE} />}
+      <Section id="sources" k="L" title="Sources" lede="Fully traceable bibliography. Only build-time-verified PMIDs are rendered as citations. FDA labels, when indexed, sit beside them — they are approvals, not shopping claims.">
+        {official.length ? (
+          <div className="grid md:grid-cols-2 gap-3 mb-6">
+            {official.map((s) => (
+              <article key={s.id} className="panel p-5">
+                <p className="label label-cyan">{s.kind === 'fda-application' ? 'FDA application' : 'DailyMed index'}</p>
+                <h4 className="mt-2 font-semibold text-bone/95 leading-snug">{s.title}</h4>
+                <p className="mono text-[11px] text-bone/55 mt-2">{s.identifier} · retrieved {s.retrieved}</p>
+                <p className="text-sm text-bone/75 mt-3 leading-relaxed">{s.indication}</p>
+                {s.limitation && <p className="text-sm text-bone/55 mt-2">{s.limitation}</p>}
+                <a href={s.url} target="_blank" rel="noreferrer noopener" className="btn btn-sm mt-4">Open source ↗</a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <EmptyState title="No official labeling indexed for this compound" detail="FDA application records are attached only when the molecule is an approved drug and the application number has been checked. Most research peptides will stay empty here." />
+        )}
+        {studies.length ? (
+          <div className="grid md:grid-cols-2 gap-3">{studies.map((s) => <StudyCard key={s.pmid} study={s} />)}</div>
+        ) : official.length ? (
+          <p className="text-sm muted mt-2">No PubMed records are indexed for this compound yet. The official labels above are the current source set.</p>
+        ) : (
+          <EmptyState title={CORPUS_ABSENCE} />
+        )}
         <div className="mt-8">
           <p className="label mb-3">Residue table (SSR equivalent of the structure)</p>
           <ResidueTable geometry={geometry} />

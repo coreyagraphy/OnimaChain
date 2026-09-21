@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { pubmedUrl, type Study } from '~/data/studies'
 import { EvidenceChip } from './EvidenceChip'
 import { SpeciesBadge } from './SpeciesBadge'
@@ -25,7 +26,9 @@ export function StudyCard({ study, compact = false, relationship, basis }: Props
         {relationship && <span className={`chip ${relationship === 'SUPPORTS' ? 'chip-cyan' : relationship === 'CONTRADICTS' ? 'chip-amber' : ''}`}>{relationship}</span>}
       </div>
       <h4 className={`mt-3 font-semibold text-bone/95 leading-snug ${compact ? 'text-sm' : 'text-base'}`}>
-        <a href={pubmedUrl(study.pmid)} target="_blank" rel="noreferrer noopener" className="hover:text-cyan">{m.title}</a>
+        <Link to="/study/$pmid" params={{ pmid: study.pmid }} className="hover:text-cyan">
+          {m.title}
+        </Link>
       </h4>
       <p className="mono text-[11px] text-bone/55 mt-2">
         {m.journal} · {m.year ?? 'year n/a'} · {m.authors.length} authors · last author {m.lastAuthor || 'n/a'}
@@ -36,7 +39,11 @@ export function StudyCard({ study, compact = false, relationship, basis }: Props
           &ldquo;{basis}&rdquo; <span className="not-italic mono text-[10px] text-bone/45">— abstract, PMID {study.pmid}</span>
         </blockquote>
       )}
-      <p className="mono text-[10px] text-bone/40 mt-2">Verified {new Date(m.verifiedAt).toISOString().slice(0, 10)} via NCBI eutils esummary</p>
+      <p className="mono text-[10px] text-bone/40 mt-2">
+        Verified {new Date(m.verifiedAt).toISOString().slice(0, 10)} via NCBI eutils esummary
+        {' · '}
+        <a href={pubmedUrl(study.pmid)} target="_blank" rel="noreferrer noopener" className="hover:text-cyan">PubMed ↗</a>
+      </p>
     </article>
   )
 }

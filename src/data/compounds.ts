@@ -65,7 +65,7 @@ export const COMPOUNDS: Compound[] = [
     mods: [],
     structureSource: 'computed',
     pdbIds: [],
-    pmids: [],
+    pmids: ['21030672', '42542926', '41754849', '40789979', '40756949'],
     archetype: 'The three-proline hinge. Fifteen residues with a stiff centre and loose ends.',
   },
   {
@@ -78,7 +78,7 @@ export const COMPOUNDS: Compound[] = [
     mods: [],
     structureSource: 'computed',
     pdbIds: [],
-    pmids: [],
+    pmids: ['42542926', '34170491', '32245208', '36706591', '41235866'],
     archetype: 'The long rope. Forty-three residues, lysine-rich, mostly unfolded until it binds.',
   },
   {

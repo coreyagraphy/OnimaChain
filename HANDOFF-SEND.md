@@ -247,7 +247,7 @@ The copy keeps the direct, appealing tone but does not publish guarantees such a
 | `/coverage`, `/corrections`, `/status/$compound` | Functional states, limited data |
 | `/saved` | Stub; persistence/auth not built |
 | `/about`, `/contact`, `/privacy`, `/terms` | Basic stubs |
-| `/study/$pmid` | Not built |
+| `/study/$pmid` | Live — verified records only; unknown PMIDs fail closed |
 | `/inspect` | Not built |
 
 ## 8. Verification completed
@@ -288,8 +288,8 @@ The catalog is broader than the verified research corpus.
 
 ## 11. Exact next work, in recommended order
 
-1. **Attach sources to commerce descriptions.** Add official-source records for semaglutide, tirzepatide, tesamorelin, and bremelanotide first, then verified sources for the experimental catalog. Every material product statement should resolve to a source or an explicit unknown state.
-2. **Build `/study/$pmid`.** Extend the verifier to cache PubMed summaries and abstracts; link every StudyCard and SourceBadge to the route.
+1. **Attach sources to remaining commerce descriptions.** Official FDA/DailyMed records now exist for semaglutide, tirzepatide, tesamorelin, and PT-141/bremelanotide. Next: experimental catalog, ClinicalTrials.gov, and verified PubMed for those four.
+2. **Deepen `/study/$pmid`.** Route is live for indexed PMIDs and fail-closed for unknowns. Next: cache abstracts in the verifier and link SourceBadge through the route as well.
 3. **Replace placeholder pricing.** Only after product, legal, fulfillment, and payment decisions are final. Then wire a real checkout provider and inventory state.
 4. **Build typed persistence.** Move fixtures into a typed store containing compounds, claims, studies, sources, versions, relationships, and provenance.
 5. **Implement GraphVersion.** Feed `/timeline` and claim change views from immutable snapshots. This is the one clear failure in the original 20-test acceptance scorecard.
