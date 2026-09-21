@@ -10,7 +10,7 @@ This document is the complete state of the project. Read it top to bottom before
 
 | Thing | Location |
 |---|---|
-| **The app (git repo, canonical)** | `C:\Users\corey\Projects\cyravon\cyravon-app` — 5 commits, HEAD `345332c`, **no remote yet** (push it somewhere private before sharing) |
+| **The app (git repo, canonical)** | `C:\Users\corey\Projects\cyravon\cyravon-app` — private GitHub remote **https://github.com/coreyagraphy/cyravon** (branch `main`, pushed 2026-09-20) |
 | Original archive it was unpacked from | `C:\Users\corey\Downloads\cyravon-app-v0.1.tar.gz` (also unpacked at `C:\Users\corey\Projects\cyravon\cyravon-app` — same thing) |
 | Original handoff prompt | `C:\Users\corey\Downloads\cyravon-handoff-prompt.md` (copy also in repo root) |
 | Product brief — **the source of truth** | `cyravon-app/CYRAVON_BRIEF.md` (2,388 lines; §1–§67) |
@@ -21,7 +21,7 @@ This document is the complete state of the project. Read it top to bottom before
 | Screenshots of every flagship view | `cyravon-app/shots/` (gitignored, regenerate with `node tools/shots.mjs`) |
 | Desktop dev-server launch entry | `C:\Users\corey\OneDrive\Desktop\.claude\launch.json` → entry `cyravon-dev` (runs `scripts/dev-here.mjs 8082`) |
 
-There is exactly **one** repo. Nothing lives in OneDrive. Node 22+, npm.
+There is exactly **one** repo, mirrored to the private GitHub remote above. Nothing lives in OneDrive. Node 22+, npm.
 
 ## 2. Run it
 
@@ -122,7 +122,7 @@ Keyboard navigation through the lineage graph and constellation; screen-reader d
 Expand beyond BPC-157 and TB-500 only after those two dossiers are exceptional (brief §65). 31 other compounds render with "No qualifying record" states — that is correct until real PMIDs are verified for them.
 
 ### 6.12 Housekeeping
-- Push the repo to a private remote.
+- Remote exists (coreyagraphy/cyravon, private). Add collaborators there.
 - Move `radialTexture` out of `HeroScene.tsx` into `src/scenes/util.ts` (ViewerScene and Constellation import it from the hero today).
 - Remove the unused `public/posters/hero.svg` and `tools/gen-poster.ts` once the JPEG posters are accepted.
 - Vite warns `rigs/index` is both static- and dynamic-imported (harmless; router SSR chunk ~2 MB).
