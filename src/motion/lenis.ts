@@ -1,6 +1,9 @@
 import Lenis from 'lenis'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import gsapPackage from 'gsap/dist/gsap'
+import scrollTriggerPackage from 'gsap/dist/ScrollTrigger'
+
+const gsap = (gsapPackage as unknown as { gsap?: typeof gsapPackage }).gsap ?? gsapPackage
+const ScrollTrigger = (scrollTriggerPackage as unknown as { ScrollTrigger?: typeof scrollTriggerPackage }).ScrollTrigger ?? scrollTriggerPackage
 
 let lenis: Lenis | null = null
 let registered = false

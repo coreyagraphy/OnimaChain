@@ -34,3 +34,10 @@ This pass keeps the verified camera-flight hero and extends its dimensional visu
 
 - Vite still reports the existing mixed static/dynamic import warning for `src/scenes/rigs/index.tsx` and the existing large router chunk warning.
 - The screenshot suite reported one unspecified desktop 404 during the multi-route run; the dedicated failed-request probe subsequently reported none. This matches the previously recorded intermittent non-home 404 and was not introduced by this pass.
+
+## Netlify production
+
+- Production URL: `https://cyravon.netlify.app`
+- Netlify project: `https://app.netlify.com/projects/cyravon`
+- TanStack Start SSR is deployed through `@netlify/vite-plugin-tanstack-start` with Node 22.
+- Netlify's ESM runtime requires the GSAP distribution imports and a fully bundled SSR dependency graph; those compatibility settings live in `src/motion/*`, `src/types/gsap-dist.d.ts`, and `vite.config.ts`.

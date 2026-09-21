@@ -3,3 +3,6 @@ dist
 .output
 shots
 .tanstack
+
+# Local Netlify folder
+.netlify
