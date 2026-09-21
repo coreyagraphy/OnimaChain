@@ -7,7 +7,7 @@ export function ChangeDiff({ event }: { event: ChangeEvent }) {
       <div className="flex flex-wrap items-center gap-3">
         <span className="mono text-[12px] text-amber">{event.date}</span>
         <span className="chip chip-amber">{event.lane}</span>
-        {event.alteredInterpretation && <span className="chip">altered interpretation</span>}
+        {event.alteredInterpretation && <span className="chip">changed our reading</span>}
       </div>
       <p className="mt-2 font-semibold text-bone/90">{event.change}</p>
       <div className="mt-3 grid sm:grid-cols-2 gap-3">

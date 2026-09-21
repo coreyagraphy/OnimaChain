@@ -33,7 +33,7 @@ export const Route = createFileRoute('/compound/$slug')({
     return {
       meta: [
         { title: `${name} — ${BRAND} dossier` },
-        { name: 'description', content: `${name}: research footprint, human signal, translation state and claim lineage. Evidence classes kept separate.` },
+        { name: 'description', content: `${name}: what it is, what has been studied, what people say, and how far testing has gone. Studies and stories kept separate.` },
       ],
       scripts: c
         ? [{ type: 'application/ld+json', children: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Dataset', name: `${name} evidence record`, description: 'Structured evidence and signal record. Research and educational information.', creator: { '@type': 'Organization', name: `${BRAND}` }, dateModified: '2026-09-20' }) }]
@@ -79,7 +79,7 @@ function Dossier() {
           <p className="mt-5 text-base font-semibold text-bone/84 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
           <div className="mt-7 flex items-end gap-6"><div><p className="label">Temporary price</p><p className="display-md text-3xl mt-1">{PRICE_PLACEHOLDER}</p></div><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
           {c.displayName && <p className="mono text-[12px] text-bone/55 mt-2">Compound: {c.name.toLowerCase()}</p>}
-          {c.aliases.length > 0 && <p className="mt-4 text-sm muted">Also indexed as {c.aliases.join(' · ')}</p>}
+          {c.aliases.length > 0 && <p className="mt-4 text-sm muted">Also known as {c.aliases.join(' · ')}</p>}
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-w-lg">
             <div className="col-span-2">
               <dt className="label">Sequence</dt>
@@ -106,22 +106,22 @@ function Dossier() {
         </div>
       </header>
 
-      <nav className="research-tabs" aria-label="Product research sections"><a href="#snapshot">Overview</a><a href="#genome">Research</a><a href="#signal">What people report</a><a href="#translation">How far research has gone</a><a href="#timeline">Timeline</a><a href="#sources">Sources</a></nav>
+      <nav className="research-tabs" aria-label="Product research sections"><a href="#snapshot">Overview</a><a href="#genome">Research</a><a href="#signal">Why people look it up</a><a href="#translation">How far it has been tested</a><a href="#timeline">Timeline</a><a href="#sources">Sources</a></nav>
 
       {/* B — snapshot */}
-      <Section id="snapshot" k="B" title="Snapshot">
+      <Section id="snapshot" k="B" title="The quick read">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <Snap title="What we have checked" onOpen={() => setDrawer('research')}>{studies.length ? `${studies.length} source${studies.length === 1 ? '' : 's'} total${dist.human ? ` · ${dist.human} involving people` : ''}${dist.animal ? ` · ${dist.animal} using animals` : ''}${dist.review ? ` · ${dist.review} review${dist.review === 1 ? '' : 's'}` : ''}` : 'We haven’t added a checked source for this yet.'}</Snap>
           <Snap title="Why people look it up" onOpen={() => setDrawer('signal')}>{shopTopicFor(c)} · open the Portal of Tides to see nearby names</Snap>
           <Snap title="How far the research has gone" onOpen={() => setDrawer('translation')}>{translation.length ? translation.map((t) => `${t.outcome}: ${t.stages.length ? TRANSLATION_STAGES.filter((s) => t.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'no supported stage'}`).join(' · ') : 'No outcome mapped yet'}</Snap>
           <Snap title="What's new" onOpen={() => setDrawer('change')} amber>{change ? `${change.date} — ${change.change}` : 'No change recorded'}</Snap>
-          <Snap title="Regulatory snapshot" onOpen={() => setDrawer('regulatory')}>No regulatory record indexed · <Link to="/status/$compound" params={{ compound: slug }} className="underline">jurisdiction view</Link></Snap>
+          <Snap title="Legal status" onOpen={() => setDrawer('regulatory')}>No regulator decisions listed yet · <Link to="/status/$compound" params={{ compound: slug }} className="underline">check by country</Link></Snap>
         </div>
       </Section>
 
       {/* C — evidence genome */}
       <Section id="genome" k="C" title="Research at a glance" lede="A simple picture of the sources we have checked. More color means more records in that category—not that the product works better.">
-        {studies.length ? <EvidenceGenome slug={slug} /> : <EmptyState title={CORPUS_ABSENCE} detail="The genome renders hollow until a verified record is indexed for this compound." />}
+        {studies.length ? <EvidenceGenome slug={slug} /> : <EmptyState title={CORPUS_ABSENCE} detail="This picture fills in as we add checked studies for this product." />}
       </Section>
 
       {/* D — research themes */}
@@ -139,7 +139,7 @@ function Dossier() {
             ))}
           </ul>
         ) : (
-          <EmptyState title="No themes indexed" detail="Research themes appear only after verified records are indexed and classified for this compound." />
+          <EmptyState title="No topics yet" detail="Topics show up here once we have checked studies for this product and sorted them." />
         )}
       </Section>
 
@@ -157,7 +157,7 @@ function Dossier() {
           <div className="panel-flat p-5 border-t-2 border-t-cyan">
             <p className="label label-cyan">What we can show</p>
             {themes.filter((t) => t.kind === 'research').length ? (
-              <ul className="mt-3 grid gap-2">{themes.filter((t) => t.kind === 'research').map((t) => <li key={t.id} className="text-sm flex justify-between gap-3"><span>{t.label}</span><span className="mono text-[11px] text-bone/45">{t.pmids.length} verified</span></li>)}</ul>
+              <ul className="mt-3 grid gap-2">{themes.filter((t) => t.kind === 'research').map((t) => <li key={t.id} className="text-sm flex justify-between gap-3"><span>{t.label}</span><span className="mono text-[11px] text-bone/45">{t.pmids.length} checked</span></li>)}</ul>
             ) : <p className="mt-3 text-sm muted">No source topic has been added yet.</p>}
           </div>
           <div className="panel-flat p-5 border-t-2 border-t-violet">
@@ -173,50 +173,50 @@ function Dossier() {
       </Section>
 
       {/* G — claim lineage */}
-      <Section id="claims" k="G" title="Claim lineage" lede="Top associated claims. Each opens the full lineage graph.">
-        {claims.length ? <div className="grid md:grid-cols-2 gap-4">{claims.map((cl) => <ClaimCard key={cl.id} claim={cl} />)}</div> : <EmptyState title="No claim record indexed for this compound" detail="Claims are created only with an origin record or an explicit unresolved-origin state." />}
+      <Section id="claims" k="G" title="Claims people make" lede="The big claims tied to this product. Open one to see where it came from and how it spread.">
+        {claims.length ? <div className="grid md:grid-cols-2 gap-4">{claims.map((cl) => <ClaimCard key={cl.id} claim={cl} />)}</div> : <EmptyState title="No claims tracked for this product yet" detail="We only add a claim once we can point to where it started, or say clearly that we could not find out." />}
       </Section>
 
       {/* H — translation */}
-      <Section id="translation" k="H" title="Translation gap" lede="Cell → Mouse → Rat → Larger animal → Human → Controlled human → Approved use — per outcome. Stages light only where a verified record supports them.">
+      <Section id="translation" k="H" title="How far it has been tested" lede="From cells in a dish, to mice, rats, bigger animals, people, proper trials, and finally regulator approval. The light stops where the checked studies stop.">
         <TranslationTrack rows={translation} />
       </Section>
 
       {/* I — research independence */}
-      <Section id="independence" k="I" title="Research independence" lede="Ten papers from one laboratory are not ten independent replications.">
+      <Section id="independence" k="I" title="How many separate teams" lede="Ten papers from one lab are not ten separate confirmations.">
         {studies.length ? (
           <div className="grid lg:grid-cols-[1fr_1fr] gap-6">
             <div className="panel-flat p-5">
-              <p className="label">Distinct last-author groups (proxy)</p>
+              <p className="label">Separate senior authors (a rough count of teams)</p>
               <p className="display text-5xl mt-2">{groups.length}<span className="text-lg text-bone/40"> / {studies.length} records</span></p>
               <ul className="mt-4 grid gap-1 text-sm">{groups.map((g) => <li key={g} className="flex justify-between"><span>{g}</span><span className="mono text-[11px] text-bone/45">{studies.filter((s) => s.meta?.lastAuthor === g).length} record(s)</span></li>)}</ul>
-              <p className="mt-4 text-[12px] muted">Institutions, funding and citation links: Not assessed — esummary does not carry affiliations; a Crossref/efetch connector is required.</p>
+              <p className="mt-4 text-[12px] muted">Universities, funding and who cites whom: not checked yet. PubMed’s summary does not include that, so it needs another data source.</p>
             </div>
             <IndependenceMap groups={groups} counts={groups.map((g) => studies.filter((s) => s.meta?.lastAuthor === g).length)} />
           </div>
-        ) : <EmptyState title="Not assessed" detail="Independence is estimated only from verified records." />}
+        ) : <EmptyState title="Not checked yet" detail="We only count teams from studies we have confirmed." />}
       </Section>
 
       {/* J — contradictions */}
-      <Section id="contradictions" k="J" title="What doesn't fit?" lede="Disagreement is surfaced, not hidden.">
+      <Section id="contradictions" k="J" title="What doesn’t fit?" lede="If a study disagrees, it goes here. We do not hide it.">
         {claims.some((cl) => cl.support.some((s) => s.relationship === 'partially_supports')) && (
           <div className="grid gap-3 mb-4">
             {claims.flatMap((cl) => cl.support.filter((s) => s.relationship === 'partially_supports').map((s) => STUDY_BY_PMID[s.pmid] && <StudyCard key={s.pmid} study={STUDY_BY_PMID[s.pmid]} relationship={RELATIONSHIP_LABEL[s.relationship]} basis={s.basis} />))}
           </div>
         )}
-        <EmptyState title="No contradictory study currently indexed" detail="Null findings, conflicting research and methodological criticism appear here when indexed. A partial relationship above is not a contradiction." />
+        <EmptyState title="No study we have checked pushes back yet" detail="Studies that found nothing, disagree, or criticize the method will show up here once we add them. A study that only partly agrees is not the same as one that disagrees." />
       </Section>
 
       {/* K — timeline */}
-      <Section id="timeline" k="K" title="Timeline" lede="Research and public-signal history, in separate lanes.">
+      <Section id="timeline" k="K" title="Timeline" lede="What happened and when. Studies in one lane, real-world reports in another.">
         {(['research', 'trials', 'regulatory', 'signal'] as const).map((lane) => <TimelineLane key={lane} lane={lane} events={events.filter((e) => e.lane === lane)} />)}
       </Section>
 
       {/* L — sources */}
-      <Section id="sources" k="L" title="Sources" lede="Fully traceable bibliography. Only build-time-verified PMIDs are rendered as citations.">
+      <Section id="sources" k="L" title="Sources" lede="Every study we used. Only studies we confirmed on PubMed are shown as sources.">
         {studies.length ? <div className="grid md:grid-cols-2 gap-3">{studies.map((s) => <StudyCard key={s.pmid} study={s} />)}</div> : <EmptyState title={CORPUS_ABSENCE} />}
         <div className="mt-8">
-          <p className="label mb-3">Residue table (SSR equivalent of the structure)</p>
+          <p className="label mb-3">The building blocks, one by one</p>
           <ResidueTable geometry={geometry} />
         </div>
       </Section>
@@ -248,7 +248,7 @@ function Snap({ title, children, onOpen, amber }: { title: string; children: Rea
     <button onClick={onOpen} className={`panel-flat p-4 text-left hover:border-cyan/40 transition ${amber ? 'border-t-2 border-t-amber' : ''}`}>
       <p className="label">{title}</p>
       <p className="mt-2 text-[13px] text-bone/85 leading-snug">{children}</p>
-      <p className="mt-3 mono text-[10px] text-bone/40">expand provenance →</p>
+      <p className="mt-3 mono text-[10px] text-bone/40">see where this comes from →</p>
     </button>
   )
 }
@@ -256,7 +256,7 @@ function Snap({ title, children, onOpen, amber }: { title: string; children: Rea
 function IndependenceMap({ groups, counts }: { groups: string[]; counts: number[] }) {
   const n = groups.length
   return (
-    <svg viewBox="0 0 360 240" className="w-full panel-flat" role="img" aria-label={`Research independence map: ${n} distinct last-author groups`}>
+    <svg viewBox="0 0 360 240" className="w-full panel-flat" role="img" aria-label={`Map of separate research teams: ${n} senior authors`}>
       {groups.map((g, i) => {
         const a = (i / Math.max(1, n)) * Math.PI * 2
         const x = Math.round((180 + Math.cos(a) * 80) * 100) / 100, y = Math.round((120 + Math.sin(a) * 65) * 100) / 100
@@ -270,22 +270,22 @@ function IndependenceMap({ groups, counts }: { groups: string[]; counts: number[
         )
       })}
       <circle cx={180} cy={120} r={5} fill="#F2EEE6" />
-      <text x={180} y={232} fontSize={9} textAnchor="middle" fill="#F2EEE6" fillOpacity={0.45} fontFamily="JetBrains Mono Variable, monospace">node size = records per last-author group · edges to cross-citations: not assessed</text>
+      <text x={180} y={232} fontSize={9} textAnchor="middle" fill="#F2EEE6" fillOpacity={0.45} fontFamily="JetBrains Mono Variable, monospace">bigger circle = more studies from that senior author · who cites whom: not checked yet</text>
     </svg>
   )
 }
 
 function drawerTitle(k: string | null) {
-  return { research: 'Sources we checked', signal: 'Why people look it up', translation: 'How far the research has gone', change: 'What changed', regulatory: 'Legal and approval status', share: 'Share' }[k ?? ''] ?? ''
+  return { research: 'Sources we checked', signal: 'Why people look it up', translation: 'How far the research has gone', change: 'What changed', regulatory: 'Legal status', share: 'Share' }[k ?? ''] ?? ''
 }
 function drawerBody(k: string | null, c: Compound, n: number, groups: number) {
   switch (k) {
-    case 'research': return <><p>{n} PMIDs listed in studies.ts for {displayName(c)} resolved against NCBI eutils at build time. Study type and species come from the record title / publication type; tags from the abstract.</p><p>{groups} distinct last-author surname(s) — a proxy, not an institution map.</p></>
+    case 'research': return <><p>We list {n} PubMed ID{n === 1 ? '' : 's'} for {displayName(c)} and confirm each one against PubMed before the site is built. The kind of study and what it was tested on come from the study’s title; the topics come from its summary.</p><p>{groups} different senior author{groups === 1 ? '' : 's'} — a rough count of separate teams, not a full map of universities.</p></>
     case 'signal': return <><p>People commonly explore {displayName(c)} around {shopTopicFor(c)}.</p><p>We do not have live social feeds connected, so we do not invent mention counts or customer stories. Use the Portal of Tides to see related names in this collection.</p></>
-    case 'translation': return <p>Stages are lit from claims.ts → translation, which is populated only when a verified record with the matching species / model exists. Nothing is inferred from reviews.</p>
-    case 'change': return <p>Derived from claims.ts change history. The only event so far is claim creation, dated 2026-09-20. Nothing has been rewritten.</p>
-    case 'regulatory': return <p>No regulatory connector is enabled. The status page shows jurisdiction and date fields with an explicit empty state. An advisory vote is never shown as an approval.</p>
-    case 'share': return <><p>Copy the canonical URL: <span className="mono">/compound/{c.slug}</span></p><p>Share cards and research-packet export are in production; they will carry no treatment recommendation.</p></>
+    case 'translation': return <p>A stage lights up only when a confirmed study tested it on that kind of subject. We never guess from review papers.</p>
+    case 'change': return <p>This comes from our change log. So far the only event is the day we added the claim, 2026-09-20. Nothing has been rewritten.</p>
+    case 'regulatory': return <p>We have not connected regulator records yet. The legal status page shows each country with an honest “nothing listed yet”. A committee vote is never shown as an approval.</p>
+    case 'share': return <><p>Copy the canonical URL: <span className="mono">/compound/{c.slug}</span></p><p>Share cards and a printable research packet are coming. Neither will ever include dosing or treatment advice.</p></>
     default: return null
   }
 }

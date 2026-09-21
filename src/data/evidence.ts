@@ -34,21 +34,21 @@ export interface GenomeCell {
 }
 
 export const GENOME_DIMENSIONS: Array<{ id: GenomeDimension; label: string; how: string }> = [
-  { id: 'in-vitro', label: 'In vitro', how: 'Verified records whose study type is in-vitro.' },
-  { id: 'mouse', label: 'Mouse', how: 'Verified records whose title states a mouse model.' },
-  { id: 'rat', label: 'Rat', how: 'Verified records whose title states a rat model.' },
-  { id: 'other-animal', label: 'Other animal', how: 'Verified records whose title states another animal model.' },
-  { id: 'observational-human', label: 'Observational human', how: 'Verified records typed observational-human.' },
-  { id: 'case-report', label: 'Case report', how: 'Verified records whose publication type is Case Reports.' },
-  { id: 'phase-1', label: 'Phase I', how: 'Verified records whose publication type is Clinical Trial, Phase I.' },
-  { id: 'phase-2', label: 'Phase II', how: 'Verified records whose publication type is Clinical Trial, Phase II.' },
-  { id: 'phase-3', label: 'Phase III', how: 'Verified records whose publication type is Clinical Trial, Phase III.' },
-  { id: 'approved-indication', label: 'Approved indication', how: 'Not assessed — no regulatory record indexed.' },
-  { id: 'replication', label: 'Replication', how: 'Not assessed — replication relationships are not yet indexed.' },
-  { id: 'independent-groups', label: 'Independent groups', how: 'Distinct last-author surnames among verified records (proxy).' },
-  { id: 'mechanistic', label: 'Mechanistic', how: 'Verified records tagged mechanistic from their abstract.' },
-  { id: 'safety', label: 'Safety characterization', how: 'Not assessed — no safety-typed record indexed.' },
-  { id: 'research-age', label: 'Research age', how: 'Earliest to latest publication year among verified records.' },
+  { id: 'in-vitro', label: 'Cells in a dish (in vitro)', how: 'Checked studies done on cells in a lab dish.' },
+  { id: 'mouse', label: 'Mice', how: 'Checked studies whose title says it was done in mice.' },
+  { id: 'rat', label: 'Rats', how: 'Checked studies whose title says it was done in rats.' },
+  { id: 'other-animal', label: 'Other animals', how: 'Checked studies whose title names another animal.' },
+  { id: 'observational-human', label: 'People, observed', how: 'Checked studies that watched people without a controlled trial.' },
+  { id: 'case-report', label: 'Single-person reports', how: 'Checked reports about one patient (case reports).' },
+  { id: 'phase-1', label: 'Phase I trial', how: 'Checked early safety trials in a small group of people.' },
+  { id: 'phase-2', label: 'Phase II trial', how: 'Checked mid-size trials testing whether it works.' },
+  { id: 'phase-3', label: 'Phase III trial', how: 'Checked large trials, the kind regulators look at.' },
+  { id: 'approved-indication', label: 'Approved use', how: 'Not checked yet — we have not connected regulator records.' },
+  { id: 'replication', label: 'Repeated by others', how: 'Not checked yet — we do not track repeat studies yet.' },
+  { id: 'independent-groups', label: 'Separate research teams', how: 'How many different senior authors the checked studies have. A rough stand-in for separate teams.' },
+  { id: 'mechanistic', label: 'How it works', how: 'Checked studies that looked at the mechanism, based on their summary.' },
+  { id: 'safety', label: 'Safety', how: 'Not checked yet — no safety study has been added.' },
+  { id: 'research-age', label: 'Years of research', how: 'From the oldest to the newest checked study.' },
 ]
 
 export function evidenceGenome(slug: string): GenomeCell[] {
@@ -95,14 +95,14 @@ const THEME_FIXTURES: Record<string, Array<{ id: string; label: string; tag?: St
     { id: 'tendon', label: 'Tendon research', tag: 'tendon', kind: 'research' },
     { id: 'ligament', label: 'Ligament research', kind: 'research' },
     { id: 'gi', label: 'Gastrointestinal research', kind: 'research' },
-    { id: 'vascular', label: 'Vascular signaling', kind: 'research' },
-    { id: 'recovery-discussion', label: 'Public recovery discussion', kind: 'discussion' },
+    { id: 'vascular', label: 'Blood-vessel signaling', kind: 'research' },
+    { id: 'recovery-discussion', label: 'Recovery talk online', kind: 'discussion' },
   ],
   'tb-500': [
     { id: 'cell-migration', label: 'Cell migration', tag: 'cell-migration', kind: 'research' },
-    { id: 'actin', label: 'Actin-related mechanisms', tag: 'actin', kind: 'research' },
+    { id: 'actin', label: 'How cells move (actin)', tag: 'actin', kind: 'research' },
     { id: 'wound-healing', label: 'Wound-healing research', tag: 'wound-healing', kind: 'research' },
-    { id: 'tissue-repair-discussion', label: 'Tissue-repair discussion', kind: 'discussion' },
+    { id: 'tissue-repair-discussion', label: 'Tissue-repair talk online', kind: 'discussion' },
   ],
 }
 
@@ -160,11 +160,11 @@ export function researchPulse() {
   const v = verifiedStudies()
   const verifiedAt = v.map((s) => s.verifiedAt).filter(Boolean).sort().at(-1) ?? null
   return [
-    { label: 'Studies indexed & verified', value: v.length, of: STUDIES.length, at: verifiedAt, note: 'PMIDs resolved against NCBI eutils at build time' },
-    { label: 'Trials changed', value: 0, of: null, at: null, note: 'ClinicalTrials.gov connector not enabled' },
-    { label: 'Regulatory records changed', value: 0, of: null, at: null, note: 'No regulatory connector enabled' },
-    { label: 'Claims materially changed', value: CLAIMS.reduce((n, c) => n + c.changeHistory.filter((e) => e.alteredInterpretation).length, 0), of: null, at: TODAY, note: 'From claims.ts change history' },
-    { label: 'New source clusters', value: 0, of: null, at: null, note: 'No platform source access enabled' },
-    { label: 'Compounds in atlas', value: COMPOUNDS.length, of: null, at: TODAY, note: `${COMPOUNDS.filter((c) => c.sequence).length} with a listed sequence` },
+    { label: 'Studies checked', value: v.length, of: STUDIES.length, at: verifiedAt, note: 'Every PubMed ID confirmed against PubMed before the site was built' },
+    { label: 'Trials changed', value: 0, of: null, at: null, note: 'ClinicalTrials.gov not connected yet' },
+    { label: 'Regulatory records changed', value: 0, of: null, at: null, note: 'Regulator records not connected yet' },
+    { label: 'Claims we updated', value: CLAIMS.reduce((n, c) => n + c.changeHistory.filter((e) => e.alteredInterpretation).length, 0), of: null, at: TODAY, note: 'From our change log' },
+    { label: 'New real-world report groups', value: 0, of: null, at: null, note: 'Social platforms not connected yet' },
+    { label: 'Peptides in the collection', value: COMPOUNDS.length, of: null, at: TODAY, note: `${COMPOUNDS.filter((c) => c.sequence).length} with a listed sequence` },
   ]
 }

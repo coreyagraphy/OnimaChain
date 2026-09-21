@@ -20,4 +20,4 @@ export function EmptyState({ title, detail, children, tone = 'default', compact 
   )
 }
 
-export const CORPUS_ABSENCE = `No qualifying record is currently indexed in ${BRAND}’s corpus.`
+export const CORPUS_ABSENCE = `We haven’t added a checked source for this yet.`

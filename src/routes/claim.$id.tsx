@@ -22,12 +22,12 @@ export const Route = createFileRoute('/claim/$id')({
   },
   head: ({ loaderData }) => {
     const c = loaderData ? CLAIM_BY_ID[loaderData.id] : undefined
-    return { meta: [{ title: c ? `“${c.title}” — ${BRAND} claim record` : 'Claim' }, { name: 'description', content: 'Origin, original scope, lineage, mutation, support, contradictions, human signal, echo analysis, translation state and change history.' }] }
+    return { meta: [{ title: c ? `“${c.title}” — ${BRAND} claim record` : 'Claim' }, { name: 'description', content: 'Where it started, what was tested, how it spread, how the wording changed, which studies back it or push back, what people say, and what we changed.' }] }
   },
   component: ClaimPage,
 })
 
-const SECTIONS = ['Origin', 'Original scope', 'Claim lineage', 'Claim mutation', 'Research support', 'Research contradictions', 'Human signal', 'Echo analysis', 'Translation state', 'Current interpretation', 'Change history']
+const SECTIONS = ['Where it started', 'What was actually tested', 'How the story spread', 'How the wording changed', 'Studies that back it', 'Studies that push back', 'What people say', 'Copies vs. originals', 'How far it has been tested', 'The short version', 'What we changed']
 
 function ClaimPage() {
   const { id } = Route.useLoaderData()
@@ -41,73 +41,73 @@ function ClaimPage() {
         <p className="mono text-[12px] text-bone/55">{claim.id}</p>
         <h1 className="display text-[clamp(2.4rem,6vw,5.6rem)] mt-3 max-w-5xl">&ldquo;{claim.title}&rdquo;</h1>
         <div className="mt-5 flex flex-wrap items-center gap-3">
-          <span className="chip chip-cyan">Tracked research claim</span>
+          <span className="chip chip-cyan">A claim we track</span>
           <Link to="/compound/$slug" params={{ slug: compound.slug }} className="chip hover:border-cyan">{displayName(compound)} ↗</Link>
-          <span className="text-[12px] muted">Not labelled true or false. Status describes tracking, not verdict.</span>
+          <span className="text-[12px] muted">We don’t stamp claims true or false. We show you where they came from and let you decide.</span>
         </div>
         <nav className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-y hairline py-3" aria-label="Sections">
           {SECTIONS.map((s, i) => <a key={s} href={`#s${i}`} className="label hover:!text-bone">{s}</a>)}
         </nav>
       </header>
 
-      <Sec i={0} title="Origin" lede="Earliest attributable support currently indexed.">
-        {verifiedOrigin && origin ? <StudyCard study={origin} relationship="SUPPORTS" basis={origin.abstractQuote ?? null} /> : <EmptyState tone="amber" title="Source relationship unresolved" detail="The origin record could not be verified at build time and is not rendered as a citation." />}
+      <Sec i={0} title="Where it started" lede="The earliest study we have checked that this claim traces back to.">
+        {verifiedOrigin && origin ? <StudyCard study={origin} relationship="Backs it up" basis={origin.abstractQuote ?? null} /> : <EmptyState tone="amber" title="We could not confirm the source" detail="The original study could not be confirmed on PubMed, so we do not show it as a source." />}
       </Sec>
 
-      <Sec i={1} title="Original scope" lede="Species, model, endpoint, wording — copied, not paraphrased.">
+      <Sec i={1} title="What was actually tested" lede="Who or what it was tested on, how, what was measured, and the exact words the study used.">
         <dl className="grid sm:grid-cols-2 gap-4">
-          <div className="panel-flat p-4"><dt className="label">Species</dt><dd className="mt-2"><SpeciesBadge species={claim.originalScope.species} source="abstract" />{claim.originalScope.species && <span className="block mt-1 text-[11px] muted">stated in the abstract (cells derived from rat tissue); not stated in the title</span>}</dd></div>
-          <div className="panel-flat p-4"><dt className="label">Model</dt><dd className="mt-2 text-sm">{claim.originalScope.model ?? '—'}</dd></div>
-          <div className="panel-flat p-4"><dt className="label">Endpoint</dt><dd className="mt-2 text-sm">{claim.originalScope.endpoint ?? '—'}</dd></div>
-          <div className="panel-flat p-4"><dt className="label">Wording</dt><dd className="mt-2 text-sm italic text-bone/85">{claim.originalScope.wording ? <>&ldquo;{claim.originalScope.wording}&rdquo;</> : 'Source relationship unresolved'}</dd>{claim.originalScope.wordingSource && <dd className="mono text-[11px] text-bone/45 mt-1">{claim.originalScope.wordingSource}</dd>}</div>
+          <div className="panel-flat p-4"><dt className="label">Tested on</dt><dd className="mt-2"><SpeciesBadge species={claim.originalScope.species} source="abstract" />{claim.originalScope.species && <span className="block mt-1 text-[11px] muted">the study summary says the cells came from rat tissue; the title does not say</span>}</dd></div>
+          <div className="panel-flat p-4"><dt className="label">Test setup</dt><dd className="mt-2 text-sm">{claim.originalScope.model ?? '—'}</dd></div>
+          <div className="panel-flat p-4"><dt className="label">What was measured</dt><dd className="mt-2 text-sm">{claim.originalScope.endpoint ?? '—'}</dd></div>
+          <div className="panel-flat p-4"><dt className="label">The study’s own words</dt><dd className="mt-2 text-sm italic text-bone/85">{claim.originalScope.wording ? <>&ldquo;{claim.originalScope.wording}&rdquo;</> : 'We could not confirm the source'}</dd>{claim.originalScope.wordingSource && <dd className="mono text-[11px] text-bone/45 mt-1">{claim.originalScope.wordingSource}</dd>}</div>
         </dl>
       </Sec>
 
-      <Sec i={2} title="Claim lineage" lede="Research → interpretation → community. Every edge names its relationship; dashed edges are unresolved or have no source access.">
+      <Sec i={2} title="How the story spread" lede="From the study, to the retelling, to the people online. Every line says how the two ends are connected. Dashed lines are not confirmed or not connected.">
         <LineageGraph claim={claim} />
       </Sec>
 
-      <Sec i={3} title="Claim mutation" lede="How language changes while a claim propagates. This is not automatically misinformation; each step is classified and linked to its source text.">
+      <Sec i={3} title="How the wording changed" lede="Watch a careful study result turn into a bold post. That is not always lying. But each step is tagged so you can see exactly what changed.">
         <MutationLadder claim={claim} />
       </Sec>
 
-      <Sec i={4} title="Research support" lede="Study records and their explicit relationship to this claim.">
+      <Sec i={4} title="Studies that back it" lede="Each study we checked, and exactly how it relates to this claim.">
         <div className="grid md:grid-cols-2 gap-3">
           {claim.support.map((s) => STUDY_BY_PMID[s.pmid] && <StudyCard key={s.pmid} study={STUDY_BY_PMID[s.pmid]} relationship={RELATIONSHIP_LABEL[s.relationship]} basis={s.basis} />)}
         </div>
       </Sec>
 
-      <Sec i={5} title="Research contradictions" lede="Null and conflicting findings, methodological criticism.">
-        {claim.contradictions.length ? claim.contradictions.map((s) => STUDY_BY_PMID[s.pmid] && <StudyCard key={s.pmid} study={STUDY_BY_PMID[s.pmid]} relationship="CONTRADICTS" basis={s.basis} />) : <EmptyState title="No contradictory study currently indexed" detail="A partially-supporting record (numerically lower scores without statistical significance) is listed under Research support with its exact wording. Absence from the corpus is not evidence of absence." />}
+      <Sec i={5} title="Studies that push back" lede="Results that found nothing, results that disagree, and criticism of how a study was run.">
+        {claim.contradictions.length ? claim.contradictions.map((s) => STUDY_BY_PMID[s.pmid] && <StudyCard key={s.pmid} study={STUDY_BY_PMID[s.pmid]} relationship="Pushes back" basis={s.basis} />) : <EmptyState title="No study we have checked pushes back on this yet" detail="One study only partly backs it (slightly better scores, but not by enough to count). It is listed above under studies that back it, in its own words. Not finding a study is not the same as proving there is none." />}
       </Sec>
 
-      <Sec i={6} title="Human signal" lede={HUMAN_SIGNAL_LINE}>
+      <Sec i={6} title="What people say" lede={HUMAN_SIGNAL_LINE}>
         <CorpusHeader />
         <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">{PLATFORMS.slice(0, 4).map((p) => <SourceCard key={p.id} platform={p.name} />)}</div>
       </Sec>
 
-      <Sec i={7} title="Echo analysis" lede="Independent origins vs derivative mentions. Ten thousand posts are not ten thousand observations.">
+      <Sec i={7} title="Copies vs. originals" lede="Ten thousand posts are not ten thousand people. We count how many stories are original and how many are reposts.">
         <div className="grid sm:grid-cols-3 gap-3">
-          {[['Raw mentions', '0'], ['Estimated independent origin clusters', '0'], ['Derivative / echo mentions', '0']].map(([k, v]) => (
+          {[['Posts found', '0'], ['Original stories', '0'], ['Copies and reposts', '0']].map(([k, v]) => (
             <div key={k} className="panel-flat p-5"><p className="label">{k}</p><p className="display text-4xl mt-2 text-bone/60">{v}</p><p className="mono text-[11px] text-bone/45 mt-2">{CORPUS.header}</p></div>
           ))}
         </div>
-        <p className="mt-3 text-sm muted">{EMPTY_PLATFORM}. No relationship (independent origin / response / repost / derivative / near duplicate / unknown) has been assigned because no mention exists in the corpus.</p>
+        <p className="mt-3 text-sm muted">Social platforms are not connected yet, so there are no posts to sort into originals and copies.</p>
       </Sec>
 
-      <Sec i={8} title="Translation state" lede="Where the claim has actually been tested.">
+      <Sec i={8} title="How far it has been tested" lede="From cells in a dish, to animals, to people. The light stops where the checked studies stop.">
         <TranslationTrack rows={Object.entries(claim.translation).map(([outcome, stages]) => ({ outcome, stages }))} />
-        <p className="mt-3 mono text-[11px] text-bone/45">Stages: {TRANSLATION_STAGES.map((s) => s.label).join(' → ')}</p>
+        <p className="mt-3 mono text-[11px] text-bone/45">The full ladder: {TRANSLATION_STAGES.map((s) => s.label).join(' → ')}</p>
       </Sec>
 
-      <Sec i={9} title="Current interpretation" lede="Constrained synthesis. Every sentence maps to a record above or an explicit empty state.">
+      <Sec i={9} title="The short version" lede="Our plain-English reading. Every sentence comes from a study listed above, or says clearly what we do not have.">
         <ol className="grid gap-3">
           {claim.interpretation.map((line, i) => <li key={i} className="panel-flat p-4 text-sm text-bone/85 flex gap-3"><span className="mono text-bone/40">{i + 1}</span><span>{line}</span></li>)}
         </ol>
-        <p className="mt-3 text-[12px] muted">{BRAND} structured summary — generated from the structured records on this page, not free-form. Supporting records: {claim.support.filter((s) => STUDY_BY_PMID[s.pmid]?.status === 'verified').map((s) => <SourceBadge key={s.pmid} pmid={s.pmid} verified link={false} />)}</p>
+        <p className="mt-3 text-[12px] muted">Written by {BRAND} from the studies on this page only. Those studies: {claim.support.filter((s) => STUDY_BY_PMID[s.pmid]?.status === 'verified').map((s) => <SourceBadge key={s.pmid} pmid={s.pmid} verified link={false} />)}</p>
       </Sec>
 
-      <Sec i={10} title="Change history" lede="Every material modification. Nothing is silently rewritten.">
+      <Sec i={10} title="What we changed" lede="Every real edit we have made to this claim, with before and after. Nothing gets quietly rewritten.">
         <div className="grid gap-3">{claim.changeHistory.map((e, i) => <ChangeDiff key={i} event={e} />)}</div>
       </Sec>
     </article>

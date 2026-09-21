@@ -51,7 +51,7 @@ export function TranslationTrack({ rows }: { rows: Row[] }) {
 
   return (
     <div ref={root} className="grid gap-4">
-      {rows.length === 0 && <p className="text-sm muted">No outcome has an indexed translation path.</p>}
+      {rows.length === 0 && <p className="text-sm muted">We have not mapped how far any result has been tested yet.</p>}
       {rows.map((r) => {
         const lit = new Set(r.stages)
         const furthest = TRANSLATION_STAGES.reduce((acc, s, i) => (lit.has(s.id) ? i : acc), -1)
@@ -60,13 +60,13 @@ export function TranslationTrack({ rows }: { rows: Row[] }) {
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <p className="font-semibold capitalize text-bone/90">{r.outcome.replace(/-/g, ' ')}</p>
               <p className="mono text-[11px] text-bone/55">
-                {furthest < 0 ? 'No stage supported by an indexed record' : `Indexed support reaches: ${TRANSLATION_STAGES[furthest].label} — the signal stops there`}
+                {furthest < 0 ? 'None of the studies we checked reach any stage yet' : `Tested as far as: ${TRANSLATION_STAGES[furthest].label} — and no further`}
               </p>
             </div>
             <div className="relative mt-5">
               {/* travelling signal */}
               <span data-pulse aria-hidden className="absolute -top-[5px] w-3 h-3 -ml-1.5 rounded-full bg-cyan" style={{ left: '7%', opacity: 0, boxShadow: '0 0 16px 4px rgba(95,227,255,0.55), 0 0 40px 10px rgba(95,227,255,0.18)' }} />
-              <ol className="grid grid-cols-7 gap-1" aria-label={`Translation stages for ${r.outcome}`}>
+              <ol className="grid grid-cols-7 gap-1" aria-label={`How far ${r.outcome} has been tested`}>
                 {TRANSLATION_STAGES.map((s, i) => {
                   const on = lit.has(s.id)
                   return (
@@ -75,9 +75,9 @@ export function TranslationTrack({ rows }: { rows: Row[] }) {
                       <div className="w-full h-[2px] rounded" style={{ background: on ? 'rgba(95,227,255,0.25)' : 'rgba(242,238,230,0.08)' }} />
                       <span data-stage data-on={on ? '1' : '0'} className={`stage-dot w-2.5 h-2.5 rounded-full ${on ? '' : 'border border-bone/25'}`} style={on ? { background: 'rgba(95,227,255,0.35)' } : undefined} aria-hidden />
                       <span className={`text-[10px] leading-tight ${on ? 'text-bone/90' : 'text-bone/40'}`}>{s.label}</span>
-                      <span className="sr-only">{on ? 'supported by an indexed record' : 'not supported by an indexed record'}</span>
+                      <span className="sr-only">{on ? 'a checked study reached this stage' : 'no checked study has reached this stage'}</span>
                       {i === furthest && <span className="chip chip-cyan !text-[9px]">reached</span>}
-                      {i === furthest + 1 && furthest >= 0 && <span className="chip chip-hollow !text-[9px]">signal stops</span>}
+                      {i === furthest + 1 && furthest >= 0 && <span className="chip chip-hollow !text-[9px]">stops here</span>}
                     </li>
                   )
                 })}

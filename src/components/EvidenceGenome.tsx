@@ -42,7 +42,7 @@ export function EvidenceGenome({ slug }: { slug: string }) {
           <text x={cx} y={cy - 4} textAnchor="middle" fontSize={20} fill="#F2EEE6" fontFamily="Manrope Variable, sans-serif" fontWeight={800}>{cells.reduce((s, c) => s + (c.id === 'research-age' || c.id === 'independent-groups' ? 0 : c.count ?? 0), 0)}</text>
           <text x={cx} y={cy + 12} textAnchor="middle" fontSize={8} fill="#F2EEE6" fillOpacity={0.5} fontFamily="JetBrains Mono Variable, monospace">record-dims</text>
         </svg>
-        <p className="text-[11px] faint mt-2">Filled = verified records in that class · hollow = zero indexed · dashed = not assessed. Descriptive only; not a score.</p>
+        <p className="text-[11px] faint mt-2">Filled = we have checked studies of that kind · hollow = none yet · dashed = not checked yet. This is a picture of what exists, not a score.</p>
       </div>
       <div>
         <table className="data" aria-label="Evidence genome values">
@@ -52,7 +52,7 @@ export function EvidenceGenome({ slug }: { slug: string }) {
               <tr key={c.id} onClick={() => setSel(sel?.id === c.id ? null : c)} style={{ cursor: 'pointer' }} className={sel?.id === c.id ? 'bg-cyan/5' : ''}>
                 <td className="mono text-bone/45">{i + 1}</td>
                 <td className="text-bone/90">{c.label}</td>
-                <td className="mono">{c.count === null ? <span className="chip chip-hollow">Not assessed</span> : c.value ?? (c.count === 0 ? <span className="text-bone/40">0 · hollow</span> : c.count)}</td>
+                <td className="mono">{c.count === null ? <span className="chip chip-hollow">Not checked yet</span> : c.value ?? (c.count === 0 ? <span className="text-bone/40">0 · none yet</span> : c.count)}</td>
                 <td className="text-[12px] muted">{c.how}</td>
               </tr>
             ))}

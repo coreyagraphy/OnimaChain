@@ -4,13 +4,13 @@ import { BRAND } from '~/brand'
 export type ClaimStatus = 'tracked'
 export type TranslationStage = 'cell' | 'mouse' | 'rat' | 'larger-animal' | 'human' | 'controlled-human' | 'approved-use'
 export const TRANSLATION_STAGES: Array<{ id: TranslationStage; label: string }> = [
-  { id: 'cell', label: 'Cell' },
+  { id: 'cell', label: 'Cells in a dish' },
   { id: 'mouse', label: 'Mouse' },
   { id: 'rat', label: 'Rat' },
-  { id: 'larger-animal', label: 'Larger animal' },
-  { id: 'human', label: 'Human' },
-  { id: 'controlled-human', label: 'Controlled human' },
-  { id: 'approved-use', label: 'Approved use' },
+  { id: 'larger-animal', label: 'Bigger animal' },
+  { id: 'human', label: 'People' },
+  { id: 'controlled-human', label: 'Proper human trial' },
+  { id: 'approved-use', label: 'Approved by regulators' },
 ]
 
 export type MutationClass =
@@ -26,7 +26,7 @@ export type MutationClass =
   | 'contradictory interpretation'
 
 export interface MutationStep {
-  stage: 'Source finding' | 'Secondary summary' | 'Social interpretation' | 'Viral version'
+  stage: 'What the study said' | 'The summary' | 'The social post' | 'The viral version'
   wording: string
   /** PMID when this step is an indexed source; null → badge "Illustrative wording — not an indexed source". */
   sourcePmid: string | null
@@ -76,7 +76,7 @@ export interface Claim {
 
 export const TODAY = '2026-09-20'
 
-export const ILLUSTRATIVE_BADGE = 'Illustrative wording — not an indexed source'
+export const ILLUSTRATIVE_BADGE = 'Example wording — not from a real source'
 
 const bpcOrigin = '21030672'
 const tb4Origin = '34170491'
@@ -98,7 +98,7 @@ export const CLAIMS: Claim[] = [
     },
     mutation: [
       {
-        stage: 'Source finding',
+        stage: 'What the study said',
         wording:
           STUDY_BY_PMID[bpcOrigin]?.abstractQuote ??
           'Source relationship unresolved',
@@ -106,19 +106,19 @@ export const CLAIMS: Claim[] = [
         classes: [],
       },
       {
-        stage: 'Secondary summary',
+        stage: 'The summary',
         wording: 'May support tendon regeneration.',
         sourcePmid: null,
         classes: ['broader extrapolation', 'context removed'],
       },
       {
-        stage: 'Social interpretation',
+        stage: 'The social post',
         wording: 'Helps injured tendons heal.',
         sourcePmid: null,
         classes: ['species omission', 'uncertainty removed', 'mechanism converted into outcome'],
       },
       {
-        stage: 'Viral version',
+        stage: 'The viral version',
         wording: 'Heals tendon injuries fast.',
         sourcePmid: null,
         classes: ['magnitude amplified', 'unsupported addition'],
@@ -151,11 +151,11 @@ export const CLAIMS: Claim[] = [
       },
     ],
     interpretation: [
-      'The earliest attributable support currently indexed is an ex vivo / in vitro study of tendon fibroblasts derived from rat Achilles tendon. It measured outgrowth, survival under oxidative stress and migration — not repair of an injured tendon in a living animal.',
-      'One indexed rat study reports histopathological scores for BPC-157 that were numerically lower than control without reaching statistical significance for total scores. That is a partial relationship, not a contradiction.',
-      'Three indexed reviews discuss the theme but do not themselves test the claim.',
-      `No controlled human study of this outcome is indexed in ${BRAND}’s corpus. Absence from the corpus is not evidence of absence.`,
-      'No community signal is available: no platform source access is enabled.',
+      'The earliest study we have checked used tendon cells taken from rat Achilles tendon and grown in a dish. It measured how the cells grew, survived stress and moved. It did not test repair of an injured tendon in a living animal.',
+      'One rat study we checked found tissue scores for BPC-157 that were a little lower than the control group, but not by enough to count as a real difference. That partly backs the claim. It does not disprove it.',
+      'Three review papers talk about this topic but did not run their own test of the claim.',
+      'We have not found a proper human trial of this result. That means we have not found one, not that one does not exist.',
+      'We are not collecting real-world reports yet, so there is nothing from people online to show here.',
     ],
   },
   {
@@ -174,25 +174,25 @@ export const CLAIMS: Claim[] = [
     },
     mutation: [
       {
-        stage: 'Source finding',
+        stage: 'What the study said',
         wording: STUDY_BY_PMID[tb4Origin]?.abstractQuote ?? 'Source relationship unresolved',
         sourcePmid: STUDY_BY_PMID[tb4Origin]?.status === 'verified' ? tb4Origin : null,
         classes: [],
       },
       {
-        stage: 'Secondary summary',
+        stage: 'The summary',
         wording: 'May promote cell migration and tissue repair.',
         sourcePmid: null,
         classes: ['context removed', 'broader extrapolation'],
       },
       {
-        stage: 'Social interpretation',
+        stage: 'The social post',
         wording: 'Helps tissue repair by moving cells to the injury.',
         sourcePmid: null,
         classes: ['mechanism converted into outcome', 'uncertainty removed'],
       },
       {
-        stage: 'Viral version',
+        stage: 'The viral version',
         wording: 'Speeds up healing anywhere in the body.',
         sourcePmid: null,
         classes: ['magnitude amplified', 'unsupported addition'],
@@ -220,10 +220,10 @@ export const CLAIMS: Claim[] = [
       },
     ],
     interpretation: [
-      'The earliest attributable support currently indexed measured migration and invasion of a human ovarian cancer cell line treated with thymosin β4 and fragment peptides. It is an in vitro cell-line result.',
-      'The cell line context is removed at the first mutation step; every later wording adds outcomes the origin record did not measure.',
-      'No indexed record tests this claim in an animal wound or in humans. Absence from the corpus is not evidence of absence.',
-      'No community signal is available: no platform source access is enabled.',
+      'The earliest study we have checked measured how human ovarian cancer cells moved in a dish after being treated with thymosin β4 and pieces of it. It is a lab-dish result, not a result in a person.',
+      'The first retelling drops the fact that this was cells in a dish. Every version after that adds results the original study never measured.',
+      'None of the studies we have checked test this on a real wound in an animal or in people. That means we have not found one, not that one does not exist.',
+      'We are not collecting real-world reports yet, so there is nothing from people online to show here.',
     ],
   },
 ]
@@ -239,8 +239,8 @@ export function claimStudies(c: Claim): Array<StudyLink & { study: Study | undef
 }
 
 export const RELATIONSHIP_LABEL: Record<Relationship, string> = {
-  supports: 'SUPPORTS',
-  partially_supports: 'PARTIALLY_SUPPORTS',
-  contradicts: 'CONTRADICTS',
-  does_not_test: 'DOES_NOT_TEST',
+  supports: 'Backs it up',
+  partially_supports: 'Partly backs it up',
+  contradicts: 'Pushes back',
+  does_not_test: 'Talks about it, didn’t test it',
 }

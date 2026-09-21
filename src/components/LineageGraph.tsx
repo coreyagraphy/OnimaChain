@@ -11,21 +11,21 @@ interface GNode extends SimulationNodeDatum { id: string; kind: NodeKind; label:
 interface GLink extends SimulationLinkDatum<GNode> { rel: string; unresolved: boolean }
 
 function build(claim: Claim): { nodes: GNode[]; links: GLink[] } {
-  const nodes: GNode[] = [{ id: claim.id, kind: 'claim', label: claim.title, sub: claim.id, hollow: false, detail: 'Canonical claim. Status: tracked research claim. Not labelled true or false.' }]
+  const nodes: GNode[] = [{ id: claim.id, kind: 'claim', label: claim.title, sub: claim.id, hollow: false, detail: 'The claim itself. We track it; we do not stamp it true or false.' }]
   const links: GLink[] = []
   for (const s of claim.support) {
     const st = STUDY_BY_PMID[s.pmid]
     const ok = st?.status === 'verified'
-    nodes.push({ id: s.pmid, kind: 'research', label: ok ? (st.title ?? '').slice(0, 58) + ((st.title ?? '').length > 58 ? '…' : '') : 'Unverified record', sub: ok ? `PMID ${s.pmid} · ${st.journal} ${st.year ?? ''}` : `PMID ${s.pmid}`, hollow: !ok, href: ok ? pubmedUrl(s.pmid) : undefined, detail: ok ? `${RELATIONSHIP_LABEL[s.relationship]}${s.basis ? ` — “${s.basis}”` : ' — the record discusses the theme but does not test the claim.'}` : 'Source relationship unresolved.' })
-    links.push({ source: s.pmid, target: claim.id, rel: ok ? RELATIONSHIP_LABEL[s.relationship] : 'UNRESOLVED', unresolved: !ok || s.relationship === 'does_not_test' })
+    nodes.push({ id: s.pmid, kind: 'research', label: ok ? (st.title ?? '').slice(0, 58) + ((st.title ?? '').length > 58 ? '…' : '') : 'Could not confirm this study', sub: ok ? `PMID ${s.pmid} · ${st.journal} ${st.year ?? ''}` : `PMID ${s.pmid}`, hollow: !ok, href: ok ? pubmedUrl(s.pmid) : undefined, detail: ok ? `${RELATIONSHIP_LABEL[s.relationship]}${s.basis ? ` — “${s.basis}”` : ' — this paper talks about the topic but did not test the claim.'}` : 'We could not confirm how this study connects.' })
+    links.push({ source: s.pmid, target: claim.id, rel: ok ? RELATIONSHIP_LABEL[s.relationship] : 'Not confirmed', unresolved: !ok || s.relationship === 'does_not_test' })
   }
   for (const p of PLATFORMS.slice(0, 4)) {
-    nodes.push({ id: `platform-${p.id}`, kind: 'community', label: p.name, sub: 'No source access for this platform', hollow: true, detail: `Adapter: ${p.adapter}. ${p.state}. No mention is counted.` })
-    links.push({ source: `platform-${p.id}`, target: claim.id, rel: 'NO ACCESS', unresolved: true })
+    nodes.push({ id: `platform-${p.id}`, kind: 'community', label: p.name, sub: 'Not connected yet', hollow: true, detail: `Not connected yet, so nothing from ${p.name} is counted. (How it would connect: ${p.adapter}.)` })
+    links.push({ source: `platform-${p.id}`, target: claim.id, rel: 'Not connected', unresolved: true })
   }
   for (const s of claim.contradictions) {
-    nodes.push({ id: `c-${s.pmid}`, kind: 'contradiction', label: `PMID ${s.pmid}`, sub: 'contradicts', hollow: false, detail: s.basis ?? '' })
-    links.push({ source: `c-${s.pmid}`, target: claim.id, rel: 'CONTRADICTS', unresolved: false })
+    nodes.push({ id: `c-${s.pmid}`, kind: 'contradiction', label: `PMID ${s.pmid}`, sub: 'pushes back', hollow: false, detail: s.basis ?? '' })
+    links.push({ source: `c-${s.pmid}`, target: claim.id, rel: 'Pushes back', unresolved: false })
   }
   return { nodes, links }
 }
@@ -110,7 +110,7 @@ export function LineageGraph({ claim }: { claim: Claim }) {
     <div className="grid lg:grid-cols-[1fr_320px] gap-5">
       <div className="panel-flat overflow-hidden hidden md:block relative">
         {pos ? (
-          <svg ref={svg} viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Claim lineage graph with ${data.nodes.length} nodes; see node cards for a text equivalent`}>
+          <svg ref={svg} viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`Map of how this claim spread, ${data.nodes.length} points; the cards below say the same thing in text`}>
             <defs>
               <radialGradient id="lg-bg" cx="50%" cy="50%" r="60%"><stop offset="0%" stopColor="#5FE3FF" stopOpacity="0.06" /><stop offset="100%" stopColor="#5FE3FF" stopOpacity="0" /></radialGradient>
               <filter id="lg-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
@@ -138,14 +138,14 @@ export function LineageGraph({ claim }: { claim: Claim }) {
             })}
             <text x={pos[0].x} y={pos[0].y + 40} textAnchor="middle" fontSize={12} fontWeight={700} fill="#F2EEE6" fontFamily="Manrope Variable, sans-serif">{claim.title}</text>
           </svg>
-        ) : <div className="h-[420px] flex items-center justify-center text-sm muted">Laying out lineage…</div>}
+        ) : <div className="h-[420px] flex items-center justify-center text-sm muted">Drawing the map…</div>}
         <div className="flex flex-wrap gap-4 px-4 py-3 border-t hairline mono text-[10px] text-bone/55 items-center">
           {(Object.keys(NODE_STYLE) as NodeKind[]).map((k) => <span key={k} className="flex items-center gap-1.5"><span className="w-2 h-2" style={{ background: NODE_STYLE[k].color, borderRadius: NODE_STYLE[k].shape === 'circle' ? 99 : 0 }} />{NODE_STYLE[k].label}</span>)}
-          <span>dashed = unresolved / no access</span>
-          <button className="btn btn-sm ml-auto" onClick={trace}>Replay trace</button>
+          <span>dashed = not confirmed or not connected</span>
+          <button className="btn btn-sm ml-auto" onClick={trace}>Play it again</button>
         </div>
       </div>
-      <aside className="grid gap-2 content-start" aria-label="Node inspector">
+      <aside className="grid gap-2 content-start" aria-label="Details for the selected point">
         {sel ? (
           <div className="panel glass relative p-4 fade-up">
             <p className="label" style={{ color: NODE_STYLE[sel.kind].color }}>{NODE_STYLE[sel.kind].label}</p>
@@ -154,7 +154,7 @@ export function LineageGraph({ claim }: { claim: Claim }) {
             <p className="text-sm mt-3 text-bone/80">{sel.detail}</p>
             {sel.href && <a href={sel.href} target="_blank" rel="noreferrer noopener" className="btn btn-sm mt-3">Open source ↗</a>}
           </div>
-        ) : <p className="text-sm muted hidden md:block">Select a node to inspect its provenance. Hover to isolate its relationships.</p>}
+        ) : <p className="text-sm muted hidden md:block">Click a point to see where it came from. Hover to see what it connects to.</p>}
         <div className="grid gap-2 md:hidden">
           {data.nodes.map((n) => <NodeCard key={n.id} kind={n.kind} title={n.label} meta={n.sub} hollow={n.hollow} href={n.href} />)}
         </div>

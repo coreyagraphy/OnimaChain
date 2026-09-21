@@ -12,14 +12,14 @@ export function ClaimCard({ claim }: { claim: Claim }) {
     <Link to="/claim/$id" params={{ id: claim.id }} className="panel neon-card p-5 block card-tilt hover:border-cyan/40">
       <div className="flex flex-wrap items-center gap-2">
         <span className="mono text-[11px] text-bone/55">{claim.id}</span>
-        <span className="chip">Tracked research claim</span>
+        <span className="chip">A claim we track</span>
       </div>
       <h3 className="display-md text-xl md:text-2xl mt-3">&ldquo;{claim.title}&rdquo;</h3>
-      <p className="text-sm muted mt-2">{displayName(COMPOUND_BY_SLUG[claim.compound])} · outcome theme: {claim.outcomeTheme}</p>
+      <p className="text-sm muted mt-2">{displayName(COMPOUND_BY_SLUG[claim.compound])} · about: {claim.outcomeTheme}</p>
       <div className="mt-4 flex flex-wrap gap-2 items-center">
-        <span className="text-[11px] label">Origin</span>
+        <span className="text-[11px] label">Started with</span>
         <SourceBadge pmid={claim.originStudy} verified={origin?.status === 'verified'} link={false} />
-        <span className="mono text-[11px] text-bone/55">{supports.length} verified record{supports.length === 1 ? '' : 's'} linked</span>
+        <span className="mono text-[11px] text-bone/55">{supports.length} checked stud{supports.length === 1 ? 'y' : 'ies'} linked</span>
       </div>
     </Link>
   )

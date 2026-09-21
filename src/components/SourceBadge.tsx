@@ -29,8 +29,8 @@ import type { Compound } from '~/data/compounds'
  */
 export function provenanceText(c: Pick<Compound, 'sequence' | 'structureSource' | 'pdbIds'>): { primary: string; secondary: string | null; kind: 'pdb' | 'sequence' | 'conceptual' } {
   const pdb = c.pdbIds.length ? `Experimentally resolved (PDB ${c.pdbIds.join(', ')}) — deposited, not rendered here` : null
-  if (!c.sequence) return { primary: 'Conceptual visualization', secondary: pdb ?? 'Sequence pending verification', kind: 'conceptual' }
-  return { primary: 'Sequence-derived visualization (procedural, not measured)', secondary: pdb, kind: c.pdbIds.length ? 'pdb' : 'sequence' }
+  if (!c.sequence) return { primary: 'Artist’s illustration', secondary: pdb ?? 'Sequence still being confirmed', kind: 'conceptual' }
+  return { primary: 'Drawn from the sequence (not a measured structure)', secondary: pdb, kind: c.pdbIds.length ? 'pdb' : 'sequence' }
 }
 
 export function ProvenanceLabel({ compound, className = '' }: { compound: Pick<Compound, 'sequence' | 'structureSource' | 'pdbIds'>; className?: string }) {

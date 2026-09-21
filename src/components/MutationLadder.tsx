@@ -72,12 +72,12 @@ export function MutationLadder({ claim, autoplay = false }: { claim: Claim; auto
   return (
     <div className="panel-flat p-5 md:p-7 relative overflow-hidden">
       <div className="absolute -right-24 -top-24 w-72 h-72 rounded-full blur-3xl pointer-events-none" style={{ background: k === 0 ? '#5FE3FF' : '#8A63FF', opacity: 0.07, transition: 'background 1s' }} />
-      <ol className="relative flex flex-wrap gap-2" aria-label="Mutation steps">
+      <ol className="relative flex flex-wrap gap-2" aria-label="Steps from study to viral post">
         {steps.map((st, i) => (
           <li key={st.stage}><button className="btn btn-sm" aria-pressed={i === k} onClick={() => setK(i)}>{i + 1}. {st.stage}</button></li>
         ))}
       </ol>
-      <input type="range" min={0} max={steps.length - 1} step={1} value={k} onChange={(e) => setK(Number(e.target.value))} className="w-full mt-4 accent-cyan" aria-label="Scrub mutation steps" />
+      <input type="range" min={0} max={steps.length - 1} step={1} value={k} onChange={(e) => setK(Number(e.target.value))} className="w-full mt-4 accent-cyan" aria-label="Drag between the steps" />
       <div ref={stage} className="relative mt-6 min-h-[170px]">
         <p className="label" style={{ color: k === 0 ? '#5FE3FF' : '#B9A2FF' }}>{s.stage}{k > 0 && <span className="text-bone/45"> ← {steps[k - 1].stage}</span>}</p>
         <p className={`mt-3 ${k === 0 ? 'text-lg md:text-xl leading-relaxed text-bone/90' : 'display text-[clamp(1.6rem,3.4vw,3rem)]'}`}>
@@ -96,10 +96,10 @@ export function MutationLadder({ claim, autoplay = false }: { claim: Claim; auto
         <div className="mt-5 flex flex-wrap gap-2 items-center">
           {s.sourcePmid ? <SourceBadge pmid={s.sourcePmid} verified={origin?.status === 'verified'} /> : <span className="chip chip-hollow">{ILLUSTRATIVE_BADGE}</span>}
           {s.classes.map((c) => <span key={c} className="chip chip-amber">{c}</span>)}
-          {uncertaintyGone && <span className="chip chip-amber chip-lit" style={{ boxShadow: '0 0 0 1px rgba(229,160,58,.5), 0 0 18px -4px rgba(229,160,58,.7)' }}>Uncertainty removed</span>}
-          {amplified && <span className="chip chip-amber">Larger wording = mutation, not evidence</span>}
+          {uncertaintyGone && <span className="chip chip-amber chip-lit" style={{ boxShadow: '0 0 0 1px rgba(229,160,58,.5), 0 0 18px -4px rgba(229,160,58,.7)' }}>The “maybe” got dropped</span>}
+          {amplified && <span className="chip chip-amber">Bigger words, same evidence</span>}
         </div>
-        {k > 0 && <p className="mt-3 mono text-[11px] text-bone/45">struck = dropped from the previous wording · {amplified ? 'amber' : 'violet'} = added{speciesGone ? ' · falling tags = species/context detached' : ''}{uncertaintyGone ? ' · fading words = hedges removed' : ''}. Classification links to the previous step's text above.</p>}
+        {k > 0 && <p className="mt-3 mono text-[11px] text-bone/45">crossed out = dropped from the last version · {amplified ? 'amber' : 'violet'} = added{speciesGone ? ' · falling words = the test setup got left out' : ''}{uncertaintyGone ? ' · fading words = the careful wording got removed' : ''}. Each tag compares this step to the one before it.</p>}
       </div>
     </div>
   )

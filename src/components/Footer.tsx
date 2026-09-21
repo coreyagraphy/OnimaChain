@@ -29,7 +29,7 @@ export function Footer() {
       <div className="border-t hairline">
         <div className="wrap py-6">
           <p className="text-[12px] text-bone/60 max-w-3xl">
-            <b className="text-bone/80">Research and educational information. Final product pricing, payment, fulfillment, and regulatory requirements remain under review.</b>
+            <b className="text-bone/80">You must be 21 or older to use this site.</b> Everything here is for research and education. It is not medical advice, and we never tell you how much of anything to take. Talk to a doctor before you change anything about your health. Prices, checkout, shipping and product eligibility are still being finalized.
           </p>
         </div>
       </div>

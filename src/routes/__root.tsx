@@ -7,6 +7,7 @@ import { GlobalCanvas } from '~/scenes/Canvas'
 import { initVisualMode } from '~/motion/useReducedMotion'
 import { startLenis, stopLenis } from '~/motion/lenis'
 import { NotFoundFragment } from '~/components/NotFoundFragment'
+import { AgeGate } from '~/components/AgeGate'
 import { BRAND } from '~/brand'
 import { CommerceChrome } from '~/components/CommerceChrome'
 
@@ -58,6 +59,7 @@ function RootComponent() {
   }, [])
   return (
     <RootDocument>
+      <AgeGate />
       <Nav />
       <CommerceChrome />
       <GlobalCanvas />

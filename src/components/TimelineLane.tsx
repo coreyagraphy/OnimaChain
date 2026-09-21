@@ -4,12 +4,12 @@ import { ChangeDiff } from './ChangeDiff'
 import { EmptyState } from './EmptyState'
 import { gsap } from '~/motion/timeline'
 
-const LANE_LABEL: Record<ChangeEvent['lane'], string> = { research: 'Research', trials: 'Trials', regulatory: 'Regulatory', signal: 'Public signal' }
+const LANE_LABEL: Record<ChangeEvent['lane'], string> = { research: 'Research', trials: 'Trials', regulatory: 'Regulatory', signal: 'Real-world reports' }
 const LANE_EMPTY: Record<ChangeEvent['lane'], string> = {
-  research: 'No research event indexed beyond claim creation.',
-  trials: 'No trial record indexed — ClinicalTrials.gov connector not enabled.',
-  regulatory: 'No regulatory record indexed.',
-  signal: 'No public-signal event indexed — no platform source access enabled.',
+  research: 'Nothing new since we first added this claim.',
+  trials: 'No trials listed yet — we have not connected ClinicalTrials.gov.',
+  regulatory: 'No regulator decisions listed yet.',
+  signal: 'No real-world reports yet — social platforms are not connected.',
 }
 
 /** One lane of the ledger. New events enter from chronological depth (translateZ) rather than fading upward. */

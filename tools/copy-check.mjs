@@ -1,0 +1,25 @@
+import { chromium } from 'playwright'
+const b = await chromium.launch({ channel: 'chrome' })
+const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } })
+const p = await ctx.newPage()
+const errs = []
+p.on('pageerror', (e) => errs.push(String(e)))
+p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) })
+await p.goto('http://127.0.0.1:8082/', { waitUntil: 'networkidle' })
+await p.waitForTimeout(2500)
+await p.screenshot({ path: 'shots/age-gate.png' })
+await p.getByRole('button', { name: /21 or older/ }).click()
+await p.waitForTimeout(800)
+const gone = await p.locator('[role=dialog][aria-labelledby=age-gate-title]').count()
+await p.reload({ waitUntil: 'networkidle' })
+await p.waitForTimeout(1500)
+const stillGone = await p.locator('[role=dialog][aria-labelledby=age-gate-title]').count()
+for (const [name, path, y] of [['claim-top', '/claim/CLAIM-BPC157-TENDON-REPAIR', 0], ['claim-mid', '/claim/CLAIM-BPC157-TENDON-REPAIR', 2400], ['claim-low', '/claim/CLAIM-BPC157-TENDON-REPAIR', 4200], ['terms', '/terms', 0], ['dossier-mid', '/compound/bpc-157', 1500], ['compare', '/compare', 300], ['footer', '/about', 900]]) {
+  await p.goto('http://127.0.0.1:8082' + path, { waitUntil: 'networkidle' })
+  await p.waitForTimeout(1800)
+  await p.evaluate((yy) => window.scrollTo(0, yy), y)
+  await p.waitForTimeout(2200)
+  await p.screenshot({ path: `shots/copy-${name}.png` })
+}
+console.log('gate closed after yes:', gone === 0, '· stays closed after reload:', stillGone === 0, '· errors:', errs.length ? errs.slice(0, 5) : 'none')
+await b.close()

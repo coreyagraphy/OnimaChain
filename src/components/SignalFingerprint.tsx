@@ -6,7 +6,7 @@ import { CorpusHeader } from './CorpusHeader'
  * With no corpus, every dimension renders "Not assessed — no corpus" and the radial is hollow.
  * Never collapsed to a single score.
  */
-export function SignalFingerprint({ title = 'Signal integrity' }: { title?: string }) {
+export function SignalFingerprint({ title = 'How trustworthy is the chatter?' }: { title?: string }) {
   const n = FINGERPRINT_DIMENSIONS.length
   const R = 92
   const cx = 130, cy = 130
@@ -14,11 +14,11 @@ export function SignalFingerprint({ title = 'Signal integrity' }: { title?: stri
     <div className="panel p-5 md:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h3 className="display-md text-xl">{title}</h3>
-        <span className="chip chip-hollow">No single score</span>
+        <span className="chip chip-hollow">Never boiled down to one score</span>
       </div>
       <CorpusHeader className="mt-2" />
       <div className="mt-5 grid md:grid-cols-[260px_1fr] gap-6 items-start">
-        <svg viewBox="0 0 260 260" className="w-[240px] mx-auto" role="img" aria-label={`Signal integrity radial: ${n} dimensions, all ${NOT_ASSESSED}`}>
+        <svg viewBox="0 0 260 260" className="w-[240px] mx-auto" role="img" aria-label={`Chatter check: ${n} questions, all ${NOT_ASSESSED}`}>
           {[0.33, 0.66, 1].map((k) => (
             <circle key={k} cx={cx} cy={cy} r={R * k} fill="none" stroke="#F2EEE6" strokeOpacity={0.1} strokeDasharray="2 4" />
           ))}
@@ -39,11 +39,11 @@ export function SignalFingerprint({ title = 'Signal integrity' }: { title?: stri
               </g>
             )
           })}
-          <text x={cx} y={cy - 6} textAnchor="middle" fontSize={10} fill="#F2EEE6" fillOpacity={0.5} fontFamily="JetBrains Mono Variable, monospace">no corpus</text>
-          <text x={cx} y={cy + 9} textAnchor="middle" fontSize={9} fill="#F2EEE6" fillOpacity={0.35} fontFamily="JetBrains Mono Variable, monospace">0 sources</text>
+          <text x={cx} y={cy - 6} textAnchor="middle" fontSize={10} fill="#F2EEE6" fillOpacity={0.5} fontFamily="JetBrains Mono Variable, monospace">no reports yet</text>
+          <text x={cx} y={cy + 9} textAnchor="middle" fontSize={9} fill="#F2EEE6" fillOpacity={0.35} fontFamily="JetBrains Mono Variable, monospace">0 checked</text>
         </svg>
-        <table className="data" aria-label="Signal integrity matrix">
-          <thead><tr><th>#</th><th>Dimension</th><th>Assessment</th></tr></thead>
+        <table className="data" aria-label="Chatter check, as a table">
+          <thead><tr><th>#</th><th>Question</th><th>Answer</th></tr></thead>
           <tbody>
             {FINGERPRINT_DIMENSIONS.map((d, i) => (
               <tr key={d.id}>

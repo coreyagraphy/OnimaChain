@@ -72,6 +72,6 @@ function MethodPreview() {
 
 function FinalShop() {
   return (
-    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">The collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">Enter the molecular<br/>laboratory.</h2><p className="lede mt-6 mx-auto max-w-xl">Shop the collection first. Follow every source when you want to go deeper.</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">{BRAND} is a working brand. Final pricing and checkout remain pending commercial review.</p></div></section>
+    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">The collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See it up close.<br/>Then decide.</h2><p className="lede mt-6 mx-auto max-w-xl">Shop the collection first. Follow every source when you want to go deeper.</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">{BRAND} is a working brand. Final pricing and checkout remain pending commercial review.</p></div></section>
   )
 }

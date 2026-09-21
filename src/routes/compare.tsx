@@ -22,19 +22,19 @@ function Compare() {
   const cs = slugs.map((s) => COMPOUND_BY_SLUG[s])
   const rows = useMemo(() => [
     { k: 'Identity', v: cs.map((c) => `${c.name}${c.displayName ? ` (displayed as ${c.displayName})` : ''} · ${c.sequence ? `${c.sequence.length} aa` : 'sequence pending'} · MW ${(c.mw ?? computedMW(c)) ?? '—'}`) },
-    { k: 'Mechanism tags', v: cs.map((c) => c.tags.join(' · ')) },
-    { k: 'Research domain', v: cs.map((c) => DOMAIN_BY_ID[c.domain].name) },
-    { k: 'Evidence genome', v: cs.map((c) => { const g = evidenceGenome(c.slug).filter((x) => (x.count ?? 0) > 0 && x.id !== 'research-age'); return g.length ? g.map((x) => `${x.label} ${x.value ?? x.count}`).join(' · ') : `No qualifying record is currently indexed in ${BRAND}’s corpus` }) },
-    { k: 'Translation', v: cs.map((c) => { const t = translationFor(c.slug); return t.length ? t.map((r) => `${r.outcome}: ${r.stages.length ? TRANSLATION_STAGES.filter((s) => r.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'no stage'}`).join(' · ') : 'No outcome mapped' }) },
-    { k: 'Human research', v: cs.map((c) => (distributionFor(c.slug).human ? `${distributionFor(c.slug).human} verified record(s)` : 'No human study indexed')) },
-    { k: 'Human signal', v: cs.map(() => CORPUS.header) },
-    { k: 'Signal integrity', v: cs.map(() => 'Not assessed — no corpus') },
-    { k: 'Research independence', v: cs.map((c) => { const s = studiesForCompound(c.slug); return s.length ? `${distinctGroups(s).length} last-author group(s) across ${s.length} record(s)` : 'Not assessed' }) },
-    { k: 'Research themes', v: cs.map((c) => themesFor(c.slug).filter((t) => t.kind === 'research').map((t) => t.label).join(' · ') || 'No themes indexed') },
+    { k: 'Tags', v: cs.map((c) => c.tags.join(' · ')) },
+    { k: 'Topic', v: cs.map((c) => DOMAIN_BY_ID[c.domain].name) },
+    { k: 'Kinds of studies checked', v: cs.map((c) => { const g = evidenceGenome(c.slug).filter((x) => (x.count ?? 0) > 0 && x.id !== 'research-age'); return g.length ? g.map((x) => `${x.label} ${x.value ?? x.count}`).join(' · ') : `No qualifying record is currently indexed in ${BRAND}’s corpus` }) },
+    { k: 'How far it has been tested', v: cs.map((c) => { const t = translationFor(c.slug); return t.length ? t.map((r) => `${r.outcome}: ${r.stages.length ? TRANSLATION_STAGES.filter((s) => r.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'not tested yet'}`).join(' · ') : 'No outcome mapped' }) },
+    { k: 'Studies in people', v: cs.map((c) => (distributionFor(c.slug).human ? `${distributionFor(c.slug).human} checked stud${distributionFor(c.slug).human === 1 ? 'y' : 'ies'}` : 'None checked yet')) },
+    { k: 'Real-world reports', v: cs.map(() => CORPUS.header) },
+    { k: 'How trustworthy is the chatter', v: cs.map(() => 'Not measured yet — no reports collected') },
+    { k: 'Separate research teams', v: cs.map((c) => { const s = studiesForCompound(c.slug); return s.length ? `${distinctGroups(s).length} senior author(s) across ${s.length} stud${s.length === 1 ? 'y' : 'ies'}` : 'Not checked yet' }) },
+    { k: 'What the studies looked at', v: cs.map((c) => themesFor(c.slug).filter((t) => t.kind === 'research').map((t) => t.label).join(' · ') || 'No topics yet') },
     { k: 'Claims tracked', v: cs.map((c) => claimsForCompound(c.slug).map((x) => x.id).join(' · ') || 'none') },
-    { k: 'Regulatory state', v: cs.map(() => 'No regulatory record indexed (jurisdiction / date required)') },
-    { k: 'Structure provenance', v: cs.map((c) => provenanceText(c).primary) },
-    { k: 'Latest evidence change', v: cs.map((c) => { const ch = latestChangeFor(c.slug); return ch ? `${ch.date} — ${ch.change}` : 'No change recorded' }) },
+    { k: 'Legal status', v: cs.map(() => 'No regulator decisions listed yet (needs country and date)') },
+    { k: 'Where the 3D shape comes from', v: cs.map((c) => provenanceText(c).primary) },
+    { k: 'Last update', v: cs.map((c) => { const ch = latestChangeFor(c.slug); return ch ? `${ch.date} — ${ch.change}` : 'No change recorded' }) },
   ], [cs])
 
   const shared = cs.length >= 2 && cs[0].sequence && cs[1].sequence ? longestSharedSubsequence(cs[0].sequence, cs[1].sequence) : null
@@ -42,8 +42,8 @@ function Compare() {
   return (
     <div className="pt-28 wrap">
       <p className="label label-cyan">Compare</p>
-      <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">Descriptive, side by side.</h1>
-      <p className="lede mt-5 max-w-2xl">Up to four compounds. No winner is declared and nothing is &ldquo;best for&rdquo; anything.</p>
+      <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">Side by side. No hype.</h1>
+      <p className="lede mt-5 max-w-2xl">Compare up to four. We never pick a winner or say one is &ldquo;best for&rdquo; anything.</p>
       <div className="mt-8 flex flex-wrap gap-2 items-end">
         {slugs.map((s, i) => (
           <label key={i} className="grid gap-1"><span className="label">Compound {i + 1}</span>

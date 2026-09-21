@@ -9,7 +9,7 @@ export const Route = createFileRoute('/status/$compound')({
 })
 
 const JURISDICTIONS = ['United States (FDA)', 'European Union (EMA)', 'United Kingdom (MHRA)', 'Australia (TGA)', 'Canada (Health Canada)', 'WADA (sport)']
-const CATEGORIES = ['Approved use', 'Investigational status', 'Compounding actions', 'Sports restrictions', 'Regulatory warnings', 'Advisory proceedings']
+const CATEGORIES = ['Approved uses', 'Still being studied', 'Pharmacy compounding rules', 'Banned in sports?', 'Official warnings', 'Committee reviews']
 
 function Status() {
   const { slug } = Route.useLoaderData()
@@ -17,16 +17,16 @@ function Status() {
   const [j, setJ] = useState(JURISDICTIONS[0])
   return (
     <div className="pt-28 wrap">
-      <Link to="/compound/$slug" params={{ slug }} className="label hover:!text-bone">← {displayName(c)} dossier</Link>
-      <h1 className="display text-[clamp(2.4rem,6vw,5.4rem)] mt-4">Regulatory status</h1>
-      <p className="lede mt-4 max-w-2xl">Jurisdiction-specific and date-specific. An advisory vote is never an approval; &ldquo;not prohibited&rdquo; is never &ldquo;approved&rdquo;.</p>
+      <Link to="/compound/$slug" params={{ slug }} className="label hover:!text-bone">← Back to {displayName(c)}</Link>
+      <h1 className="display text-[clamp(2.4rem,6vw,5.4rem)] mt-4">Where it stands with the law.</h1>
+      <p className="lede mt-4 max-w-2xl">Rules differ by country and change over time. A committee vote is not an approval, and &ldquo;not banned&rdquo; is not the same as &ldquo;approved&rdquo;.</p>
       <div className="mt-8 flex flex-wrap gap-3 items-end">
-        <label className="grid gap-1"><span className="label">Jurisdiction</span><select value={j} onChange={(e) => setJ(e.target.value)}>{JURISDICTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
-        <div className="grid gap-1"><span className="label">As of date</span><span className="mono text-sm text-bone/50 py-2">— no record</span></div>
+        <label className="grid gap-1"><span className="label">Country or body</span><select value={j} onChange={(e) => setJ(e.target.value)}>{JURISDICTIONS.map((x) => <option key={x}>{x}</option>)}</select></label>
+        <div className="grid gap-1"><span className="label">As of</span><span className="mono text-sm text-bone/50 py-2">— nothing listed yet</span></div>
       </div>
       <div className="mt-8 grid md:grid-cols-2 gap-3">
         {CATEGORIES.map((cat) => (
-          <div key={cat} className="panel-flat p-5"><p className="label">{cat}</p><p className="mono text-[11px] text-bone/45 mt-1">{j}</p><div className="mt-3"><EmptyState compact title="No regulatory record indexed" detail="Regulatory connectors (FDA, EMA, WADA…) are not enabled. Nothing is inferred from secondary sources." /></div></div>
+          <div key={cat} className="panel-flat p-5"><p className="label">{cat}</p><p className="mono text-[11px] text-bone/45 mt-1">{j}</p><div className="mt-3"><EmptyState compact title="Nothing listed yet" detail="We have not connected regulator records (FDA, EMA, WADA and others). We never guess from second-hand sources." /></div></div>
         ))}
       </div>
     </div>

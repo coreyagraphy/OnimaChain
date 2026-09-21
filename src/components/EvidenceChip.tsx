@@ -1,17 +1,17 @@
 import type { StudyType } from '~/data/studies'
 
 const LABEL: Record<Exclude<StudyType, null>, string> = {
-  'in-vitro': 'In vitro',
-  animal: 'Animal',
-  review: 'Review',
+  'in-vitro': 'Cells in a dish (in vitro)',
+  animal: 'Animal study',
+  review: 'Review paper',
   'systematic-review': 'Systematic review',
-  'observational-human': 'Observational human',
-  'controlled-human': 'Controlled human',
+  'observational-human': 'People, observed',
+  'controlled-human': 'Human trial',
 }
 
 /** Evidence class chip. Colour is never the only carrier: the text names the class. */
 export function EvidenceChip({ type, count }: { type: StudyType; count?: number }) {
-  if (!type) return <span className="chip chip-hollow">Type not assessed</span>
+  if (!type) return <span className="chip chip-hollow">Study type unknown</span>
   const cls = type === 'in-vitro' ? 'chip-violet' : type === 'animal' ? 'chip-cyan' : type.includes('human') ? 'chip' : 'chip'
   return (
     <span className={`chip ${cls}`}>

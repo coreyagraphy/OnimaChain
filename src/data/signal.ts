@@ -8,67 +8,67 @@ export const CORPUS = {
   sources: 0,
   collectionWindow: 'none',
   platformsEnabled: [] as string[],
-  header: 'Corpus: 0 sources · Collection window: none · Platforms: none enabled',
+  header: 'Real-world reports checked: 0 · Time window: none · Platforms connected: none',
 }
 
-export const EMPTY_PLATFORM = 'No source access for this platform'
+export const EMPTY_PLATFORM = 'Not connected yet, so nothing is counted from here'
 
 export const HUMAN_SIGNAL_LINE =
-  'Public reports describe experiences; they do not establish that the compound caused those outcomes.'
+  'People online describe what they felt. That is worth reading, but it does not prove the product caused it.'
 
 export const COMMUNITY_CLASS_LINE =
-  'Community reports are a distinct evidence class that can reveal recurring experiences but cannot independently establish causation.'
+  'Stories from real people can show patterns. On their own they cannot prove cause and effect.'
 
 export const FINGERPRINT_DIMENSIONS = [
-  { id: 'source-diversity', label: 'Source diversity', def: 'How many distinct sources (accounts, channels, publications) contribute mentions.' },
-  { id: 'origin-diversity', label: 'Independent-origin diversity', def: 'How many estimated independent origin clusters exist behind the mentions.' },
-  { id: 'first-person', label: 'First-person proportion', def: 'Share of mentions that are first-person accounts rather than commentary.' },
-  { id: 'documentation', label: 'Documentation present', def: 'Share of reports with any supporting documentation (images, records, logs).' },
-  { id: 'co-intervention', label: 'Co-intervention prevalence', def: 'Share of reports that mention concurrent interventions.' },
-  { id: 'concentration', label: 'Source concentration', def: 'How much of the signal comes from a few sources.' },
-  { id: 'echo', label: 'Duplication / echo level', def: 'Share of mentions classified as reposts, quotations or near-duplicates.' },
-  { id: 'time-dispersion', label: 'Time dispersion', def: 'How mentions distribute over the collection window.' },
-  { id: 'platform-diversity', label: 'Platform diversity', def: 'How many enabled platforms contribute mentions.' },
-  { id: 'promotional', label: 'Promotional / affiliate contamination', def: 'Share of mentions with affiliate or promotional indicators.' },
-  { id: 'outcome-description', label: 'Identifiable outcome description', def: 'Share of reports that name a specific observed outcome.' },
-  { id: 'follow-up', label: 'Follow-up availability', def: 'Share of reports with a later follow-up from the same account.' },
+  { id: 'source-diversity', label: 'How many different voices', def: 'How many separate accounts, channels or publications the posts come from.' },
+  { id: 'origin-diversity', label: 'How many original stories', def: 'How many posts started on their own instead of copying someone else.' },
+  { id: 'first-person', label: 'First-hand vs. hearsay', def: 'How many posts are people describing their own experience rather than repeating others.' },
+  { id: 'documentation', label: 'Comes with proof', def: 'How many reports include photos, records or logs.' },
+  { id: 'co-intervention', label: 'Other things going on', def: 'How many reports mention other products or changes at the same time.' },
+  { id: 'concentration', label: 'A few loud voices?', def: 'How much of the chatter comes from just a handful of accounts.' },
+  { id: 'echo', label: 'Copies and reposts', def: 'How many posts are reposts, quotes or near copies.' },
+  { id: 'time-dispersion', label: 'Spread over time', def: 'Whether posts came in one burst or over a long stretch.' },
+  { id: 'platform-diversity', label: 'How many platforms', def: 'How many different sites the posts come from.' },
+  { id: 'promotional', label: 'Selling something?', def: 'How many posts look like ads or carry affiliate links.' },
+  { id: 'outcome-description', label: 'Says what happened', def: 'How many reports name a specific result instead of a vague feeling.' },
+  { id: 'follow-up', label: 'Came back to update', def: 'How many people posted a follow-up later.' },
 ] as const
 
-export const NOT_ASSESSED = 'Not assessed — no corpus'
+export const NOT_ASSESSED = 'Not measured yet — no reports collected'
 
 export const PLATFORMS = [
-  { id: 'youtube', name: 'YouTube', adapter: 'Official API', state: 'No source access enabled' },
-  { id: 'reddit', name: 'Reddit', adapter: 'Licensed / manual / approved coverage', state: 'No source access enabled' },
-  { id: 'tiktok', name: 'TikTok', adapter: 'Creator-authorized / approved coverage', state: 'No source access enabled' },
-  { id: 'podcasts', name: 'Podcast RSS', adapter: 'Public feeds', state: 'No source access enabled' },
-  { id: 'forums', name: 'Public forums', adapter: 'Manual editorial entry', state: 'No source access enabled' },
-  { id: 'publisher', name: 'Public publisher feeds', adapter: 'RSS', state: 'No source access enabled' },
+  { id: 'youtube', name: 'YouTube', adapter: 'Official API', state: 'Not connected' },
+  { id: 'reddit', name: 'Reddit', adapter: 'Licensed / manual / approved coverage', state: 'Not connected' },
+  { id: 'tiktok', name: 'TikTok', adapter: 'Creator-authorized / approved coverage', state: 'Not connected' },
+  { id: 'podcasts', name: 'Podcast RSS', adapter: 'Public feeds', state: 'Not connected' },
+  { id: 'forums', name: 'Public forums', adapter: 'Manual editorial entry', state: 'Not connected' },
+  { id: 'publisher', name: 'Public publisher feeds', adapter: 'RSS', state: 'Not connected' },
 ] as const
 
 export const SCIENTIFIC_SOURCES = [
-  { id: 'pubmed', name: 'PubMed', state: 'Indexed — PMIDs verified via NCBI eutils at build time', enabled: true },
-  { id: 'crossref', name: 'Crossref', state: 'Not enabled', enabled: false },
-  { id: 'clinicaltrials', name: 'ClinicalTrials.gov', state: 'Not enabled', enabled: false },
-  { id: 'fda', name: 'FDA', state: 'Not enabled', enabled: false },
-  { id: 'wada', name: 'WADA', state: 'Not enabled', enabled: false },
-  { id: 'pdb', name: 'RCSB PDB (identifiers only)', state: 'Identifiers listed; structures not fetched', enabled: false },
+  { id: 'pubmed', name: 'PubMed', state: 'Connected — every PubMed ID is checked before the site is built', enabled: true },
+  { id: 'crossref', name: 'Crossref', state: 'Not connected', enabled: false },
+  { id: 'clinicaltrials', name: 'ClinicalTrials.gov', state: 'Not connected', enabled: false },
+  { id: 'fda', name: 'FDA', state: 'Not connected', enabled: false },
+  { id: 'wada', name: 'WADA', state: 'Not connected', enabled: false },
+  { id: 'pdb', name: 'RCSB PDB (identifiers only)', state: 'IDs listed; 3D files not downloaded', enabled: false },
 ] as const
 
 export const SIGNAL_FILTERS = [
   { id: 'compound', label: 'Compound' },
-  { id: 'theme', label: 'Outcome theme' },
+  { id: 'theme', label: 'What people hoped for' },
   { id: 'body', label: 'Body system' },
   { id: 'platform', label: 'Platform' },
   { id: 'date', label: 'Date' },
   { id: 'report-type', label: 'Report type', options: ['Positive', 'Mixed', 'No effect', 'Adverse', 'Unclear'] },
-  { id: 'origin', label: 'Origin', options: ['Independent origin', 'Echo', 'Unknown'] },
-  { id: 'documentation', label: 'Documentation present' },
-  { id: 'combination', label: 'Single compound / combination' },
+  { id: 'origin', label: 'Original or copy', options: ['Original story', 'Copy or repost', 'Unknown'] },
+  { id: 'documentation', label: 'Comes with proof' },
+  { id: 'combination', label: 'One product or a mix' },
 ] as const
 
 export const CONSTELLATION_LEGEND = [
-  { id: 'independent', label: 'Independent-origin candidate', shape: 'filled point' },
-  { id: 'derivative', label: 'Derivative discussion', shape: 'hollow point' },
-  { id: 'documented', label: 'Documented report', shape: 'ringed point' },
-  { id: 'unclear', label: 'Unclear provenance', shape: 'faint point' },
+  { id: 'independent', label: 'Likely an original story', shape: 'filled point' },
+  { id: 'derivative', label: 'Repeating someone else', shape: 'hollow point' },
+  { id: 'documented', label: 'Report with proof attached', shape: 'ringed point' },
+  { id: 'unclear', label: 'Can’t tell where it came from', shape: 'faint point' },
 ] as const

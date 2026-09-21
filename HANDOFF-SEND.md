@@ -126,6 +126,17 @@ Primary areas:
 | Build verification | `tools/verify-pmids.ts` |
 | Brand | `src/brand.ts` |
 
+## 5b. Plain-language + disclaimer pass (2026-09-21, commit below)
+
+- **Age gate**: `src/components/AgeGate.tsx`, mounted in `__root.tsx`. First visit asks "Are you 21 or older?"; answer stored in localStorage (`age-gate-21`). Renders nothing during SSR so hydration always matches. "No" shows a polite 21+ message with a way back.
+- **Disclaimers** (plain English): footer line ("You must be 21 or older to use this site…"), Terms (7 rules incl. "Must be 21 and over to enter"), Privacy (what we collect, 21+), About, Contact. Terms/Privacy are marked as drafts pending a lawyer.
+- **Jargon removed from every rendered string** except scientific names, numbers, PubMed IDs, sequences and molecular weight. Mapping (old → new): corpus → "sources we checked / real-world reports checked"; provenance → "where it comes from"; lineage → "how the story spread"; mutation → "how the wording changed"; contradiction → "pushes back"; interpretation → "the short version / our reading"; translation state → "how far it has been tested"; echo analysis → "copies vs. originals"; human signal → "what people say"; "Not assessed — no corpus" → "Not measured yet — no reports collected"; SUPPORTS / PARTIALLY_SUPPORTS / CONTRADICTS / DOES_NOT_TEST → "Backs it up / Partly backs it up / Pushes back / Talks about it, didn’t test it"; study types → "Cells in a dish (in vitro) / Animal study / Review paper / People, observed / Human trial"; translation stages → "Cells in a dish → Mice → Rats → Bigger animal → People → Proper human trial → Approved by regulators"; mutation steps → "What the study said → The summary → The social post → The viral version".
+- **Titles rewritten** (no lame titles): claim sections, dossier sections G–L, claims/compare/coverage/corrections/status/learn/saved/about/contact/privacy/terms headlines, home closing CTA ("See it up close. Then decide.").
+- The whole pass is scripted in `tools/plain-copy.mjs` (exact-string replacements, fails on a miss). It has been run once; do not rerun it.
+- Dev-server fix: `vite.config.ts` now applies `ssr.noExternal: true` only on `build` (the Netlify need); with it on in dev, SSR crashed with "module is not defined". `scripts/dev-here.mjs` no longer leaves an orphaned Vite process on port 8082.
+- Repo hygiene: `node_modules` and `dist` had been committed despite `.gitignore`; they are untracked again in this commit.
+- Verified: `npm run build` green (9/9 PMIDs), tsc clean, no console errors; screenshots in `shots/age-gate.png` and `shots/copy-*.png` looked at.
+
 ## 6. What is built and live
 
 ### Commerce shell

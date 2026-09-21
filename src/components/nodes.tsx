@@ -7,11 +7,11 @@ import type { ReactNode } from 'react'
 export type NodeKind = 'research' | 'claim' | 'community' | 'regulatory' | 'contradiction'
 
 export const NODE_STYLE: Record<NodeKind, { color: string; label: string; shape: 'circle' | 'diamond' | 'hexagon' | 'square' | 'triangle' }> = {
-  research: { color: '#5FE3FF', label: 'Research', shape: 'circle' },
+  research: { color: '#5FE3FF', label: 'Study', shape: 'circle' },
   claim: { color: '#F2EEE6', label: 'Claim', shape: 'diamond' },
-  community: { color: '#8A63FF', label: 'Community', shape: 'hexagon' },
-  regulatory: { color: '#8FB0FF', label: 'Regulatory', shape: 'square' },
-  contradiction: { color: '#E5A03A', label: 'Contradiction', shape: 'triangle' },
+  community: { color: '#8A63FF', label: 'People online', shape: 'hexagon' },
+  regulatory: { color: '#8FB0FF', label: 'Regulators', shape: 'square' },
+  contradiction: { color: '#E5A03A', label: 'Pushback', shape: 'triangle' },
 }
 
 export function shapePath(shape: (typeof NODE_STYLE)[NodeKind]['shape'], r: number): string {

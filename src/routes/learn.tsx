@@ -5,7 +5,7 @@ import { BRAND } from '~/brand'
 import { PortalTitle } from '~/components/PortalTitle'
 
 export const Route = createFileRoute('/learn')({
-  head: () => ({ meta: [{ title: `Portal of Tides — ${BRAND}` }, { name: 'description', content: 'Interactive lessons for navigating molecular research, claims, and evidence.' }] }),
+  head: () => ({ meta: [{ title: `Portal of Tides — ${BRAND}` }, { name: 'description', content: 'Short lessons that teach you how to tell a real study from a good story.' }] }),
   component: PortalOfTides,
 })
 
@@ -15,11 +15,11 @@ function PortalOfTides() {
       <header className="portal-hero">
         <div className="portal-caustics" aria-hidden><i/><i/><i/></div>
         <div className="wrap relative z-10 py-20 md:py-28">
-          <p className="label portal-label">The learning current</p>
+          <p className="label portal-label">Start here</p>
           <PortalTitle className="mt-5" />
           <div className="mt-10 grid md:grid-cols-[1fr_.75fr] gap-8 items-end">
-            <p className="lede max-w-2xl">Ideas change as they travel. Enter a lesson, follow the current back to its source, and learn where evidence ends and interpretation begins.</p>
-            <p className="mono text-[11px] text-right text-bone/45 hidden md:block">10 passages · 1 interactive now<br/>new lessons surface as they are verified</p>
+            <p className="lede max-w-2xl">Ideas change as they travel. Pick a lesson, follow it back to the source, and learn where the evidence ends and the opinion begins.</p>
+            <p className="mono text-[11px] text-right text-bone/45 hidden md:block">10 lessons · 1 ready to try now<br/>more open as we finish checking them</p>
           </div>
         </div>
         <div className="portal-waterline" aria-hidden />
@@ -27,8 +27,8 @@ function PortalOfTides() {
 
       <section className="wrap py-16 md:py-24" aria-label="Lessons">
         <div className="flex flex-wrap items-end justify-between gap-5">
-          <div><p className="label portal-label">Choose a passage</p><h2 className="display text-[clamp(2rem,5vw,4.7rem)] mt-3">Learn to read the waterline.</h2></div>
-          <p className="text-sm muted max-w-sm">Each lesson separates the original record from the versions that formed downstream.</p>
+          <div><p className="label portal-label">Pick a lesson</p><h2 className="display text-[clamp(2rem,5vw,4.7rem)] mt-3">Learn to spot the real thing.</h2></div>
+          <p className="text-sm muted max-w-sm">Each lesson shows the original study next to the versions that grew out of it.</p>
         </div>
         <ol className="tide-lessons mt-12">
           {LESSONS.map((l, i) => (

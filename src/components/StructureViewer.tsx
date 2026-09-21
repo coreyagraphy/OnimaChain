@@ -61,17 +61,17 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
         <button className="btn btn-sm" onClick={() => { resetKey.current++; setRk(resetKey.current) }}>Reset</button>
         <button className="btn btn-sm" aria-pressed={labels} onClick={() => setLabels((v) => !v)}>Labels</button>
         <button className="btn btn-sm" aria-pressed={reduced} onClick={() => setReduced((v) => !v)}>Reduced effects</button>
-        <button className="btn btn-sm" aria-pressed={showProv} onClick={() => setShowProv((v) => !v)}>Provenance</button>
+        <button className="btn btn-sm" aria-pressed={showProv} onClick={() => setShowProv((v) => !v)}>Where it's from</button>
       </div>}
       <div className="absolute right-3 top-3 z-10 text-right max-w-[60%]">
         <ProvenanceLabel compound={compound} />
       </div>
       {showProv && (
         <div className="absolute left-3 right-3 top-12 md:left-auto md:w-[380px] z-10 glass rounded-2xl p-5 text-sm drawer-in" data-lenis-prevent>
-          <p className="relative label label-cyan">Structure provenance · underneath the render</p>
+          <p className="relative label label-cyan">Where this 3D shape comes from</p>
           <p className="relative mt-2 text-bone/85">{prov.primary}.</p>
           {prov.secondary && <p className="relative mt-1 muted">{prov.secondary}.</p>}
-          <p className="relative mt-2 text-[12px] muted">Backbone Cα positions are generated from the residue list with alpha-helix parameters (rise 1.5 Å, 100°/residue, radius 2.3 Å); proline kinks the axis 30–40°, glycine adds a seeded wobble, lactam bridges close the ring. Nothing here was measured.</p>
+          <p className="relative mt-2 text-[12px] muted">We draw the shape from the amino-acid sequence using standard helix geometry (rise 1.5 Å, 100°/residue, radius 2.3 Å). Proline bends the chain 30–40°, glycine adds a small wobble, lactam bridges close the ring. This is a drawing based on the sequence, not a measured structure.</p>
           {geometry.hotspots.length > 0 && (
             <ul className="relative mt-3 grid gap-1 text-[12px]">
               {geometry.hotspots.map((h, i) => (

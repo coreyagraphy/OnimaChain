@@ -23,13 +23,13 @@ function Lesson() {
       {l.status === 'interactive' ? (
         <div className="mt-10 grid gap-8">
           <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div className="panel-flat p-5"><p className="label label-cyan">1 · Scrub</p><p className="mt-2 muted">Drag the slider. The source finding is copied verbatim from a verified abstract. Every later step is illustrative wording — labelled as such.</p></div>
-            <div className="panel-flat p-5"><p className="label label-amber">2 · Watch what drops</p><p className="mt-2 muted">Struck words are dropped from the previous step. Species, model and uncertainty tend to go first.</p></div>
-            <div className="panel-flat p-5"><p className="label label-violet">3 · Watch what appears</p><p className="mt-2 muted">Violet words were added. Outcomes, speed and scope tend to arrive last — and were never measured.</p></div>
+            <div className="panel-flat p-5"><p className="label label-cyan">1 · Scrub</p><p className="mt-2 muted">Drag the slider. Step one is copied word for word from a confirmed study. Every later step is example wording, and it is labelled that way.</p></div>
+            <div className="panel-flat p-5"><p className="label label-amber">2 · Watch what drops</p><p className="mt-2 muted">Crossed-out words got dropped. What it was tested on, how, and the careful “maybe” words usually go first.</p></div>
+            <div className="panel-flat p-5"><p className="label label-violet">3 · Watch what appears</p><p className="mt-2 muted">Purple words got added. Big results, speed and “works for everything” usually arrive last — and were never measured.</p></div>
           </div>
           <MutationLadder claim={CLAIM_BY_ID['CLAIM-BPC157-TENDON-REPAIR']} autoplay />
           <MutationLadder claim={CLAIM_BY_ID['CLAIM-TB4-CELL-MIGRATION']} />
-          <p className="text-sm muted max-w-2xl">This is called claim mutation, not misinformation. Some steps are faithful paraphrases. The point is to see which transformation happened, and to link each one to its source text.</p>
+          <p className="text-sm muted max-w-2xl">This is not always lying. Some steps are fair summaries. The point is to see exactly which change happened at each step, and to tie every step back to the real study.</p>
         </div>
       ) : (
         <div className="mt-10 panel-flat p-8"><p className="display-md text-xl">In production</p></div>
