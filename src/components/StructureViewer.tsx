@@ -7,6 +7,7 @@ import { SequenceSVG } from './SequenceSVG'
 import { SceneLoader } from './SceneLoader'
 import { ProvenanceLabel, provenanceText } from './SourceBadge'
 import { HOTSPOT_RULES } from '~/scenes/chain/hotspots'
+import { environmentFor } from '~/data/environments'
 
 const Viewer = lazy(() => import('~/scenes/chain/ViewerScene').then((m) => ({ default: m.ViewerScene })))
 
@@ -29,7 +30,11 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const prov = provenanceText(compound)
   const [ready, setReady] = useState(false)
   const dim = useRef(0)
-  useEffect(() => setReady(true), [])
+  const env = environmentFor(compound.slug)
+  // Touch devices start with page scrolling; an explicit Rotate mode hands the drag to the molecule.
+  const [touch, setTouch] = useState(false)
+  const [rotateMode, setRotateMode] = useState(true)
+  useEffect(() => { setReady(true); const t = window.matchMedia?.('(pointer: coarse)').matches ?? false; setTouch(t); setRotateMode(!t) }, [])
   // damped dim so the molecule recedes and returns with weight, not a switch
   useEffect(() => {
     let raf = 0
@@ -48,7 +53,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
       {ready && allowed ? (
         <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={13}>
           <Suspense fallback={null}>
-            <Viewer key={rk} geometry={geometry} tint={tint} accent={accent} labels={labels} reducedEffects={reduced} autoRotate={autoRotate} scrollRef={scrollRef} dimRef={dim} />
+            <Viewer key={rk} geometry={geometry} tint={tint} accent={accent} labels={labels} reducedEffects={reduced} autoRotate={autoRotate} scrollRef={scrollRef} dimRef={dim} environment={env} rotateMode={rotateMode} />
           </Suspense>
         </Lod0Canvas>
       ) : (
@@ -57,7 +62,8 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
       {ready && allowed && <Suspense fallback={<SceneLoader />}><span /></Suspense>}
       {/* controls (only when a live scene exists; the static SVG needs none) */}
       {ready && allowed && <div className="absolute left-3 bottom-3 flex flex-wrap gap-1.5 z-10" role="group" aria-label="3D controls">
-        <button className="btn btn-sm" aria-pressed={autoRotate} onClick={() => setAutoRotate((v) => !v)}>Rotate</button>
+        {touch && <button className="btn btn-sm" aria-pressed={rotateMode} onClick={() => setRotateMode((v) => !v)}>{rotateMode ? 'Drag rotates' : 'Drag scrolls'}</button>}
+        <button className="btn btn-sm" aria-pressed={autoRotate} onClick={() => setAutoRotate((v) => !v)}>Auto-turn</button>
         <button className="btn btn-sm" onClick={() => { resetKey.current++; setRk(resetKey.current) }}>Reset</button>
         <button className="btn btn-sm" aria-pressed={labels} onClick={() => setLabels((v) => !v)}>Labels</button>
         <button className="btn btn-sm" aria-pressed={reduced} onClick={() => setReduced((v) => !v)}>Reduced effects</button>
@@ -65,6 +71,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
       </div>}
       <div className="absolute right-3 top-3 z-10 text-right max-w-[60%]">
         <ProvenanceLabel compound={compound} />
+        {ready && allowed && <p className="mono text-[10px] text-bone/40 mt-1 hidden md:block">Drag or use the arrow keys to turn it</p>}
       </div>
       {showProv && (
         <div className="absolute left-3 right-3 top-12 md:left-auto md:w-[380px] z-10 glass rounded-2xl p-5 text-sm drawer-in" data-lenis-prevent>

@@ -2,8 +2,10 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
 import { Html } from '@react-three/drei/web/Html'
-import { CLASS_COLORS, sizeRadius, type ChainGeometry } from './geometry'
+import { CLASS_COLORS, mulberry32, sizeRadius, type ChainGeometry } from './geometry'
 import { HOTSPOT_RULES } from './hotspots'
+import { atomMaps, bondMaps } from './textures'
+import { useQuality } from '~/motion/useReducedMotion'
 
 export interface ChainRendererProps {
   geometry: ChainGeometry
@@ -89,6 +91,14 @@ export function ChainRenderer({
   const signalLight = useRef<THREE.PointLight>(null)
 
   const n = g.length
+  const q = useQuality()
+  const texSize = q.tier === 'high' ? 512 : q.tier === 'mid' ? 256 : 128
+  const atomTex = useMemo(() => (lod === 2 ? null : atomMaps(texSize)), [lod, texSize])
+  const bondTex = useMemo(() => (lod === 2 ? null : bondMaps(texSize)), [lod, texSize])
+  const spins = useMemo(() => {
+    const rnd = mulberry32(0x5350494e ^ n)
+    return Array.from({ length: n }, () => new THREE.Quaternion().setFromEuler(new THREE.Euler(rnd() * Math.PI * 2, rnd() * Math.PI * 2, rnd() * Math.PI * 2)))
+  }, [n])
   const fixedScale = fit / g.bounds.radius
   // After the [0, π/2, 0] axis swap, local (x, y, z) → world (z, y, -x); offset the centre accordingly.
   const centerOffsetRotated = useMemo(
@@ -149,13 +159,16 @@ export function ChainRenderer({
   const tubeMat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
+        normalMap: bondTex?.normal ?? null,
+        normalScale: new THREE.Vector2(0.95, 0.95),
+        roughnessMap: bondTex?.roughness ?? null,
         color: new THREE.Color(tint).multiplyScalar(0.42),
         emissive: new THREE.Color(tint),
         emissiveIntensity: 0.22 * intensity,
-        roughness: 0.26,
-        metalness: 0.28,
-        clearcoat: 0.9,
-        clearcoatRoughness: 0.22,
+        roughness: 0.44,
+        metalness: 0.2,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.35,
         sheen: 0.35,
         sheenRoughness: 0.6,
         sheenColor: new THREE.Color(tint),
@@ -163,16 +176,19 @@ export function ChainRenderer({
         transparent: g.placeholder,
         opacity: g.placeholder ? 0.25 : 1,
       }),
-    [tint, intensity, g.placeholder],
+    [tint, intensity, g.placeholder, bondTex],
   )
 
   const sphereMat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
-        roughness: 0.3,
-        metalness: 0.06,
-        clearcoat: 1,
-        clearcoatRoughness: 0.18,
+        normalMap: atomTex?.normal ?? null,
+        normalScale: new THREE.Vector2(0.65, 0.65),
+        roughnessMap: atomTex?.roughness ?? null,
+        roughness: 0.46,
+        metalness: 0.05,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.32,
         sheen: 0.5,
         sheenRoughness: 0.55,
         sheenColor: new THREE.Color('#DCE8EE'),
@@ -182,7 +198,7 @@ export function ChainRenderer({
         emissiveIntensity: 0.06 * intensity,
         vertexColors: false,
       }),
-    [intensity],
+    [intensity, atomTex],
   )
 
   const bridgeGeos = useMemo(
@@ -278,7 +294,7 @@ export function ChainRenderer({
         const base = lod === 0 ? sizeRadius(r.size) * 0.72 : lod === 1 ? 0.7 : 0.55
         const s = g.placeholder ? 0.45 : base * (0.6 + 0.4 * t)
         S.setScalar(s)
-        M.compose(V, Q, S)
+        M.compose(V, spins[i] ?? Q, S)
         inst.current.setMatrixAt(i, M)
       }
       inst.current.instanceMatrix.needsUpdate = true
@@ -346,7 +362,7 @@ export function ChainRenderer({
               }
             }}
           >
-            <sphereGeometry args={[1, lod === 0 ? 20 : 10, lod === 0 ? 14 : 8]} />
+            <sphereGeometry args={[1, lod === 0 ? 40 : 14, lod === 0 ? 28 : 10]} />
             <primitive object={sphereMat} attach="material" />
           </instancedMesh>
           {/* bridges, tethers, metal and badges scale in with the final 20% of assembly */}

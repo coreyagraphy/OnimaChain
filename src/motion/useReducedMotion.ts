@@ -75,7 +75,9 @@ function detect(): Pick<VisualState, 'mode' | 'post' | 'reducedMotion' | 'qualit
   const lowMem = typeof nav.deviceMemory === 'number' && nav.deviceMemory < 4
   const q = new URLSearchParams(window.location.search)
   const forceStatic = q.get('static') === '1'
-  if (reduced || saveData || lowMem || forceStatic) return { mode: 'static', post: false, reducedMotion: reduced, quality: PROFILES.low }
+  // No WebGL at all (blocked, headless, very old GPU): the static SVG / poster path is the only honest option.
+  const noWebGL = gpuRenderer() === 'none'
+  if (reduced || saveData || lowMem || forceStatic || noWebGL) return { mode: 'static', post: false, reducedMotion: reduced, quality: PROFILES.low }
   const mobile = window.innerWidth < 768 || /Mobi|Android/i.test(navigator.userAgent)
   const forced = q.get('quality') as QualityTier | null
   const tier = forced && PROFILES[forced] ? forced : pickTier(mobile)

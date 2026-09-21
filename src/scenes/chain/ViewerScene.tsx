@@ -11,6 +11,7 @@ import type { ChainGeometry } from './geometry'
 import { usePostAllowed, useQuality } from '~/motion/useReducedMotion'
 import { radialTexture } from '../hero/HeroScene'
 import { mulberry32 } from './geometry'
+import type { Environment as PeptideEnvironment } from '~/data/environments'
 
 interface Props {
   geometry: ChainGeometry
@@ -23,6 +24,10 @@ interface Props {
   scrollRef?: RefObject<number>
   /** 0..1: provenance open dims the molecule while the evidence comes forward. */
   dimRef?: RefObject<number>
+  /** Per-peptide environment: deep background, neon key, supporting light. */
+  environment?: PeptideEnvironment
+  /** Touch devices: when false, vertical drags scroll the page; when true, drags rotate the molecule. */
+  rotateMode?: boolean
 }
 
 const smooth01 = (a: number, b: number, x: number) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t) }
@@ -33,7 +38,10 @@ const smooth01 = (a: number, b: number, x: number) => { const t = THREE.MathUtil
  * Scroll downward: the chain loosens, tilts and moves deeper into the scene.
  * Drag: weighted orbit (damped, never instantaneous). Contact shadow grounds it in space.
  */
-export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, autoRotate, scrollRef, dimRef }: Props) {
+export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, autoRotate, scrollRef, dimRef, environment, rotateMode = true }: Props) {
+  const envDeep = environment?.deep ?? '#0A0B0E'
+  const envNeon = environment?.neon ?? tint
+  const envSupport = environment?.support ?? accent
   const post = usePostAllowed()
   const q = useQuality()
   const gl = useThree((s) => s.gl)
@@ -65,12 +73,28 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
     el.addEventListener('pointerup', up)
     el.addEventListener('pointercancel', up)
     el.style.cursor = 'grab'
-    el.style.touchAction = 'pan-y'
-    return () => { el.removeEventListener('pointerdown', down); el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up) }
-  }, [gl])
+    el.style.touchAction = rotateMode ? 'none' : 'pan-y'
+    el.tabIndex = 0
+    el.setAttribute('aria-label', 'Molecule viewer. Use the arrow keys to rotate.')
+    const key = (e: KeyboardEvent) => {
+      const step = 0.22
+      if (e.key === 'ArrowLeft') rot.current.ty -= step
+      else if (e.key === 'ArrowRight') rot.current.ty += step
+      else if (e.key === 'ArrowUp') rot.current.tx -= step
+      else if (e.key === 'ArrowDown') rot.current.tx += step
+      else return
+      e.preventDefault()
+    }
+    el.addEventListener('keydown', key)
+    return () => { el.removeEventListener('pointerdown', down); el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); el.removeEventListener('keydown', key) }
+  }, [gl, rotateMode])
 
   const fit = 4.6
-  const backdropTex = useMemo(() => radialTexture([[0, `rgba(34,71,214,0.16)`], [0.4, `rgba(20,24,44,0.12)`], [0.75, `rgba(12,13,20,0.05)`], [1, `rgba(10,11,14,0)`]], 512), [])
+  const backdropTex = useMemo(() => {
+    const c = new THREE.Color(envNeon), d = new THREE.Color(envDeep)
+    const rgb = (col: THREE.Color, a: number) => `rgba(${Math.round(col.r * 255)},${Math.round(col.g * 255)},${Math.round(col.b * 255)},${a})`
+    return radialTexture([[0, rgb(c, 0.22)], [0.35, rgb(d, 0.55)], [0.75, rgb(d, 0.25)], [1, rgb(d, 0)]], 512)
+  }, [envNeon, envDeep])
   const dust = useMemo(() => {
     const rnd = mulberry32(0x444f5353)
     const m = Math.round(700 * q.particles)
@@ -116,7 +140,7 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
 
   return (
     <group>
-      <fog attach="fog" args={['#0A0B0E', 12, 36]} />
+      <fog attach="fog" args={[envDeep, 12, 36]} />
       <Environment resolution={64} frames={1}>
         <group rotation={[-Math.PI / 3, 0, 0]}>
           <Lightformer intensity={2} color={tint} rotation-x={Math.PI / 2} position={[0, 5, -9]} scale={[10, 10, 1]} />
@@ -125,7 +149,9 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
         </group>
       </Environment>
       {/* rim: separates the structure from the dark; signal: data-driven */}
-      <directionalLight position={[-6, -3, -7]} intensity={1.4} color={tint} />
+      <directionalLight position={[-6, -3, -7]} intensity={1.5} color={envSupport} />
+      <directionalLight position={[5, 6, 6]} intensity={0.9} color="#F2EEE6" />
+      <directionalLight position={[-3, -5, 3]} intensity={0.35} color={envNeon} />
       <pointLight ref={signalLight} position={[2, 3, 4]} intensity={0} color={tint} distance={16} decay={1.8} />
       {backdropTex && (
         <mesh position={[10, 1, -48]} scale={[120, 95, 1]}>

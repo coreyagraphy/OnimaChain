@@ -69,13 +69,23 @@ export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, came
   const fired = useRef(false)
   const visible = useDocumentVisible()
   const q = useQuality()
+  const wrap = useRef<HTMLDivElement>(null)
+  const [onScreen, setOnScreen] = useState(true)
+  // Off-screen scene work pauses (generous margin so returning to a section never shows a stale frame).
+  useEffect(() => {
+    const el = wrap.current
+    if (!el || typeof IntersectionObserver === "undefined") return
+    const io = new IntersectionObserver((entries) => setOnScreen(entries.some((e) => e.isIntersecting)), { rootMargin: "400px 0px" })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   return (
-    <div className={className} style={style}>
+    <div ref={wrap} className={className} style={style}>
       <Canvas
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
         dpr={dpr ?? q.dpr}
-        frameloop={visible ? 'always' : 'never'}
+        frameloop={visible && onScreen ? 'always' : 'never'}
         camera={{ fov: 38, near: 0.1, far: 200, position: [0, 0, cameraZ] }}
         onCreated={({ gl }) => {
           gl.setClearColor('#0A0B0E', 0)

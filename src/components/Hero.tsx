@@ -23,8 +23,8 @@ export function Hero() {
     if (copyRef.current) copyRef.current.style.opacity = '0'
     const cleanup = createScrub({ trigger: section.current, end: '+=220%', pin: true, scrub: true, onProgress: (p) => {
       progress.current = p
-      if (copyRef.current) { const k=Math.max(0,Math.min(1,(p-.79)/.15)); copyRef.current.style.opacity=String(k); copyRef.current.style.transform=`translateY(${(1-k)*42}px) scale(${.96+k*.04})`; copyRef.current.style.pointerEvents=k<.8?'none':'auto' }
-      if (copyPlateRef.current) copyPlateRef.current.style.opacity=String(Math.max(0,Math.min(.82,(p-.77)/.16)))
+      if (copyRef.current) { const k=Math.max(0,Math.min(1,(p-.74)/.13)); copyRef.current.style.opacity=String(k); copyRef.current.style.transform=`translateY(${(1-k)*42}px) scale(${.96+k*.04})`; copyRef.current.style.pointerEvents=k<.8?'none':'auto' }
+      if (copyPlateRef.current) copyPlateRef.current.style.opacity=String(Math.max(0,Math.min(.82,(p-.72)/.14)))
       if (barRef.current) barRef.current.style.transform=`scaleX(${p})`
       CAPTIONS.forEach((c,i)=>{ const el=capRefs.current[i]; if(!el)return; const o=Math.max(0,Math.min(1,(p-c.from)/.06,(c.to-p)/.06)); el.style.opacity=String(o); el.style.transform=`translateY(${(1-o)*10}px)` })
     }})

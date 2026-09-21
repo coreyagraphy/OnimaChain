@@ -74,7 +74,7 @@ function Dossier() {
   return (
     <article className="pt-[72px] compound-world" style={{ '--product': productTheme.primary, '--product-2': productTheme.secondary, '--product-3': productTheme.tertiary } as CSSProperties}>
       {/* A — immersive header */}
-      <header ref={header} className="relative min-h-[92vh] grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-stretch overflow-hidden product-hero" style={{ background: `radial-gradient(70% 60% at 75% 40%, ${productTheme.primary}22, transparent 60%)` }}>
+      <header ref={header} className="relative min-h-[92vh] grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-stretch overflow-hidden product-hero" style={{ background: `radial-gradient(70% 60% at 75% 40%, ${productTheme.primary}2E, transparent 60%), radial-gradient(120% 90% at 30% 110%, ${productTheme.secondary}14, transparent 60%), linear-gradient(180deg, ${productTheme.deepBackground} 0%, #0A0B0E 100%)` }}>
         <div className="wrap !mr-0 py-12 lg:py-16 flex flex-col justify-center relative z-10">
           <p className="label" style={{ color: domain.palette.base }}>{domain.name} · commonly explored around {shopTopicFor(c)}</p>
           <h1 className="wordmark text-[clamp(3.4rem,7.5vw,7.2rem)] mt-4" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>

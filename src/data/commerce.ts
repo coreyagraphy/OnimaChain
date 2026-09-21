@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import { COMPOUNDS, displayName, type Compound } from './compounds'
 import { DOMAIN_BY_ID, type DomainId } from './domains'
+import { environmentFor } from './environments'
 
 export const PRICE_PLACEHOLDER = '$XX.XX'
 
@@ -41,11 +42,14 @@ const PERSONALITIES: Record<string, Partial<CompoundTheme>> = {
 }
 
 export function themeFor(compound: Compound): CompoundTheme {
+  // Colour is keyed to the real peptide slug via environments.ts — never to array position.
   const i = COMPOUNDS.findIndex((c) => c.slug === compound.slug)
-  const palette = PALETTES[(i + DOMAIN_BY_ID[compound.domain].order) % PALETTES.length]
+  const env = environmentFor(compound.slug)
+  const palette = [env.neon, env.support, env.tertiary] as const
+  void DOMAIN_BY_ID
   const base: CompoundTheme = {
     primary: palette[0], secondary: palette[1], tertiary: palette[2], glow: palette[0],
-    deepBackground: '#070912', rimLight: palette[1], particleTint: palette[0], fogTint: palette[2],
+    deepBackground: env.deep, rimLight: palette[1], particleTint: palette[0], fogTint: palette[2],
     titleStyle: (['condensed', 'wide', 'mineral', 'kinetic', 'sculptural', 'precise'] as const)[i % 6],
     outlineStyle: `${palette[0]}66`, extrusionStyle: palette[2],
     moleculeMaterial: (['glass', 'satin', 'crystal', 'metal'] as const)[i % 4],
@@ -53,7 +57,10 @@ export function themeFor(compound: Compound): CompoundTheme {
     motionSignature: (['signal', 'flow', 'orbit', 'burst', 'breathe'] as const)[i % 5],
     cardTreatment: (['split', 'halo', 'beam', 'mineral'] as const)[i % 4],
   }
-  return { ...base, ...PERSONALITIES[compound.slug] }
+  // Personalities keep typography / motion signatures; colour always comes from the environment map.
+  const { primary: _p, secondary: _s, tertiary: _t, ...personality } = PERSONALITIES[compound.slug] ?? {}
+  void _p; void _s; void _t
+  return { ...base, ...personality }
 }
 
 export function wordmarkStyle(theme: CompoundTheme): CSSProperties {
