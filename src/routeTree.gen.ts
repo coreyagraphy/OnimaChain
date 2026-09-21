@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as BondTheoryRouteImport } from './routes/bond-theory'
 import { Route as ClaimsRouteImport } from './routes/claims'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -38,6 +39,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BondTheoryRoute = BondTheoryRouteImport.update({
+  id: '/bond-theory',
+  path: '/bond-theory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClaimsRoute = ClaimsRouteImport.update({
@@ -134,6 +140,7 @@ const StudyPmidRoute = StudyPmidRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/bond-theory'
     | '/claims'
     | '/compare'
     | '/contact'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/bond-theory'
     | '/claims'
     | '/compare'
     | '/contact'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/bond-theory'
     | '/claims'
     | '/compare'
     | '/contact'
@@ -270,6 +282,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  BondTheoryRoute: typeof BondTheoryRoute
   ClaimsRoute: typeof ClaimsRoute
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
@@ -303,6 +316,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bond-theory': {
+      id: '/bond-theory'
+      path: '/bond-theory'
+      fullPath: '/bond-theory'
+      preLoaderRoute: typeof BondTheoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/claims': {
@@ -447,6 +467,7 @@ const LearnRouteWithChildren = LearnRoute._addFileChildren(LearnRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  BondTheoryRoute: BondTheoryRoute,
   ClaimsRoute: ClaimsRoute,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,

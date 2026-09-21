@@ -451,3 +451,20 @@ body { background: transparent; }
 .depth-backdrop { position:fixed; inset:0; z-index:-1; pointer-events:none; }
 /* panels open from the top of the stage so they never cover the control row, however it wraps */
 .stage-panel { top:44px; bottom:auto; max-height:calc(100% - 150px); overflow-y:auto; }
+
+/* ---------- Bond Theory ---------- */
+.bond-title-accent { background:linear-gradient(90deg,#5FE3FF,#AE66FF 55%,#FF548C); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.bond-stage { height:min(66vh,620px); min-height:420px; border-radius:28px; overflow:hidden; border:1px solid color-mix(in srgb,var(--color-bone) 10%,transparent);
+  background:radial-gradient(90% 70% at 50% 40%, rgba(34,71,214,.18), transparent 70%), rgba(8,9,13,.55); box-shadow:inset 0 1px 0 rgba(242,238,230,.05), 0 40px 90px -40px rgba(0,0,0,.9); }
+.bond-names { position:absolute; left:12px; right:12px; bottom:12px; z-index:10; display:grid; gap:8px; }
+.bond-name { min-height:44px; text-align:center; padding:.5rem .7rem; border-radius:14px; color:var(--color-bone); background:rgba(10,11,14,.62); backdrop-filter:blur(8px);
+  border:1px solid color-mix(in srgb,var(--env) 25%,transparent); cursor:pointer; transition:border-color .3s, transform .3s; }
+.bond-name[aria-pressed="true"] { border-color:var(--env); box-shadow:0 0 0 1px var(--env), 0 10px 30px -14px var(--env); transform:translateY(-2px); }
+.bond-tray { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.bond-chip { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:.35rem .4rem .35rem .8rem; border-radius:999px; font-size:14px; color:var(--color-bone);
+  border:1px solid color-mix(in srgb,var(--env) 45%,transparent); background:rgba(10,11,14,.6); }
+.bond-chip button { min-height:34px; padding:0 .7rem; border-radius:999px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--color-bone); background:rgba(242,238,230,.06); border:1px solid rgba(242,238,230,.12); cursor:pointer; }
+.bond-chip button:hover { border-color:var(--color-amber); color:var(--color-amber); }
+
+/* the shop header glow extended 288px past the viewport; keep decoration inside the page */
+.shop-hero { overflow-x: clip; }

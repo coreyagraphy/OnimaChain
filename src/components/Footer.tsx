@@ -3,7 +3,7 @@ import { CORPUS_CHECKED_AT } from '~/data/studies'
 import { BRAND } from '~/brand'
 
 const cols = [
-  [['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/learn', 'Learn']],
+  [['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/learn', 'Learn']],
   [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
   [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const

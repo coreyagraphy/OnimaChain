@@ -151,6 +151,42 @@ Implements CYRAVON_CLAUDE_CINEMATIC_BUILD_BRIEF.md (Downloads). Evidence lives i
 - **Skills consulted (revision recorded, not vendored)**: anthropics/skills 34040c9c5685 (2026-09-10), iart-ai/web-animation-skills b6dba3eb7597 (2026-06-22; read 60fps-animation — transform/opacity rule applied to new motion), CloudAI-X/threejs-skills b1c623076c66 (2026-01-19; file list only, APIs checked against three 0.186 in node_modules), nextlevelbuilder/ui-ux-pro-max-skill dcc40ff5133e (2026-09-21; not used).
 - **Known limitations**: the product wordmark on long names (e.g. PT-141 (BREMELANOTIDE)) still overlaps the stage column — pre-existing typography, not touched. Terminal cap cones render very bright under bloom. The dossier canvas backdrop plane still reads as a slightly different tone from the header gradient on the left column. No lower-cost *geometry* LOD for mobile beyond fewer sphere segments and 128px maps.
 
+## 5d. Revision-2 pass: depth, hands-on stage, Bond Theory, topic cards, video slots (2026-09-21)
+
+**Topic cards (home, "What are you here for?")** — the seven topics were renamed in plain language in `src/data/domains.ts` (the single source for home, shop and Portal): Recovery & Repair · Weight & Metabolism · Growth & Muscle · Skin, Hair & Glow · Focus & Mood · Aging & Cell Energy · Immune Defense. Each has a one-line tagline and a generated background image (`public/topics/*.webp`, 14–34 KB, made with Gemini image generation, no drug/needle imagery). Cards drift slowly, sweep light on hover, reveal in a stagger, lean with phone tilt, and open the shop filtered to that topic (`/explore?topic=`). "Age reversal" / "Fountain of youth" were not used as the topic name because they read as an anti-aging promise; "fountain-of-youth research: what's real, what's hype" is used as the tagline instead.
+
+**Video intros** — every product page has a 4:5 slot (`src/components/PeptideVideo.tsx`) with a designed "coming soon" frame in that peptide's colours. Drop raw clips into `media/raw/<slug>.mp4|mov` and run `node tools/encode-videos.mjs`: it centre-crops to 4:5, trims to 10 s, drops audio, writes `public/videos/<slug>-1080.mp4` (1080×1350), `<slug>-720.mp4` (720×900) and `<slug>.jpg`, and switches that product's slot on. Autoplay is muted, loops only on screen, and reduced-motion visitors get a poster + play button. Pipeline verified with a synthetic clip (then deleted).
+
+**Hero words (refuter + adversarial review, both run on real frames)** — the in-scene "LOOK CLOSER" failed: at 60% a molecule arm covered it so it read "LOSER"; on phones it never fit ("LOOK CLOS"); at 76% it collided with the headline. Replaced by the site's theme as three flat, screen-sized lines — *What was studied. / What people say. / What's still unknown.* — each lighting one scene marker (52–74%), fully in frame at 390 px (script-verified), nothing else on screen, gone before the headline (76%+).
+
+**Depth** — `src/scenes/DepthField.tsx`: one draw call per layer, per-particle drift, twinkle, star glints, depth fade, additive glow bright enough to bloom. Hero has far / mid / near layers with separate parallax (near bokeh rushes past the lens). Product stages and Bond Theory use the same system in each peptide's colours. `src/components/DepthBackdrop.tsx`: a fixed 2D glowing particle field behind every page, three depth bands, scroll + tilt parallax. `src/motion/tilt.ts`: pointer on desktop, gyro on phones (iOS asks once, on the age-gate "Yes" tap).
+
+**Scroll** — one rendered progress: the camera's extra smoothing layer was removed so camera and text can't disagree. Skip intro moves scroll + scene state and focuses the first action; tabbing into the hidden headline also completes the intro. Adversarial check: jump 20% → 90% → back to 45%: headline opacity 0; during theme lines: 0. Frame time through the passage: p50/p95 16.7 ms desktop and phone emulation (Chrome/ANGLE on Corey's PC — not a real phone).
+
+**Hands-on product stage** — Look closer · Turn it around (Done / Escape) · Move the light (key light orbits on a key/fill/rim rig; the chain no longer adds flat ambient light there) · What is this? (only real structural features, e.g. proline kink) · Where it's from · Reset view. 44 px targets, focus returns to the opener. The old Labels and Reduced-effects toggles were folded into these.
+
+**Bond Theory: The Stack Effect** (`/bond-theory`, in nav + footer) — empty stage → Choose peptides (search by name or other name; a synonym of a pick says "You already picked this one."), up to 4 lit stations in one canvas at honest relative sizes (more are paged, never dropped), tray with Remove + Undo, five one-at-a-time questions (What might they do? · Do they do similar things? · Have they been studied together? · What don't we know? · See the studies), Save your picks (this device), Download your summary (text with source links). A dashed link appears only when a checked study names both peptides (today: BPC-157 + TB-500, PMID 42542926, in rats) and says it is not a chemical bond or proof. No scores, no green checks, no dosing, no cart link. Phones show one station with arrows.
+
+**Fixes found by the sweep** — leaving the home page crashed React (pinned hero re-parented by ScrollTrigger; now wrapped in a React-owned element). Shop page scrolled sideways on desktop (header glow 288 px past the edge; product-card names didn't wrap). Saved page retitled "Your shortlist."
+
+### Route-to-skill map (every route checked at 1440×900 and 390×844: 0 console/page errors, 0 horizontal overflow, depth backdrop present — `node tools/route-sweep.mjs`)
+
+| Route | Status | What changed / why not |
+|---|---|---|
+| `/` | implemented | Hero rebuilt (GSAP ScrollTrigger direct scrub, one progress; Three.js DepthField layers; tilt), topic cards |
+| `/explore` | implemented | Topic filter via link; overflow fixed; tilt/backdrop depth |
+| `/compound/$slug` | implemented | Hands-on stage, video slot, stage depth layers, environment colours |
+| `/bond-theory` | implemented | New page per brief §3/§8 |
+| `/signal`, `/learn`, `/learn/*` | implemented (shared) | Backdrop depth + topic names; no page-specific motion added |
+| `/claim/$id`, `/claims`, `/compare`, `/timeline`, `/study/$pmid` | implemented (shared) | Backdrop depth; existing lineage/mutation/timeline motion kept |
+| `/methodology`, `/coverage`, `/corrections`, `/status/$compound` | implemented (shared) | Backdrop depth only — reading pages, motion kept calm on purpose |
+| `/about`, `/contact`, `/privacy`, `/terms`, `/saved`, 404 | implemented (shared) | Backdrop depth; copy from the plain-language pass |
+| Cart / quick view drawers | not changed | Commerce boundary: totals and forms stay still |
+
+Skills used: official GSAP skills `greensock/gsap-skills` @ aed9cfd32777 (scrolltrigger: direct scrub, kill on unmount, refresh after layout); `CloudAI-X/threejs-skills` @ b1c623076c66 (shaders, lighting: key/fill/rim, no flat ambient); `iart-ai/web-animation-skills` @ b6dba3eb7597 (60fps: transform/opacity only for all new DOM motion).
+
+**Still open** — Look closer targets the first real feature (or the middle residue) — not hand-authored per peptide. The hero passage path has not been checked in wireframe for atom intersections. No real-phone measurement (only desktop Chrome with phone emulation). Bond Theory has no Mol* inspect view and no catalog hand-off (disabled by design). Lighthouse/LCP not measured.
+
 ## 6. What is built and live
 
 ### Commerce shell
