@@ -3,6 +3,7 @@ import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { mulberry32 } from '../chain/geometry'
 import { useQuality } from '~/motion/useReducedMotion'
+import { radialTexture } from '../hero/HeroScene'
 
 /**
  * Signal constellation as an observatory data field — not a planetarium.
@@ -30,6 +31,7 @@ export function Constellation() {
     }
   }, [q.particles])
   const reports = useMemo(() => new Float32Array(0), [])
+  const glow = useMemo(() => radialTexture([[0, `rgba(34,71,214,0.5)`], [0.5, `rgba(34,71,214,0.12)`], [1, `rgba(34,71,214,0)`]], 128), [])
   const sm = useRef({ x: 0, y: 0 })
   useFrame((state, dt) => {
     const s = sm.current
@@ -81,9 +83,11 @@ export function Constellation() {
         </mesh>
       </group>
       {/* current-cluster focus glow: dim because nothing is in focus */}
-      <sprite scale={[9, 9, 1]} position={[0, 0, -3]}>
-        <spriteMaterial color="#2247D6" transparent opacity={0.08} depthWrite={false} blending={THREE.AdditiveBlending} />
-      </sprite>
+      {glow && (
+        <sprite scale={[14, 14, 1]} position={[0, 0, -3]}>
+          <spriteMaterial map={glow} transparent opacity={0.35} depthWrite={false} blending={THREE.AdditiveBlending} />
+        </sprite>
+      )}
     </group>
   )
 }

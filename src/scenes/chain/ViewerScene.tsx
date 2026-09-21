@@ -4,11 +4,13 @@ import { Lightformer } from '@react-three/drei/core/Lightformer'
 import { ContactShadows } from '@react-three/drei/core/ContactShadows'
 import { EffectComposer, Bloom, Noise, Vignette, SMAA } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
-import { useEffect, useRef, type RefObject } from 'react'
+import { useEffect, useMemo, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
 import { ChainRenderer, type Highlight } from './ChainRenderer'
 import type { ChainGeometry } from './geometry'
 import { usePostAllowed, useQuality } from '~/motion/useReducedMotion'
+import { radialTexture } from '../hero/HeroScene'
+import { mulberry32 } from './geometry'
 
 interface Props {
   geometry: ChainGeometry
@@ -67,7 +69,16 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
     return () => { el.removeEventListener('pointerdown', down); el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up) }
   }, [gl])
 
-  const fit = 4.2
+  const fit = 4.6
+  const backdropTex = useMemo(() => radialTexture([[0, `rgba(34,71,214,0.16)`], [0.4, `rgba(20,24,44,0.12)`], [0.75, `rgba(12,13,20,0.05)`], [1, `rgba(10,11,14,0)`]], 512), [])
+  const dust = useMemo(() => {
+    const rnd = mulberry32(0x444f5353)
+    const m = Math.round(700 * q.particles)
+    const a = new Float32Array(m * 3)
+    for (let i = 0; i < m; i++) { a[i * 3] = (rnd() - 0.5) * 70; a[i * 3 + 1] = (rnd() - 0.5) * 40; a[i * 3 + 2] = -14 - rnd() * 30 }
+    return a
+  }, [q.particles])
+  const dustRef = useRef<THREE.Points>(null)
   const born = useRef(0)
   useFrame((state, dt) => {
     if (!born.current) born.current = state.clock.elapsedTime
@@ -100,6 +111,7 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
     // camera settles in on assembly, then drifts deeper as the header scrolls away
     camera.position.set(0, 0.3 + leave * 0.6, z - progress.current * 1.2 + leave * 4.5)
     camera.lookAt(0, -leave * 0.6, 0)
+    if (dustRef.current) { dustRef.current.rotation.z += dt * 0.004; dustRef.current.position.x = state.pointer.x * 0.6 }
   })
 
   return (
@@ -115,6 +127,16 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
       {/* rim: separates the structure from the dark; signal: data-driven */}
       <directionalLight position={[-6, -3, -7]} intensity={1.4} color={tint} />
       <pointLight ref={signalLight} position={[2, 3, 4]} intensity={0} color={tint} distance={16} decay={1.8} />
+      {backdropTex && (
+        <mesh position={[10, 1, -48]} scale={[120, 95, 1]}>
+          <planeGeometry />
+          <meshBasicMaterial map={backdropTex} transparent depthWrite={false} fog={false} />
+        </mesh>
+      )}
+      <points ref={dustRef}>
+        <bufferGeometry><bufferAttribute attach="attributes-position" args={[dust, 3]} /></bufferGeometry>
+        <pointsMaterial color="#7FB7D9" size={0.07} sizeAttenuation transparent opacity={0.4} depthWrite={false} />
+      </points>
       <group ref={orbit}>
         <ChainRenderer geometry={geometry} progress={progress} lod={0} fitMode="fixed" fit={fit} rotate={0} tint={tint} accent={accent} labels={labels} reducedEffects={reducedEffects} tilt={[0.1, 0.2, 0]} highlight={highlight} dim={dimRef} />
       </group>

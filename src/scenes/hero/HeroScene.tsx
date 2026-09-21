@@ -19,6 +19,7 @@ interface Props {
 }
 
 const FIT = 5.6 // world radius of the chain
+const TILT: [number, number, number] = [0.12, 0.18, 0]
 
 // Camera path: full view (chain upper-right of the headline) → close on the N-terminus → skim THROUGH the
 // structure just above the PPP hinge (residues pass at the frame edges) → out past the C-terminus → look back
@@ -30,7 +31,7 @@ const CAM = new THREE.CatmullRomCurve3(
     new THREE.Vector3(-2.4, 2.1, 3.9),
     new THREE.Vector3(1.8, 1.7, 3.5),
     new THREE.Vector3(5.8, 0.5, 4.4),
-    new THREE.Vector3(9.2, 2.0, 11.8),
+    new THREE.Vector3(9.6, 2.2, 12.4),
   ],
   false,
   'centripetal',
@@ -43,7 +44,7 @@ const LOOK = new THREE.CatmullRomCurve3(
     new THREE.Vector3(0.8, -0.5, -0.4),
     new THREE.Vector3(4.0, -0.7, -0.9),
     new THREE.Vector3(3.0, 0.0, 0.6),
-    new THREE.Vector3(3.6, 0.2, 1.8),
+    new THREE.Vector3(2.2, 0.2, 1.0),
   ],
   false,
   'centripetal',
@@ -52,10 +53,13 @@ const LOOK = new THREE.CatmullRomCurve3(
 
 const _pos = new THREE.Vector3()
 const _look = new THREE.Vector3()
+const _fwd = new THREE.Vector3()
+const _right = new THREE.Vector3()
+const _up = new THREE.Vector3()
 const smooth01 = (a: number, b: number, x: number) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t) }
 
 /** Radial gradient texture: used for haze sprites and the far backdrop so darkness has falloff, never flat. */
-function radialTexture(stops: Array<[number, string]>, size = 256): THREE.CanvasTexture | null {
+export function radialTexture(stops: Array<[number, string]>, size = 256): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null
   const c = document.createElement('canvas')
   c.width = c.height = size
@@ -87,10 +91,10 @@ function useTextTexture(text: string) {
       const c = tex.image as HTMLCanvasElement
       const ctx = c.getContext('2d')!
       ctx.clearRect(0, 0, c.width, c.height)
-      ctx.font = "800 250px 'Manrope Variable', 'Inter Variable', system-ui, sans-serif"
+      ctx.font = "800 230px 'Manrope Variable', 'Inter Variable', system-ui, sans-serif"
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
-      ctx.letterSpacing = '-8px'
+      ctx.letterSpacing = '-6px'
       ctx.fillStyle = 'rgba(242,238,230,0.96)'
       ctx.shadowColor = 'rgba(95,227,255,0.35)'
       ctx.shadowBlur = 24
@@ -98,34 +102,39 @@ function useTextTexture(text: string) {
       tex.needsUpdate = true
     }
     draw()
-    document.fonts?.load("800 250px 'Manrope Variable'").then(draw).catch(() => {})
+    document.fonts?.load("800 230px 'Manrope Variable'").then(draw).catch(() => {})
   }, [tex, text])
   return tex
 }
 
-/** A thin bond between two points (the resolve graph edges). */
-function Bond({ a, b, color, opacity }: { a: [number, number, number]; b: [number, number, number]; color: string; opacity: RefObject<number> }) {
+/** A thin bond between two moving points (the resolve graph edges). */
+function Bond({ a, b, color, opacity }: { a: RefObject<THREE.Vector3>; b: RefObject<THREE.Vector3>; color: string; opacity: RefObject<number> }) {
   const ref = useRef<THREE.Mesh>(null)
-  const { mid, q, len } = useMemo(() => {
-    const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b)
-    const dir = B.clone().sub(A)
-    return { mid: A.clone().add(B).multiplyScalar(0.5), q: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.clone().normalize()), len: dir.length() }
-  }, [a, b])
-  useFrame(() => { if (ref.current) (ref.current.material as THREE.MeshBasicMaterial).opacity = 0.55 * (opacity.current ?? 0) })
+  const dir = useMemo(() => new THREE.Vector3(), [])
+  useFrame(() => {
+    const m = ref.current
+    if (!m || !a.current || !b.current) return
+    dir.copy(b.current).sub(a.current)
+    const len = dir.length()
+    m.position.copy(a.current).add(b.current).multiplyScalar(0.5)
+    m.quaternion.setFromUnitVectors(_up.set(0, 1, 0), dir.normalize())
+    m.scale.set(1, len, 1)
+    ;(m.material as THREE.MeshBasicMaterial).opacity = 0.55 * (opacity.current ?? 0)
+  })
   return (
-    <mesh ref={ref} position={mid} quaternion={q}>
-      <cylinderGeometry args={[0.035, 0.035, len, 6]} />
+    <mesh ref={ref}>
+      <cylinderGeometry args={[0.035, 0.035, 1, 6]} />
       <meshBasicMaterial color={color} transparent opacity={0} depthWrite={false} />
     </mesh>
   )
 }
 
-const RESOLVE = {
-  chainEnd: [5.3, 0.3, 0.4] as [number, number, number],
-  research: [7.4, -1.3, 2.9] as [number, number, number],
-  claim: [9.6, 0.3, 4.6] as [number, number, number],
-  signal: [11.8, 1.7, 6.2] as [number, number, number],
-}
+/** Resolve-graph node offsets in camera space: [right, up, depth]. Same shape grammar as the lineage graph. */
+const RESOLVE: Array<{ kind: 'research' | 'claim' | 'signal'; off: [number, number, number]; color: string; k: string; sub: string }> = [
+  { kind: 'research', off: [1.4, -0.7, 10.5], color: '#5FE3FF', k: 'Research record', sub: 'verified PMID · indexed' },
+  { kind: 'claim', off: [3.3, 0.3, 12.5], color: '#F2EEE6', k: 'Claim', sub: 'tracked · not labelled true/false' },
+  { kind: 'signal', off: [5.1, 1.3, 14.5], color: '#B9A2FF', k: 'Human signal', sub: 'no corpus · no source access' },
+]
 
 export function HeroScene({ progress, pointer, onPhase }: Props) {
   const post = usePostAllowed()
@@ -135,6 +144,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
   const size = useThree((s) => s.size)
   const root = useRef<THREE.Group>(null)
   const chain = useRef<THREE.Group>(null)
+  const cTerm = useRef<THREE.Object3D>(null)
   const far = useRef<THREE.Points>(null)
   const mid = useRef<THREE.Points>(null)
   const near = useRef<THREE.Group>(null)
@@ -143,13 +153,19 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
   const text = useRef<THREE.Mesh>(null)
   const resolve = useRef<THREE.Group>(null)
   const resolveK = useRef(0)
+  const labelGroups = useRef<Array<THREE.Group | null>>([])
   const labelEls = useRef<Array<HTMLDivElement | null>>([])
   const focus = useMemo(() => new THREE.Vector3(0, 0, 0), [])
   const smooth = useRef({ p: 0, px: 0, py: 0 })
   const highlight = useRef<Highlight | null>(null)
+  const anchors = useRef([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]) // [chainEnd, research, claim, signal]
+  const anchorRefs = useMemo(() => anchors.current.map((v) => ({ current: v })), [])
 
   const geometry = useMemo(() => buildChain(COMPOUND_BY_SLUG['bpc-157']), [])
   const n = geometry.length
+  const fixedScale = FIT / geometry.bounds.radius
+  const centerOffsetRotated = useMemo(() => new THREE.Vector3(-geometry.bounds.center[2], -geometry.bounds.center[1], geometry.bounds.center[0]), [geometry])
+  const lastCA: [number, number, number] = [geometry.ca[(n - 1) * 3], geometry.ca[(n - 1) * 3 + 1], geometry.ca[(n - 1) * 3 + 2]]
 
   const { farDust, midDust, haze } = useMemo(() => {
     const rnd = mulberry32(0x43595241)
@@ -207,6 +223,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
     _pos.y -= s.py * 0.25
     camera.position.copy(_pos)
     camera.lookAt(_look)
+    camera.updateMatrixWorld()
     focus.copy(_look)
 
     if (root.current) {
@@ -231,8 +248,8 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
     const strength = reveal * smooth01(0.12, 0.3, p) * (1 - smooth01(0.8, 0.95, p))
     highlight.current = strength > 0.01 ? { center: along * (n - 1), width: 2.2, strength } : null
     if (signalLight.current) {
-      signalLight.current.position.copy(_look).add(new THREE.Vector3(0.6, 1.2, 1.6))
-      signalLight.current.intensity = 6 * strength + 1.2 * reveal
+      signalLight.current.position.copy(_look).add(_up.set(0.6, 1.2, 1.6))
+      signalLight.current.intensity = 5 * strength + 1.2 * reveal
     }
     // KEY LIGHT responds subtly to the pointer (light response, not object chase)
     if (keyLight.current) keyLight.current.position.set(4 + s.px * 2.5, 6 - s.py * 2, 8)
@@ -243,21 +260,29 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
       const m = text.current.material as THREE.MeshBasicMaterial
       m.opacity = k
       text.current.visible = k > 0.01
-      text.current.position.z = -3.4 - (1 - k) * 0.8
+      text.current.position.z = -6.2 - (1 - k) * 0.8
+      const ts = portrait ? 0.62 : 1
+      text.current.scale.set(11 * ts, 2.75 * ts, 1)
     }
-    // STATE 4: on exit the structure resolves into research → claim → signal
+    // STATE 4: on exit the structure resolves into research → claim → signal (laid out in camera space so it always frames)
     const rk = smooth01(0.76, 0.97, p) * reveal
     resolveK.current = rk
     if (resolve.current) resolve.current.visible = rk > 0.01
-    labelEls.current.forEach((el, i) => { if (el) { el.style.opacity = String(Math.max(0, rk - i * 0.12) / (1 - i * 0.12)); el.style.transform = `translateY(${(1 - rk) * 10}px)` } })
+    if (rk > 0) {
+      camera.getWorldDirection(_fwd)
+      _right.setFromMatrixColumn(camera.matrixWorld, 0)
+      _up.setFromMatrixColumn(camera.matrixWorld, 1)
+      if (cTerm.current) cTerm.current.getWorldPosition(anchors.current[0])
+      RESOLVE.forEach((r, i) => {
+        const a = anchors.current[i + 1]
+        a.copy(camera.position).addScaledVector(_fwd, r.off[2]).addScaledVector(_right, r.off[0]).addScaledVector(_up, r.off[1])
+        labelGroups.current[i]?.position.copy(a)
+      })
+    }
+    labelEls.current.forEach((el, i) => { if (el) { const k = Math.max(0, rk - i * 0.12) / (1 - i * 0.12); el.style.opacity = String(k); el.style.transform = `translateY(${(1 - k) * 10}px)` } })
   })
 
   const dof = post && q.dof
-  const labels = [
-    { k: 'Research record', pos: RESOLVE.research, color: '#5FE3FF', sub: 'verified PMID · indexed' },
-    { k: 'Claim', pos: RESOLVE.claim, color: '#F2EEE6', sub: 'tracked · not labelled true/false' },
-    { k: 'Human signal', pos: RESOLVE.signal, color: '#B9A2FF', sub: 'no corpus · no source access' },
-  ]
 
   return (
     <group ref={root}>
@@ -301,31 +326,39 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
 
       {/* typography in space: behind the hinge, in front of the far residues */}
       {textTex && (
-        <mesh ref={text} position={[1.6, -0.55, -3.4]} rotation={[0, 0.06, 0]} scale={[13.5, 3.375, 1]} visible={false} renderOrder={2}>
+        <mesh ref={text} position={[2.1, -3.1, -6.2]} rotation={[0.18, 0.08, 0]} scale={[11, 2.75, 1]} visible={false} renderOrder={2}>
           <planeGeometry />
           <meshBasicMaterial map={textTex} transparent opacity={0} depthWrite={false} toneMapped={false} />
         </mesh>
       )}
 
       <group ref={chain}>
-        <ChainRenderer geometry={geometry} progress={1} lod={0} fitMode="fixed" fit={FIT} rotate={0} tint="#5FE3FF" accent="#8A63FF" intensity={1.15} tilt={[0.12, 0.18, 0]} markers={false} highlight={highlight} />
+        <ChainRenderer geometry={geometry} progress={1} lod={0} fitMode="fixed" fit={FIT} rotate={0} tint="#5FE3FF" accent="#8A63FF" intensity={1.15} tilt={TILT} markers={false} highlight={highlight} />
+        {/* invisible tracker that mirrors ChainRenderer's transforms so we know where the C-terminus is in world space */}
+        <group rotation={TILT} scale={fixedScale}>
+          <group rotation={[0, Math.PI / 2, 0]} position={centerOffsetRotated}>
+            <object3D ref={cTerm} position={lastCA} />
+          </group>
+        </group>
       </group>
 
       {/* STATE 4: resolve graph — molecule → research → claim → signal */}
       <group ref={resolve} visible={false}>
-        <Bond a={RESOLVE.chainEnd} b={RESOLVE.research} color="#5FE3FF" opacity={resolveK} />
-        <Bond a={RESOLVE.research} b={RESOLVE.claim} color="#F2EEE6" opacity={resolveK} />
-        <Bond a={RESOLVE.claim} b={RESOLVE.signal} color="#8A63FF" opacity={resolveK} />
-        <ResolveNode pos={RESOLVE.research} color="#5FE3FF" k={resolveK} kind="research" />
-        <ResolveNode pos={RESOLVE.claim} color="#F2EEE6" k={resolveK} kind="claim" />
-        <ResolveNode pos={RESOLVE.signal} color="#8A63FF" k={resolveK} kind="signal" />
-        {labels.map((l, i) => (
-          <Html key={l.k} position={l.pos} center distanceFactor={22} zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }}>
-            <div ref={(el) => { labelEls.current[i] = el }} style={{ opacity: 0, transform: 'translateY(10px)', whiteSpace: 'nowrap', transition: 'none', paddingTop: 34, textAlign: 'center' }}>
-              <div style={{ fontFamily: 'Inter Variable, sans-serif', fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 600, color: l.color }}>{l.k}</div>
-              <div style={{ fontFamily: 'JetBrains Mono Variable, monospace', fontSize: 10, color: 'rgba(242,238,230,0.55)', marginTop: 3 }}>{l.sub}</div>
-            </div>
-          </Html>
+        <Bond a={anchorRefs[0]} b={anchorRefs[1]} color="#5FE3FF" opacity={resolveK} />
+        <Bond a={anchorRefs[1]} b={anchorRefs[2]} color="#F2EEE6" opacity={resolveK} />
+        <Bond a={anchorRefs[2]} b={anchorRefs[3]} color="#8A63FF" opacity={resolveK} />
+        {RESOLVE.map((r, i) => (
+          <ResolveNode key={r.kind} at={anchorRefs[i + 1]} color={r.color} k={resolveK} kind={r.kind} />
+        ))}
+        {RESOLVE.map((l, i) => (
+          <group key={l.k} ref={(g) => { labelGroups.current[i] = g }}>
+            <Html zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }}>
+              <div ref={(el) => { labelEls.current[i] = el }} style={{ opacity: 0, transform: 'translateY(10px)', whiteSpace: 'nowrap', paddingLeft: 34, textAlign: 'left' }}>
+                <div style={{ fontFamily: 'Inter Variable, sans-serif', fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 600, color: l.color }}>{l.k}</div>
+                <div style={{ fontFamily: 'JetBrains Mono Variable, monospace', fontSize: 10, color: 'rgba(242,238,230,0.55)', marginTop: 3 }}>{l.sub}</div>
+              </div>
+            </Html>
+          </group>
         ))}
       </group>
 
@@ -354,13 +387,14 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
   )
 }
 
-/** Resolve-graph node: research = sphere, claim = octahedron, signal = hollow ring (no corpus). Same shape grammar as the lineage graph. */
-function ResolveNode({ pos, color, k, kind }: { pos: [number, number, number]; color: string; k: RefObject<number>; kind: 'research' | 'claim' | 'signal' }) {
+/** Resolve-graph node: research = sphere, claim = octahedron, signal = hollow ring (no corpus). Follows its camera-space anchor. */
+function ResolveNode({ at, color, k, kind }: { at: RefObject<THREE.Vector3>; color: string; k: RefObject<number>; kind: 'research' | 'claim' | 'signal' }) {
   const g = useRef<THREE.Group>(null)
   const mat = useRef<THREE.MeshPhysicalMaterial>(null)
   useFrame((state) => {
     const v = k.current ?? 0
     if (g.current) {
+      if (at.current) g.current.position.copy(at.current)
       g.current.scale.setScalar(0.001 + v)
       g.current.rotation.y = state.clock.elapsedTime * 0.35
       g.current.rotation.x = state.clock.elapsedTime * 0.2
@@ -368,9 +402,9 @@ function ResolveNode({ pos, color, k, kind }: { pos: [number, number, number]; c
     if (mat.current) { mat.current.emissiveIntensity = (kind === 'signal' ? 0.25 : 0.9) * v; mat.current.opacity = kind === 'signal' ? 0.55 * v : v }
   })
   return (
-    <group ref={g} position={pos}>
+    <group ref={g}>
       <mesh>
-        {kind === 'research' ? <sphereGeometry args={[0.42, 24, 18]} /> : kind === 'claim' ? <octahedronGeometry args={[0.5, 0]} /> : <torusGeometry args={[0.46, 0.06, 10, 40]} />}
+        {kind === 'research' ? <sphereGeometry args={[0.34, 24, 18]} /> : kind === 'claim' ? <octahedronGeometry args={[0.42, 0]} /> : <torusGeometry args={[0.4, 0.05, 10, 40]} />}
         <meshPhysicalMaterial ref={mat} color={color} emissive={color} emissiveIntensity={0} roughness={0.25} metalness={0.15} clearcoat={1} clearcoatRoughness={0.15} transparent opacity={0} />
       </mesh>
     </group>

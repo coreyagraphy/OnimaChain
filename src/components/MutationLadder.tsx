@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { gsap } from '~/motion/timeline'
 import type { Claim } from '~/data/claims'
 import { ILLUSTRATIVE_BADGE } from '~/data/claims'
@@ -85,11 +85,11 @@ export function MutationLadder({ claim, autoplay = false }: { claim: Claim; auto
             const isSpecies = t.state === 'removed' && speciesGone && SPECIES.test(t.w)
             const isHedge = t.state === 'removed' && uncertaintyGone && HEDGE.test(t.w)
             const grows = t.state === 'added' && (broadens || amplified)
-            const base = t.state === 'removed' ? 'line-through text-amber/70 mr-[0.3em]' : t.state === 'added' ? `${amplified ? 'text-amber' : 'text-violet'} mr-[0.3em]` : 'mr-[0.3em]'
+            const base = t.state === 'removed' ? 'line-through text-amber/70' : t.state === 'added' ? `${amplified ? 'text-amber' : 'text-violet'}` : ''
             return (
-              <span key={i} data-tok data-grow={grows ? '' : undefined} data-detach={isSpecies ? '' : undefined} data-hedge={isHedge ? '' : undefined} className={`${base} ${grows ? 'tok-grow' : ''} ${isSpecies ? 'tok-detach' : ''}`}>
+              <Fragment key={i}><span data-tok data-grow={grows ? '' : undefined} data-detach={isSpecies ? '' : undefined} data-hedge={isHedge ? '' : undefined} className={`${base} ${grows ? 'tok-grow' : ''} ${isSpecies ? 'tok-detach' : ''}`}>
                 {t.w}
-              </span>
+              </span>{' '}</Fragment>
             )
           })}
         </p>

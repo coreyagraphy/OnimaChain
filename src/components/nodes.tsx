@@ -46,7 +46,7 @@ interface SvgNodeProps {
 export function SvgNode({ kind, x, y, r = 14, hollow = false, label, sublabel, active = false, onClick }: SvgNodeProps) {
   const s = NODE_STYLE[kind]
   return (
-    <g className="lg-node" transform={`translate( )`} style={{ cursor: onClick ? 'pointer' : 'default' }} onClick={onClick} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
+    <g className="lg-node" transform={`translate(${x} ${y})`} style={{ cursor: onClick ? 'pointer' : 'default' }} onClick={onClick} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
       {active && <path d={shapePath(s.shape, r + 7)} fill="none" stroke={s.color} strokeOpacity={0.35} strokeWidth={1} />}
       <path d={shapePath(s.shape, r)} fill={hollow ? 'transparent' : s.color} fillOpacity={hollow ? 0 : kind === 'claim' ? 0.95 : 0.85} stroke={s.color} strokeWidth={hollow ? 1.2 : 1} strokeDasharray={hollow ? '3 3' : undefined} />
       {label && (

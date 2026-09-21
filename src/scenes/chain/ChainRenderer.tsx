@@ -286,7 +286,7 @@ export function ChainRenderer({
             w *= hl.strength
           }
           C.setRGB(colors[i * 3], colors[i * 3 + 1], colors[i * 3 + 2])
-          if (w > 0) C.lerp(tintC, Math.min(1, w * 0.85)).multiplyScalar(1 + w * 1.6)
+          if (w > 0) C.lerp(tintC, Math.min(1, w * 0.5)).multiplyScalar(1 + w * 0.95)
           inst.current.setColorAt(i, C)
         }
         if (inst.current.instanceColor) inst.current.instanceColor.needsUpdate = true
