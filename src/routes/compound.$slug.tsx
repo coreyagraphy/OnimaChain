@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from '@tanstack/react-router'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { COMPOUND_BY_SLUG, computedMW, displayName, type Compound } from '~/data/compounds'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { claimsForCompound, RELATIONSHIP_LABEL, TRANSLATION_STAGES } from '~/data/claims'
@@ -22,6 +22,8 @@ import { ProvenanceLabel } from '~/components/SourceBadge'
 import { SourceCard } from '~/components/SourceCard'
 import { ScrollTrigger } from '~/motion/timeline'
 import { BRAND } from '~/brand'
+import { descriptionFor, PRICE_PLACEHOLDER, themeFor, wordmarkStyle } from '~/data/commerce'
+import { useCommerceStore } from '~/stores/commerce'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
@@ -49,6 +51,7 @@ function Dossier() {
   const { slug } = Route.useLoaderData()
   const c = COMPOUND_BY_SLUG[slug]
   const domain = DOMAIN_BY_ID[c.domain]
+  const productTheme = themeFor(c)
   const geometry = useMemo(() => buildChain(c), [c])
   const studies = studiesForCompound(slug)
   const claims = claimsForCompound(slug)
@@ -59,6 +62,8 @@ function Dossier() {
   const groups = distinctGroups(studies)
   const mw = c.mw ?? computedMW(c)
   const [drawer, setDrawer] = useState<string | null>(null)
+  const [quantity, setQuantity] = useState(1)
+  const addToCart = useCommerceStore((s) => s.add)
   const header = useRef<HTMLElement>(null)
   const scroll = useRef(0)
   useEffect(() => {
@@ -69,12 +74,14 @@ function Dossier() {
   const events = claims.flatMap((cl) => cl.changeHistory.map((e) => ({ ...e, claim: cl.id })))
 
   return (
-    <article className="pt-16">
+    <article className="pt-[72px] compound-world" style={{ '--product': productTheme.primary, '--product-2': productTheme.secondary, '--product-3': productTheme.tertiary } as CSSProperties}>
       {/* A — immersive header */}
-      <header ref={header} className="relative min-h-[92vh] grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-stretch overflow-hidden" style={{ background: `radial-gradient(70% 60% at 75% 40%, ${domain.palette.base}14, transparent 60%)` }}>
+      <header ref={header} className="relative min-h-[92vh] grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-stretch overflow-hidden product-hero" style={{ background: `radial-gradient(70% 60% at 75% 40%, ${productTheme.primary}22, transparent 60%)` }}>
         <div className="wrap !mr-0 py-12 lg:py-16 flex flex-col justify-center relative z-10">
           <p className="label" style={{ color: domain.palette.base }}>{domain.name} · {domain.researchLabel}</p>
-          <h1 className="display text-[clamp(2.8rem,6.5vw,6rem)] mt-4">{displayName(c)}</h1>
+          <h1 className="wordmark text-[clamp(3.4rem,7.5vw,7.2rem)] mt-4" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>
+          <p className="mt-5 text-base text-bone/76 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
+          <div className="mt-7 flex items-end gap-6"><div><p className="label">Temporary price</p><p className="display-md text-3xl mt-1">{PRICE_PLACEHOLDER}</p></div><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
           {c.displayName && <p className="mono text-[12px] text-bone/55 mt-2">Compound: {c.name.toLowerCase()}</p>}
           {c.aliases.length > 0 && <p className="mt-4 text-sm muted">Also indexed as {c.aliases.join(' · ')}</p>}
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-w-lg">
@@ -89,25 +96,29 @@ function Dossier() {
             <div className="col-span-2"><dt className="label">Structure provenance</dt><dd className="mt-1"><ProvenanceLabel compound={c} /></dd></div>
           </dl>
           {c.note && <p className="mt-4 text-[12px] muted max-w-lg">{c.note}</p>}
-          <div className="mt-8 flex flex-wrap gap-2">
-            <a href="#structure" className="btn btn-primary">View structure</a>
+          <div className="mt-8 flex flex-wrap gap-2 items-center">
+            <div className="quantity-control" aria-label="Quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button onClick={() => setQuantity(quantity + 1)} aria-label="Increase quantity">+</button></div>
+            <button className="btn commerce-btn" onClick={() => addToCart(c.slug, quantity)} data-cursor="add">Add to cart</button>
             <Link to="/compare" search={{ a: slug, b: slug === 'tb-500' ? 'bpc-157' : 'tb-500' }} className="btn">Compare</Link>
             <Link to="/saved" className="btn">Save</Link>
             <button className="btn" onClick={() => setDrawer('share')}>Share</button>
           </div>
+          <a href="#snapshot" className="label mt-8 hover:text-bone">Explore the research ↓</a>
         </div>
         <div id="structure" className="relative min-h-[440px] lg:min-h-0">
           <StructureViewer compound={c} tint={domain.palette.base} accent={domain.palette.accent} scrollRef={scroll} />
         </div>
       </header>
 
+      <nav className="research-tabs" aria-label="Product research sections"><a href="#snapshot">Overview</a><a href="#genome">Research</a><a href="#signal">What people report</a><a href="#translation">How far research has gone</a><a href="#timeline">Timeline</a><a href="#sources">Sources</a></nav>
+
       {/* B — snapshot */}
       <Section id="snapshot" k="B" title="Snapshot">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          <Snap title="Research footprint" onOpen={() => setDrawer('research')}>{studies.length ? `${dist.inVitro} in vitro · ${dist.animal} animal · ${dist.human} human · ${dist.review} review` : CORPUS_ABSENCE}</Snap>
-          <Snap title="Human signal footprint" onOpen={() => setDrawer('signal')}>{CORPUS.header}</Snap>
-          <Snap title="Translation state" onOpen={() => setDrawer('translation')}>{translation.length ? translation.map((t) => `${t.outcome}: ${t.stages.length ? TRANSLATION_STAGES.filter((s) => t.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'no supported stage'}`).join(' · ') : 'No outcome mapped'}</Snap>
-          <Snap title="Latest meaningful change" onOpen={() => setDrawer('change')} amber>{change ? `${change.date} — ${change.change}` : 'No change recorded'}</Snap>
+          <Snap title="What researchers have studied" onOpen={() => setDrawer('research')}>{studies.length ? `${dist.inVitro} in vitro · ${dist.animal} animal · ${dist.human} human · ${dist.review} review` : 'We haven’t added a verified study for this yet.'}</Snap>
+          <Snap title="What people are talking about" onOpen={() => setDrawer('signal')}>{CORPUS.header}</Snap>
+          <Snap title="How far the research has gone" onOpen={() => setDrawer('translation')}>{translation.length ? translation.map((t) => `${t.outcome}: ${t.stages.length ? TRANSLATION_STAGES.filter((s) => t.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'no supported stage'}`).join(' · ') : 'No outcome mapped yet'}</Snap>
+          <Snap title="What's new" onOpen={() => setDrawer('change')} amber>{change ? `${change.date} — ${change.change}` : 'No change recorded'}</Snap>
           <Snap title="Regulatory snapshot" onOpen={() => setDrawer('regulatory')}>No regulatory record indexed · <Link to="/status/$compound" params={{ compound: slug }} className="underline">jurisdiction view</Link></Snap>
         </div>
       </Section>

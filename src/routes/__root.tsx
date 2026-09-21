@@ -8,6 +8,7 @@ import { initVisualMode } from '~/motion/useReducedMotion'
 import { startLenis, stopLenis } from '~/motion/lenis'
 import { NotFoundFragment } from '~/components/NotFoundFragment'
 import { BRAND } from '~/brand'
+import { CommerceChrome } from '~/components/CommerceChrome'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -58,6 +59,7 @@ function RootComponent() {
   return (
     <RootDocument>
       <Nav />
+      <CommerceChrome />
       <GlobalCanvas />
       <main className="min-h-screen" data-universe={universe}>
         <Outlet />

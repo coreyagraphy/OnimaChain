@@ -4,6 +4,8 @@ Cyravon is a research-first **molecular evidence & signal atlas for peptides**: 
 
 This document is the complete state of the project. Read it top to bottom before touching code.
 
+> **2026-09-21 commerce override:** Corey explicitly confirmed, “This is commerce. This is a commerce site.” The attached **CYRAVON — PREMIUM CINEMATIC E-COMMERCE OVERHAUL** now supersedes the former no-commerce rule. Product cards, Quick View, cart, placeholder pricing, and commerce-first product headers are intentional. Final prices, payments, fulfillment, and product-by-product commercial/regulatory decisions remain pending. The live site is **https://cyravon.netlify.app** (Netlify site `cyravon`).
+
 ---
 
 ## 1. Where everything is
@@ -41,7 +43,7 @@ Stack: TanStack Start (file routes), React 19, TypeScript, Tailwind v4, three ^0
 
 ## 3. Red lines — non-negotiable (from the brief)
 
-1. No dosing, protocols, reconstitution/syringe calculators, stacks, purchase links, vendor names, affiliate rankings, "best for X".
+1. **Superseded in part on 2026-09-21:** commerce UI, placeholder pricing, cart, and future checkout are authorized. The prohibitions on dosing, protocols, reconstitution/syringe calculators, stacks, affiliate rankings, and unsupported “best for X” claims remain in force.
 2. No TRUE/FALSE labels on claims. No "proven / cures / heals / safe / dangerous / debunked / miracle" unless quoting a sourced text.
 3. **No invented PMIDs, DOIs, authors, institutions, mention counts, cluster counts, dates, or regulatory events.** Every `Study` must resolve via NCBI eutils at build time (`tools/verify-pmids.ts` enforces it — extend, never bypass). Unverifiable → render "Source relationship unresolved."
 4. Human Signal: **no platform access exists.** Every signal panel shows `Corpus: 0 sources · Collection window: none · Platforms: none enabled` and the empty state. Never seed fake reports.

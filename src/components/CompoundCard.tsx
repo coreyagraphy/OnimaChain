@@ -1,92 +1,44 @@
 import { Link } from '@tanstack/react-router'
 import { lazy, Suspense, useMemo, useState, type CSSProperties } from 'react'
-import { displayName, type Compound } from '~/data/compounds'
+import { computedMW, displayName, type Compound } from '~/data/compounds'
+import { descriptionFor, PRICE_PLACEHOLDER, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAIN_BY_ID } from '~/data/domains'
-import { distributionFor, latestChangeFor } from '~/data/evidence'
 import { buildChain } from '~/scenes/chain/geometry'
 import { SceneView } from '~/scenes/Canvas'
-import { rigVariation } from '~/scenes/rigs'
 import { SequenceSVG } from './SequenceSVG'
-import { provenanceText } from './SourceBadge'
-import { BRAND } from '~/brand'
+import { useCommerceStore } from '~/stores/commerce'
 
 const DomainRig = lazy(() => import('~/scenes/rigs').then((m) => ({ default: m.DomainRig })))
-
 export type CardLayout = 'portrait' | 'wide' | 'square'
-const LAYOUTS: CardLayout[] = ['portrait', 'wide', 'square']
-const SIZE: Record<CardLayout, string> = {
-  portrait: 'w-[260px] h-[360px]',
-  wide: 'w-[400px] h-[270px]',
-  square: 'w-[300px] h-[300px]',
-}
-
+const SIZE: Record<CardLayout, string> = { portrait: 'w-[300px] h-[440px]', wide: 'w-[430px] h-[350px]', square: 'w-[340px] h-[390px]' }
 interface Props { compound: Compound; index: number; layout?: CardLayout; fluid?: boolean }
 
-/**
- * One compound, one card. DomainRig at LOD-2 with three data-driven variations
- * (real geometry, accent from dominant residue class, tempo from chain length). No two alike.
- * Shows: name · evidence distribution (verified only) · latest change · community-signal presence.
- */
 export function CompoundCard({ compound, index, layout, fluid = false }: Props) {
-  const lay = layout ?? LAYOUTS[index % 3]
+  const lay = layout ?? (['portrait', 'wide', 'square'] as const)[index % 3]
   const domain = DOMAIN_BY_ID[compound.domain]
+  const theme = themeFor(compound)
   const geometry = useMemo(() => buildChain(compound), [compound])
-  const v = useMemo(() => rigVariation(compound.domain, geometry), [compound.domain, geometry])
-  const dist = distributionFor(compound.slug)
-  const change = latestChangeFor(compound.slug)
-  const prov = provenanceText(compound)
+  const add = useCommerceStore((s) => s.add)
+  const setQuickView = useCommerceStore((s) => s.setQuickView)
   const [hover, setHover] = useState(false)
+  const [added, setAdded] = useState(false)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
-
+  const mw = compound.mw ?? computedMW(compound)
+  const style = { '--product': theme.primary, '--product-2': theme.secondary, '--product-3': theme.tertiary, transform: hover ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-7px)` : undefined } as CSSProperties
+  const quickAdd = () => { add(compound.slug); setAdded(true); window.setTimeout(() => setAdded(false), 1200) }
   return (
-    <Link
-      to="/compound/$slug"
-      params={{ slug: compound.slug }}
-      className={`card-tilt neon-card group block relative shrink-0 rounded-2xl overflow-hidden panel-flat ${fluid ? 'w-full h-[340px]' : SIZE[lay]}`}
-      style={{ '--panel-accent': v.tint, '--panel-accent-2': v.accent, transform: hover ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px) scale(1.012)` : undefined } as CSSProperties}
-      onPointerEnter={() => setHover(true)}
-      onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }}
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect()
-        setTilt({ x: -((e.clientY - r.top) / r.height - 0.5) * 7, y: ((e.clientX - r.left) / r.width - 0.5) * 9 })
-      }}
-      aria-label={`${displayName(compound)} — ${domain.name}`}
-    >
-      <div className="absolute inset-0" style={{ background: `radial-gradient(120% 90% at 50% 110%, ${v.tint}1f, transparent 60%)` }} />
-      <SceneView
-        className="absolute left-0 right-0 top-10 bottom-[118px]"
-        fallback={<SequenceSVG geometry={geometry} tint={v.tint} className="absolute inset-0 w-full h-full p-4 opacity-90" />}
-      >
-        <Suspense fallback={null}>
-          <DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.15 : 1.18} />
-        </Suspense>
-      </SceneView>
-      <div className="absolute inset-x-0 top-0 p-4 flex items-start justify-between pointer-events-none">
-        <span className="label whitespace-nowrap">{domain.name}</span>
-        <span className="label !text-bone/45 mono whitespace-nowrap">{geometry.placeholder ? 'seq. pending' : `${geometry.length} aa`}</span>
+    <article className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[440px]' : SIZE[lay]}`} style={style} onPointerEnter={() => setHover(true)} onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }} onPointerMove={(e) => { const r=e.currentTarget.getBoundingClientRect(); setTilt({ x:-((e.clientY-r.top)/r.height-.5)*5, y:((e.clientX-r.left)/r.width-.5)*5 }) }}>
+      <div className="product-card-atmosphere" aria-hidden />
+      <Link to="/compound/$slug" params={{ slug: compound.slug }} className="absolute inset-0 z-[1]" aria-label={`Open ${displayName(compound)}`} data-cursor="product" />
+      <div className="absolute inset-x-0 top-0 h-[58%] pointer-events-none"><SceneView className="absolute inset-0" fallback={<SequenceSVG geometry={geometry} tint={theme.primary} className="absolute inset-0 w-full h-full p-6 opacity-90" />}><Suspense fallback={null}><DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.25 : 1.32} /></Suspense></SceneView></div>
+      <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span><span className="mono text-[10px] text-bone/45">{geometry.placeholder ? 'STRUCTURE PENDING' : `${geometry.length} AA`}</span></div>
+      <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
+        <div className="flex items-end justify-between gap-3"><h3 className="wordmark text-[clamp(1.8rem,3vw,2.6rem)]" style={wordmarkStyle(theme)}>{displayName(compound)}</h3><strong className="mono text-sm whitespace-nowrap">{PRICE_PLACEHOLDER}</strong></div>
+        <p className="mt-2 text-[12px] text-bone/58 line-clamp-2">{descriptionFor(compound)}</p>
+        <div className="mt-3 flex gap-3 mono text-[10px] text-bone/50"><span>{compound.sequence ? `${compound.sequence.length} residues` : 'length pending'}</span><span>{mw ? `${mw} Da` : 'MW pending'}</span></div>
+        <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Quick view</button><button className="btn btn-sm commerce-btn justify-center" onClick={quickAdd} data-cursor="add">{added ? 'Added' : 'Add to cart'}</button></div>
       </div>
-      <div className="absolute inset-x-0 bottom-0 p-4 pointer-events-none">
-        <h3 className="display text-[22px] text-bone">{displayName(compound)}</h3>
-        <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5" aria-label="Evidence distribution">
-          {dist.total === 0 ? (
-            <span className="text-[11px] faint">No qualifying record is currently indexed in {BRAND}&rsquo;s corpus</span>
-          ) : (
-            <>
-              {[['in vitro', dist.inVitro, '#B9A2FF'], ['animal', dist.animal, '#5FE3FF'], ['human', dist.human, '#F2EEE6'], ['review', dist.review, '#8FB0FF']].map(([l, n, c]) => (
-                <span key={l as string} className="mono text-[10px] text-bone/70 flex items-center gap-1 whitespace-nowrap">
-                  <span className="inline-block h-1.5 rounded-sm" style={{ width: 6 + (n as number) * 8, background: (n as number) ? (c as string) : 'rgba(242,238,230,0.15)' }} />
-                  {n as number} {l as string}
-                </span>
-              ))}
-            </>
-          )}
-        </div>
-        <p className="mt-1.5 text-[11px] text-bone/50 truncate">
-          {change ? <><span className="text-amber">Δ {change.date}</span> {change.change}</> : 'No change recorded'} · signal: none enabled
-        </p>
-        <p className="mt-1 mono text-[10px] text-bone/35 truncate">{prov.primary}</p>
-      </div>
-      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-cyan/0 group-hover:ring-cyan/40 transition" />
-    </Link>
+      <div className="product-card-edge" aria-hidden />
+    </article>
   )
 }

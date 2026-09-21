@@ -3,45 +3,37 @@ import { CORPUS_CHECKED_AT, STUDIES } from '~/data/studies'
 import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/methodology')({
-  head: () => ({ meta: [{ title: `Methodology — ${BRAND}` }] }),
+  head: () => ({ meta: [{ title: `How we check what we show — ${BRAND}` }] }),
   component: Methodology,
 })
 
-const ITEMS: Array<{ q: string; a: string; state?: string }> = [
-  { q: 'How sources are collected', a: 'Scientific records enter as PubMed identifiers listed in a versioned data file. At build time every PMID is resolved against NCBI eutils esummary; the resolved title must contain an expected keyword or the build fails. Titles, years, journals and author lists come only from the resolver, never from editorial text.', state: `Last corpus check: ${CORPUS_CHECKED_AT}` },
-  { q: 'How claims are normalized', a: 'A claim receives a canonical ID (e.g. CLAIM-BPC157-TENDON-REPAIR), an origin record (or an explicit unresolved state), an original scope with wording copied verbatim from the origin abstract, and a mutation ladder whose non-source steps carry the badge “Illustrative wording — not an indexed source”.' },
-  { q: 'How reports are clustered', a: 'Not yet performed. No platform adapter is enabled, so no report exists to cluster. When enabled, clustering keys are body area, stated research goal, reported observation, compound, combination, duration, co-interventions, platform and date.', state: 'Not enabled' },
-  { q: 'How duplicates are detected', a: 'Not yet performed. The planned model assigns every mention one relationship: independent origin, response, repost/quotation, derivative claim, near duplicate, or unknown. Mentions are never silently counted as independent.', state: 'Not enabled' },
-  { q: 'How independence is estimated', a: 'For research: distinct last-author surnames among verified records, shown explicitly as a proxy. Institutions, funding and citation networks are “Not assessed” until a Crossref/efetch connector exists. For community signal: not assessed — no corpus.' },
-  { q: 'How LLMs are used', a: 'In this build: not at runtime. Study tags (mechanistic, tendon, cell-migration…) were assigned editorially from abstract text and are labelled as such. Any future LLM use is limited to extraction, classification and drafting; it never decides efficacy, truth of an anecdote, safety, regulatory meaning, account identity, or causation. Deterministic records override prose.' },
-  { q: 'Where humans review data', a: 'Every study relationship (SUPPORTS / PARTIALLY_SUPPORTS / CONTRADICTS / DOES_NOT_TEST) is an editorial assignment with a verbatim basis quote where one exists. An editorial console is planned; until then, the data files are the review surface and every change is versioned in git.' },
-  { q: 'How corrections work', a: 'A public ledger (/corrections) records date, affected record, before, after, reason and source. Old interpretations are never deleted; they are superseded with a diff.' },
-  { q: 'How regulatory status is dated', a: 'Every regulatory record must carry a jurisdiction and a date. None is indexed. An advisory vote is never displayed as an approval; “not prohibited” is never displayed as “approved”.' },
-  { q: 'How evidence relationships are assigned', a: 'study SUPPORTS | PARTIALLY_SUPPORTS | CONTRADICTS | DOES_NOT_TEST claim. Each requires provenance (a PMID verified at build time and, where possible, an abstract quote). Missing provenance fails closed: “Source relationship unresolved”.' },
-  { q: 'Known limitations', a: `The corpus is ${STUDIES.length} records across two compounds. Species is read only from titles (abstract-derived species is flagged separately). Study type is set only when obvious. No trial, regulatory or community connector exists. The 3D structures are procedural, sequence-derived visualizations, never measured.` },
+const PRINCIPLES = [
+  { n: '01', title: 'Find the source', body: 'We start with the original research whenever we can—not another website repeating it.' },
+  { n: '02', title: 'Check the record', body: 'Study titles, publication details, and identifiers are verified before we show them as confirmed research.' },
+  { n: '03', title: 'Keep stories separate', body: "What researchers measured and what people say online are both worth exploring—but they aren't the same kind of evidence." },
+  { n: '04', title: 'Show the gaps', body: "If we haven't checked something yet, we say that. If research stops at animals, we show where it stops." },
+]
+
+const DETAILS = [
+  ['How sources enter the library', `Scientific records enter through PubMed identifiers in a versioned data file. Every identifier is checked against NCBI before the site builds. Titles, dates, journals, and author lists come from that record—not promotional copy. Last corpus check: ${CORPUS_CHECKED_AT}.`],
+  ['How we connect claims to research', 'Every tracked claim has an origin record or a clear “connection not yet verified” state. We preserve the original scope, including the species, model, endpoint, and source wording. Later interpretations stay visibly separate.'],
+  ['How we handle real-world reports', "No community-source connector is enabled yet, so we don't display invented totals. When collection begins, reports will retain platform, date, research goal, co-interventions, and duplication relationships."],
+  ['How we look for independent research', 'We currently show distinct last-author names as a limited proxy. Institutions, funding, and citation networks remain unchecked until the necessary source connectors are available.'],
+  ['Where people review the record', 'Study-to-claim relationships are editorial decisions with a source basis. The data files are currently the review surface, and changes are versioned in git. A dedicated editorial console is planned.'],
+  ['How corrections work', 'The public corrections ledger records the date, affected record, before-and-after text, reason, and source. Previous interpretations are superseded, not quietly erased.'],
+  ['Known limits', `The current corpus contains ${STUDIES.length} verified records across two compounds. No trial, regulatory, or community connector is enabled. Three-dimensional structures are procedural, sequence-derived visualizations—not measured structures unless explicitly identified as deposited.`],
 ]
 
 function Methodology() {
   return (
-    <div className="pt-28 wrap">
-      <p className="label label-cyan">Methodology</p>
-      <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">Trust is part of the product.</h1>
-      <p className="lede mt-5 max-w-2xl">Exactly how {BRAND} collects, verifies, relates and versions what it shows — and what it cannot currently do.</p>
-      <div className="mt-12 grid gap-px bg-bone/10 border hairline rounded-2xl overflow-hidden">
-        {ITEMS.map((it) => (
-          <section key={it.q} className="bg-obsidian p-6 md:p-8 grid md:grid-cols-[280px_1fr] gap-4">
-            <div><h2 className="display-md text-xl">{it.q}</h2>{it.state && <p className="mono text-[11px] text-bone/45 mt-2">{it.state}</p>}</div>
-            <p className="text-sm text-bone/80 leading-relaxed">{it.a}</p>
-          </section>
-        ))}
-      </div>
-      <section className="mt-12">
-        <p className="label label-cyan mb-3">Schema (excerpt)</p>
-        <pre className="panel-flat p-5 mono text-[12px] leading-relaxed overflow-x-auto text-bone/80">{`Study      { pmid, expectKeyword, compounds[], speciesFromTitle, studyType, tags[], abstractQuote?, status: verified|unverified, meta: eutils esummary }
-Claim      { id, title, status: tracked, compound, originStudy|null, originalScope{species, model, endpoint, wording, wordingSource}, mutation[4], support[{pmid, relationship, basis}], translation{outcome: stages[]}, contradictions[], changeHistory[], interpretation[] }
-Relations  study SUPPORTS|PARTIALLY_SUPPORTS|CONTRADICTS|DOES_NOT_TEST claim · mention DERIVED_FROM origin_cluster (not enabled) · regulatory_event CHANGES status (not enabled)
-Structure  provenance ∈ { Experimentally resolved (PDB …) — deposited, not rendered · Sequence-derived visualization (procedural, not measured) · Conceptual visualization }`}</pre>
-      </section>
+    <div className="pt-28">
+      <header className="wrap method-hero py-16 md:py-24"><p className="label label-cyan">Our method</p><h1 className="display text-[clamp(3.4rem,9vw,9rem)] mt-4 max-w-6xl">We don't ask you to<br/><span className="outline-word">take our word for it.</span></h1><p className="lede mt-8 max-w-2xl">A clear look at how {BRAND} finds sources, checks records, keeps different kinds of evidence separate, and tells you when something is missing.</p></header>
+      <section className="wrap pb-20"><div className="method-grid">{PRINCIPLES.map((p,i)=><article key={p.n} className={`method-card method-card-${i+1}`}><span>{p.n}</span><div><p className="label label-cyan">Method {p.n}</p><h2 className="display-md text-3xl md:text-4xl mt-2">{p.title}</h2><p className="text-sm md:text-base text-bone/70 leading-relaxed mt-5 max-w-md">{p.body}</p></div></article>)}</div></section>
+      <section className="method-depth border-y hairline py-20"><div className="wrap grid lg:grid-cols-[.65fr_1.35fr] gap-12"><div><p className="label label-violet">Go deeper</p><h2 className="display text-[clamp(2.5rem,5vw,5rem)] mt-3">See exactly how this works.</h2><p className="muted mt-5 max-w-sm">The plain-language view comes first. The underlying process stays available for researchers and careful readers.</p></div><div className="grid gap-3">{DETAILS.map(([q,a])=><details key={q} className="method-detail"><summary>{q}<span>+</span></summary><p>{a}</p></details>)}</div></div></section>
+      <section className="wrap py-20"><p className="label label-cyan">Technical implementation</p><h2 className="display-md text-3xl mt-3">The record underneath the interface.</h2><pre className="panel-flat p-5 mt-8 mono text-[12px] leading-relaxed overflow-x-auto text-bone/80">{`Study      { pmid, compounds[], species, studyType, tags[], sourceQuote?, status, NCBI metadata }
+Claim      { id, title, compound, originStudy|null, originalScope, mutation[], support[], translation, contradictions[], changeHistory[] }
+Relations  study SUPPORTS | PARTIALLY_SUPPORTS | CONTRADICTS | DOES_NOT_TEST claim
+Structure  provenance ∈ { deposited PDB | sequence-derived visualization | conceptual visualization }`}</pre></section>
     </div>
   )
 }

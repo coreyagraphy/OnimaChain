@@ -2,92 +2,36 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import { COMPOUNDS, displayName } from '~/data/compounds'
 import { DOMAINS, DOMAIN_BY_ID, type DomainId } from '~/data/domains'
-import { distributionFor, latestChangeFor } from '~/data/evidence'
-import { studiesForCompound } from '~/data/studies'
+import { PRICE_PLACEHOLDER, themeFor } from '~/data/commerce'
 import { CompoundCard } from '~/components/CompoundCard'
-import { provenanceText } from '~/components/SourceBadge'
+import { useCommerceStore } from '~/stores/commerce'
 import { BRAND } from '~/brand'
 
-export const Route = createFileRoute('/explore')({
-  head: () => ({ meta: [{ title: `Explore the Molecular Atlas — ${BRAND}` }] }),
-  component: Explore,
-})
+export const Route = createFileRoute('/explore')({ head:()=>({meta:[{title:`Shop the molecular collection — ${BRAND}`}]}), component:Explore })
+type Sort='alpha'|'length'; type View='grid'|'table'
 
-type Sort = 'alpha' | 'researched' | 'changed'
-type Evidence = 'any' | 'in-vitro' | 'animal' | 'human' | 'review'
-type Prov = 'any' | 'pdb' | 'sequence' | 'conceptual'
-
-function Explore() {
-  const [q, setQ] = useState('')
-  const [domain, setDomain] = useState<DomainId | 'all'>('all')
-  const [evidence, setEvidence] = useState<Evidence>('any')
-  const [prov, setProv] = useState<Prov>('any')
-  const [sort, setSort] = useState<Sort>('alpha')
-  const [view, setView] = useState<'grid' | 'table'>('grid')
-
-  const rows = useMemo(() => {
-    const t = q.trim().toLowerCase()
-    let list = COMPOUNDS.filter((c) => {
-      if (domain !== 'all' && c.domain !== domain) return false
-      if (prov !== 'any' && provenanceText(c).kind !== prov) return false
-      if (evidence !== 'any') {
-        const d = distributionFor(c.slug)
-        const n = evidence === 'in-vitro' ? d.inVitro : evidence === 'animal' ? d.animal : evidence === 'human' ? d.human : d.review
-        if (!n) return false
-      }
-      if (t && !(displayName(c).toLowerCase().includes(t) || c.slug.includes(t) || c.aliases.some((a) => a.toLowerCase().includes(t)) || c.tags.some((x) => x.includes(t)))) return false
-      return true
-    })
-    list = [...list].sort((a, b) => {
-      if (sort === 'alpha') return displayName(a).localeCompare(displayName(b))
-      if (sort === 'researched') return studiesForCompound(b.slug).length - studiesForCompound(a.slug).length || displayName(a).localeCompare(displayName(b))
-      const ca = latestChangeFor(a.slug)?.date ?? '', cb = latestChangeFor(b.slug)?.date ?? ''
-      return cb.localeCompare(ca) || displayName(a).localeCompare(displayName(b))
-    })
-    return list
-  }, [q, domain, evidence, prov, sort])
-
+function Explore(){
+  const [q,setQ]=useState(''),[domain,setDomain]=useState<DomainId|'all'>('all'),[sort,setSort]=useState<Sort>('alpha'),[view,setView]=useState<View>('grid')
+  const add=useCommerceStore((s)=>s.add), quick=useCommerceStore((s)=>s.setQuickView)
+  const rows=useMemo(()=>{
+    const t=q.trim().toLowerCase()
+    return COMPOUNDS.filter(c=>(domain==='all'||c.domain===domain)&&(!t||displayName(c).toLowerCase().includes(t)||c.aliases.some(a=>a.toLowerCase().includes(t))||c.tags.some(x=>x.includes(t)))).sort((a,b)=>sort==='alpha'?displayName(a).localeCompare(displayName(b)):(b.sequence?.length??0)-(a.sequence?.length??0))
+  },[q,domain,sort])
   return (
-    <div className="pt-28 wrap">
-      <p className="label label-cyan">Explore</p>
-      <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">Explore the Molecular Atlas</h1>
-      <p className="lede mt-5 max-w-2xl">{COMPOUNDS.length} compounds across seven research domains. Sorted by what is indexed — never by &ldquo;best&rdquo;.</p>
-
-      <div className="mt-10 grid gap-3 md:grid-cols-[1fr_auto_auto_auto_auto_auto] items-end panel p-4">
-        <label className="grid gap-1"><span className="label">Search</span><input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, alias, tag…" /></label>
-        <label className="grid gap-1"><span className="label">Domain</span><select value={domain} onChange={(e) => setDomain(e.target.value as DomainId | 'all')}><option value="all">All domains</option>{DOMAINS.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}</select></label>
-        <label className="grid gap-1"><span className="label">Evidence type present</span><select value={evidence} onChange={(e) => setEvidence(e.target.value as Evidence)}><option value="any">Any</option><option value="in-vitro">In vitro</option><option value="animal">Animal</option><option value="human">Human</option><option value="review">Review</option></select></label>
-        <label className="grid gap-1"><span className="label">Structure provenance</span><select value={prov} onChange={(e) => setProv(e.target.value as Prov)}><option value="any">Any</option><option value="pdb">Resolved structures exist</option><option value="sequence">Sequence-derived only</option><option value="conceptual">Conceptual (sequence pending)</option></select></label>
-        <label className="grid gap-1"><span className="label">Sort</span><select value={sort} onChange={(e) => setSort(e.target.value as Sort)}><option value="alpha">Alphabetical</option><option value="researched">Most researched (verified count)</option><option value="changed">Recently changed</option></select></label>
-        <div className="flex gap-1" role="group" aria-label="View"><button className="btn btn-sm" aria-pressed={view === 'grid'} onClick={() => setView('grid')}>Grid</button><button className="btn btn-sm" aria-pressed={view === 'table'} onClick={() => setView('table')}>Table</button></div>
-      </div>
-      <p className="mt-4 mono text-[11px] text-bone/50">{rows.length} of {COMPOUNDS.length} compounds</p>
-
-      {view === 'grid' ? (
-        <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {rows.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} fluid />)}
+    <div className="pt-28 pb-20">
+      <header className="wrap shop-hero py-12 md:py-20"><p className="label label-cyan">Shop</p><h1 className="display text-[clamp(3.2rem,9vw,8.6rem)] mt-3">Explore the<br/><span className="outline-word">collection.</span></h1><p className="lede mt-6 max-w-2xl">Browse the full research collection. Open any compound to see its molecular profile, research record, and sources.</p><p className="text-[12px] muted mt-4">Prices are temporary placeholders. Checkout is disabled while commercial requirements are finalized.</p></header>
+      <section className="wrap">
+        <div className="shop-controls">
+          <label><span className="label">Search the collection</span><input type="search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Name, alias, or tag…"/></label>
+          <label><span className="label">Research area</span><select value={domain} onChange={e=>setDomain(e.target.value as DomainId|'all')}><option value="all">All areas</option>{DOMAINS.map(d=><option key={d.id} value={d.id}>{d.name}</option>)}</select></label>
+          <label><span className="label">Sort by</span><select value={sort} onChange={e=>setSort(e.target.value as Sort)}><option value="alpha">Name</option><option value="length">Molecule length</option></select></label>
+          <div className="flex gap-1"><button className="btn btn-sm" aria-pressed={view==='grid'} onClick={()=>setView('grid')}>Grid</button><button className="btn btn-sm" aria-pressed={view==='table'} onClick={()=>setView('table')}>Details</button></div>
         </div>
-      ) : (
-        <div className="mt-6 panel-flat overflow-x-auto">
-          <table className="data">
-            <thead><tr><th>Compound</th><th>Domain</th><th>Residues</th><th>Verified records</th><th>In vitro / animal / human / review</th><th>Structure provenance</th><th>Latest change</th></tr></thead>
-            <tbody>
-              {rows.map((c) => { const d = distributionFor(c.slug); const ch = latestChangeFor(c.slug); return (
-                <tr key={c.slug}>
-                  <td><Link to="/compound/$slug" params={{ slug: c.slug }} className="font-semibold hover:text-cyan">{displayName(c)}</Link><span className="block text-[11px] muted">{c.aliases.slice(0, 2).join(' · ')}</span></td>
-                  <td>{DOMAIN_BY_ID[c.domain].name}</td>
-                  <td className="mono">{c.sequence ? c.sequence.length : 'pending'}</td>
-                  <td className="mono">{d.total || <span className="text-bone/40">0</span>}</td>
-                  <td className="mono">{d.total ? `${d.inVitro} / ${d.animal} / ${d.human} / ${d.review}` : <span className="text-bone/40">no qualifying record</span>}</td>
-                  <td className="text-[12px]">{provenanceText(c).primary}</td>
-                  <td className="mono text-[11px]">{ch ? <span className="text-amber">{ch.date}</span> : '—'}</td>
-                </tr>
-              ) })}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {rows.length === 0 && <p className="mt-10 text-sm muted">No compound matches these filters. Absence from the atlas is not evidence of absence.</p>}
+        <div className="mt-5 flex justify-between gap-4"><p className="mono text-[11px] text-bone/50">{rows.length} of {COMPOUNDS.length} compounds</p><p className="label hidden sm:block">Every result is commerce-enabled</p></div>
+        {view==='grid'?<div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><CompoundCard key={c.slug} compound={c} index={i} fluid/>)}</div>:
+        <div className="mt-8 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Compound</th><th>Research area</th><th>Length</th><th>Price</th><th/></tr></thead><tbody>{rows.map(c=>{const t=themeFor(c);return <tr key={c.slug}><td><Link to="/compound/$slug" params={{slug:c.slug}} className="font-semibold text-lg hover:text-cyan" style={{color:t.primary}}>{displayName(c)}</Link><span className="block text-[11px] muted">{c.tags.slice(0,2).join(' · ')}</span></td><td>{DOMAIN_BY_ID[c.domain].name}</td><td className="mono">{c.sequence?`${c.sequence.length} residues`:'Pending'}</td><td className="mono">{PRICE_PLACEHOLDER}</td><td><div className="flex gap-2 justify-end"><button className="btn btn-sm" onClick={()=>quick(c.slug)}>Quick view</button><button className="btn btn-sm commerce-btn" onClick={()=>add(c.slug)}>Add to cart</button></div></td></tr>})}</tbody></table></div>}
+        {rows.length===0&&<div className="panel p-10 mt-8 text-center"><h2 className="display-md text-2xl">No match yet.</h2><p className="muted text-sm mt-2">Try a different compound name, alias, or research area.</p></div>}
+      </section>
     </div>
   )
 }

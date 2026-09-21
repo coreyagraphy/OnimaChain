@@ -1,206 +1,77 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
 import { CompoundCard } from '~/components/CompoundCard'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
-import { CLAIM_BY_ID, ILLUSTRATIVE_BADGE } from '~/data/claims'
-import { researchPulse } from '~/data/evidence'
-import { STUDY_BY_PMID } from '~/data/studies'
-import { NODE_STYLE, shapePath } from '~/components/nodes'
-import { ScrollTrigger } from '~/motion/timeline'
+import { DOMAINS } from '~/data/domains'
 import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
+  return <><Hero /><FeaturedCollection /><Difference /><ResearchDomains /><MethodPreview /><FinalShop /></>
+}
+
+function FeaturedCollection() {
+  const featured = ['bpc-157', 'tb-500', 'ghk-cu', 'mots-c', 'pt-141', 'semaglutide'].map((slug) => COMPOUND_BY_SLUG[slug])
   return (
-    <>
-      <Hero />
-      <ThreeWorlds />
-      <FeaturedTrace />
-      <ExploreCompounds />
-      <Pulse />
-      <Why />
-    </>
+    <section className="section collection-stage" aria-label="Featured compounds">
+      <div className="wrap flex flex-wrap items-end justify-between gap-6">
+        <div><p className="label label-cyan">Featured compounds</p><h2 className="display text-[clamp(2.5rem,6vw,5.7rem)] mt-3">Every molecule has<br/><span className="outline-word">its own atmosphere.</span></h2></div>
+        <Link to="/explore" className="btn">Shop all {COMPOUNDS.length}</Link>
+      </div>
+      <div className="mt-12 overflow-x-auto rail pb-8"><div className="wrap flex gap-5 items-end w-max">{featured.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} />)}</div></div>
+    </section>
   )
 }
 
-/* ---------- Section 2: the three worlds ---------- */
-const WORLDS = [
-  { id: 'research', k: 'World A', title: 'What research found', body: 'Published experiments, models and trials.', to: '/explore', color: '#5FE3FF' },
-  { id: 'reports', k: 'World B', title: 'What people report', body: 'Structured public experience signals.', to: '/signal', color: '#8A63FF' },
-  { id: 'claims', k: 'World C', title: 'How claims travel', body: 'See how scientific findings become internet narratives.', to: '/claims', color: '#F2EEE6' },
-] as const
-
-function ThreeWorlds() {
-  const [hover, setHover] = useState<number | null>(null)
+function Difference() {
   return (
-    <section className="section wrap relative" aria-label="The three worlds">
-      <p className="label label-cyan">Three disconnected worlds</p>
-      <h2 className="display text-[clamp(2rem,4.6vw,4.2rem)] mt-3 max-w-3xl">Connected without pretending they are the same kind of evidence.</h2>
-      <div className="relative mt-12 grid md:grid-cols-3 gap-4">
-        <svg className="absolute inset-0 w-full h-full pointer-events-none hidden md:block" aria-hidden>
-          {[[0, 1], [1, 2], [0, 2]].map(([a, b]) => {
-            const lit = hover !== null && (hover === a || hover === b)
-            const x1 = `${(a + 0.5) * 33.33}%`, x2 = `${(b + 0.5) * 33.33}%`
-            const y = a === 0 && b === 2 ? '12%' : '50%'
-            return (
-              <line key={`${a}${b}`} x1={x1} y1={y} x2={x2} y2={y} stroke={lit ? WORLDS[hover!].color : '#F2EEE6'} strokeOpacity={lit ? 0.9 : 0.08} strokeWidth={lit ? 1.5 : 1} strokeDasharray={lit ? '0' : '4 6'} style={{ transition: 'stroke-opacity .5s, stroke .5s, stroke-dashoffset 1.2s', strokeDashoffset: lit ? 0 : 40 }} />
-            )
-          })}
-        </svg>
-        {WORLDS.map((w, i) => (
-          <Link key={w.id} to={w.to} className="panel-flat neon-card relative p-7 md:p-9 min-h-[300px] flex flex-col justify-between card-tilt overflow-hidden" onPointerEnter={() => setHover(i)} onPointerLeave={() => setHover(null)} style={{ '--panel-accent': w.color, '--panel-accent-2': i === 0 ? '#33F0C8' : i === 1 ? '#FF4FD8' : '#FFB547', borderColor: hover === i ? `${w.color}88` : undefined } as CSSProperties}>
-            <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl" style={{ background: w.color, opacity: hover === i ? 0.16 : 0.06, transition: 'opacity .6s' }} />
-            <div>
-              <p className="label" style={{ color: w.color }}>{w.k}</p>
-              <h3 className="display-md text-2xl md:text-3xl mt-3">{w.title}</h3>
-            </div>
-            <p className="text-sm muted max-w-xs mt-8">{w.body}</p>
+    <section className="section relative overflow-hidden border-y hairline difference-stage">
+      <div className="molecular-divider" aria-hidden><i/><i/><i/><i/><i/></div>
+      <div className="wrap relative z-10 grid lg:grid-cols-[.75fr_1.25fr] gap-10 items-end">
+        <p className="label label-violet">Why this is different</p>
+        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>product page.</h2><p className="lede mt-7 max-w-2xl">Every compound has a story behind it. We organize the published research, show how far it has gone, and keep online reports separate from controlled studies—so you can explore the full picture without digging through dozens of tabs.</p><Link to="/claims" className="btn mt-8">Explore the research</Link></div>
+      </div>
+    </section>
+  )
+}
+
+function ResearchDomains() {
+  return (
+    <section className="section wrap">
+      <p className="label label-cyan">Browse by research area</p>
+      <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">Seven ways into the collection.</h2>
+      <div className="domain-spectrum mt-10">
+        {DOMAINS.map((d, i) => (
+          <Link key={d.id} to="/explore" className="domain-tile" style={{ '--domain': d.palette.base, '--domain-2': d.palette.accent } as CSSProperties}>
+            <span className="mono text-[10px] opacity-50">0{i + 1}</span><strong className="display-md text-xl md:text-2xl">{d.name}</strong><span className="text-[12px] text-bone/55">{COMPOUNDS.filter((c) => c.domain === d.id).length} compounds</span>
           </Link>
         ))}
       </div>
-      <p className="mt-6 text-sm muted max-w-2xl">Those are separate evidence classes and remain separate everywhere in the atlas. The central question is not &ldquo;does it work?&rdquo; but: where did this claim come from, what does the evidence actually say, what are people reporting, and how independent are those reports?</p>
     </section>
   )
 }
 
-/* ---------- Section 3: featured claim trace ---------- */
-function FeaturedTrace() {
-  const claim = CLAIM_BY_ID['CLAIM-BPC157-TENDON-REPAIR']
-  const origin = claim.originStudy ? STUDY_BY_PMID[claim.originStudy] : undefined
-  const ref = useRef<HTMLDivElement>(null)
-  const prog = useRef<HTMLDivElement>(null)
-  const nodes = useRef<Array<HTMLLIElement | null>>([])
-  useEffect(() => {
-    if (!ref.current) return
-    const st = ScrollTrigger.create({
-      trigger: ref.current,
-      start: 'top 75%',
-      end: 'bottom 55%',
-      scrub: 0.6,
-      onUpdate: (self) => {
-        const p = self.progress
-        if (prog.current) prog.current.style.transform = `scaleX(${p})`
-        nodes.current.forEach((el, i) => {
-          if (!el) return
-          const k = Math.max(0, Math.min(1, (p - i * 0.22) / 0.16))
-          el.style.opacity = String(0.3 + 0.7 * k)
-          el.style.transform = `translateY(${(1 - k) * 14}px)`
-          el.dataset.lit = k > 0.8 ? '1' : '0'
-        })
-      },
-    })
-    return () => st.kill()
-  }, [])
-  const steps = [
-    { kind: 'research' as const, k: 'Paper', title: origin?.title ?? 'Source relationship unresolved', sub: origin ? `${origin.journal} · ${origin.year} · PMID ${origin.pmid}` : null, badge: origin ? null : 'Unverified', quote: claim.mutation[0].wording },
-    { kind: 'claim' as const, k: 'Interpretation', title: claim.mutation[1].wording, sub: claim.mutation[1].classes.join(' · '), badge: ILLUSTRATIVE_BADGE, quote: null },
-    { kind: 'claim' as const, k: 'Social discussion', title: claim.mutation[2].wording, sub: claim.mutation[2].classes.join(' · '), badge: ILLUSTRATIVE_BADGE, quote: null },
-    { kind: 'community' as const, k: 'Community signal', title: 'No source access for this platform', sub: 'Corpus: 0 sources · Collection window: none · Platforms: none enabled', badge: null, quote: null, hollow: true },
-  ]
+const METHOD = [
+  ['01', 'Find the source', 'We start with the original research whenever we can—not another website repeating it.'],
+  ['02', 'Check the record', 'Study titles, publication details, and identifiers are verified before we show them as confirmed research.'],
+  ['03', 'Keep stories separate', "What researchers measured and what people say online aren't the same kind of evidence."],
+  ['04', 'Show the gaps', "If we haven't checked something yet, we say that. If research stops at animals, we show where it stops."],
+]
+function MethodPreview() {
   return (
-    <section className="section bg-graphite/40 border-y hairline" aria-label="Featured claim trace">
-      <div className="wrap">
-        <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="label label-cyan">Featured claim trace</p>
-            <h2 className="display text-[clamp(2rem,4.6vw,4.2rem)] mt-3">&ldquo;{claim.title}&rdquo;</h2>
-            <p className="mt-3 mono text-[12px] text-bone/55">{claim.id} · Tracked research claim · not labelled true or false</p>
-          </div>
-          <Link to="/claim/$id" params={{ id: claim.id }} className="btn btn-primary">Trace this claim</Link>
-        </div>
-        <div ref={ref} className="relative mt-14">
-          <div className="absolute left-0 right-0 top-[22px] h-px bg-bone/10 hidden lg:block">
-            <div ref={prog} className="h-full origin-left bg-gradient-to-r from-cyan via-bone to-violet" style={{ transform: 'scaleX(0)' }} />
-          </div>
-          <ol className="grid lg:grid-cols-4 gap-5">
-            {steps.map((s, i) => {
-              const st = NODE_STYLE[s.kind]
-              return (
-                <li key={s.k} ref={(el) => { nodes.current[i] = el }} className="relative" style={{ opacity: 0.3, transition: 'opacity .3s, transform .3s' }}>
-                  <div className="flex items-center gap-3">
-                    <svg width="44" height="44" viewBox="-22 -22 44 44" className="shrink-0 bg-obsidian rounded-full" aria-hidden>
-                      <path d={shapePath(st.shape, 13)} fill={s.hollow ? 'transparent' : st.color} stroke={st.color} strokeWidth={1.2} strokeDasharray={s.hollow ? '3 3' : undefined} />
-                    </svg>
-                    <p className="label" style={{ color: st.color }}>{s.k}</p>
-                  </div>
-                  <div className={`panel-flat neon-card p-5 mt-4 min-h-[210px] ${s.hollow ? 'border-dashed' : ''}`} style={{ '--panel-accent': st.color } as CSSProperties}>
-                    <p className={`${i === 0 ? 'text-sm' : 'display-md text-xl'} text-bone/95`}>{i === 0 ? s.title : `“${s.title}”`}</p>
-                    {s.quote && i === 0 && <p className="mt-3 text-[12px] text-bone/65 italic border-l-2 border-cyan/40 pl-3">&ldquo;{s.quote}&rdquo;</p>}
-                    {s.sub && <p className="mt-3 mono text-[11px] text-bone/50">{s.sub}</p>}
-                    {s.badge && <span className={`chip mt-3 ${s.badge === 'Unverified' ? 'chip-amber' : 'chip-hollow'}`}>{s.badge}</span>}
-                  </div>
-                </li>
-              )
-            })}
-          </ol>
-        </div>
+    <section className="section methodology-preview border-y hairline">
+      <div className="wrap"><p className="label label-cyan">Our method</p><h2 className="display text-[clamp(3rem,7.5vw,7.5rem)] mt-3 max-w-6xl">We don't ask you to<br/><span className="outline-word">take our word for it.</span></h2>
+        <div className="method-grid mt-14">{METHOD.map(([n,t,b],i)=><article key={n} className={`method-card method-card-${i+1}`}><span>{n}</span><div><p className="label label-cyan">Method {n}</p><h3 className="display-md text-2xl md:text-3xl mt-2">{t}</h3><p className="text-sm text-bone/70 leading-relaxed mt-4">{b}</p></div></article>)}</div>
+        <Link to="/methodology" className="btn mt-10">See the full methodology</Link>
       </div>
     </section>
   )
 }
 
-/* ---------- Section 4: compounds ---------- */
-function ExploreCompounds() {
-  const featured = ['bpc-157', 'tb-500', 'ghk-cu', 'pt-141', 'thymosin-alpha-1', 'll-37', 'semaglutide', 'mots-c'].map((s) => COMPOUND_BY_SLUG[s])
+function FinalShop() {
   return (
-    <section className="section" aria-label="Explore compounds">
-      <div className="wrap flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <p className="label label-cyan">Explore compounds</p>
-          <h2 className="display text-[clamp(2rem,4.6vw,4.2rem)] mt-3">Each drawn from its own sequence.</h2>
-          <p className="mt-3 text-sm muted max-w-xl">Name · evidence distribution from verified records · latest change · community-signal presence. No pricing, no dosing, no &ldquo;best for&rdquo;.</p>
-        </div>
-        <Link to="/explore" className="btn">All {COMPOUNDS.length} compounds</Link>
-      </div>
-      <div className="mt-10 overflow-x-auto rail pb-4">
-        <div className="wrap flex gap-5 items-end w-max">
-          {featured.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} />)}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ---------- Section 5: research pulse ---------- */
-function Pulse() {
-  const items = researchPulse()
-  return (
-    <section className="section border-y hairline bg-graphite/40" aria-label="Live research pulse">
-      <div className="wrap">
-        <div className="flex items-center gap-3">
-          <span className="w-2 h-2 rounded-full bg-cyan pulse-dot" aria-hidden />
-          <p className="label label-cyan">Research pulse</p>
-        </div>
-        <h2 className="display text-[clamp(2rem,4.6vw,4.2rem)] mt-3">Honest counters, computed from the corpus.</h2>
-        <dl className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {items.map((it) => (
-            <div key={it.label} className="panel-flat p-6">
-              <dt className="label">{it.label}</dt>
-              <dd className="mt-3 display text-5xl">{it.value}<span className="text-xl text-bone/40">{it.of !== null ? ` / ${it.of}` : ''}</span></dd>
-              <dd className="mt-3 mono text-[11px] text-bone/50">{it.at ? `as of ${String(it.at).slice(0, 10)}` : 'no timestamp — connector not enabled'}</dd>
-              <dd className="mt-1 text-[12px] muted">{it.note}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
-  )
-}
-
-/* ---------- Section 6 ---------- */
-function Why() {
-  return (
-    <section className="section wrap" aria-label={`Why ${BRAND} exists`}>
-      <p className="label label-cyan">Why {BRAND} exists</p>
-      <blockquote className="display text-[clamp(1.6rem,3.6vw,3.2rem)] mt-6 max-w-5xl text-bone/90">
-        The same molecular claim can appear in a paper, a podcast, a Reddit story and hundreds of short-form posts. Those are not the same kind of evidence. {BRAND} connects them without collapsing them together.
-      </blockquote>
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link to="/methodology" className="btn">Read the methodology</Link>
-        <Link to="/coverage" className="btn">What we can and cannot see</Link>
-      </div>
-    </section>
+    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">The collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">Enter the molecular<br/>laboratory.</h2><p className="lede mt-6 mx-auto max-w-xl">Shop the collection first. Follow every source when you want to go deeper.</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">{BRAND} is a working brand. Final pricing and checkout remain pending commercial review.</p></div></section>
   )
 }

@@ -8,7 +8,7 @@ import netlify from '@netlify/vite-plugin-tanstack-start'
 export default defineConfig({
   server: { host: '0.0.0.0', port: 8080 },
   plugins: [tsconfigPaths(), tailwindcss(), tanstackStart(), netlify(), viteReact()],
-  // Netlify's ESM functions must not load CommonJS fallbacks from the Three/GSAP ecosystem.
-  // Bundle the SSR graph so Vite resolves those mixed-format packages consistently.
+  // Netlify's ESM functions need the complete SSR graph bundled so mixed-format
+  // packages resolve consistently in the production function runtime.
   ssr: { noExternal: true },
 })
