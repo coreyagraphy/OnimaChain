@@ -77,3 +77,51 @@ export function timeAgo(iso: string): string {
   const d = Math.round(s / 86400)
   return d < 30 ? `${d} day${d > 1 ? 's' : ''} ago` : new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
+
+/* ── Follow a peptide (no account: kept on this device) ── */
+const FOLLOW_KEY = 'pulse-follow'
+const followListeners = new Set<() => void>()
+function readFollows(): string[] { try { const v = JSON.parse(localStorage.getItem(FOLLOW_KEY) ?? '[]'); return Array.isArray(v) ? v : [] } catch { return [] } }
+export function useFollows(): { follows: string[]; toggle: (slug: string) => void; isFollowing: (slug: string) => boolean } {
+  const [follows, setFollows] = useState<string[]>([])
+  useEffect(() => {
+    const sync = () => setFollows(readFollows())
+    sync()
+    followListeners.add(sync)
+    window.addEventListener('storage', sync)
+    return () => { followListeners.delete(sync); window.removeEventListener('storage', sync) }
+  }, [])
+  const toggle = (slug: string) => {
+    const cur = readFollows()
+    const next = cur.includes(slug) ? cur.filter((s) => s !== slug) : [...cur, slug]
+    try { localStorage.setItem(FOLLOW_KEY, JSON.stringify(next)) } catch { /* private mode */ }
+    followListeners.forEach((f) => f())
+  }
+  return { follows, toggle, isFollowing: (slug) => follows.includes(slug) }
+}
+
+/** Share an update: the phone's own share sheet when there is one, otherwise copy the link. */
+export async function shareEvent(e: PulseEvent): Promise<'shared' | 'copied' | 'failed'> {
+  const url = `${location.origin}/pulse?e=${encodeURIComponent(e.id)}`
+  const title = e.headline.length > 90 ? e.headline.slice(0, 87) + '…' : e.headline
+  if (navigator.share) {
+    try { await navigator.share({ title, text: e.summary.whyItMatters, url }); return 'shared' }
+    catch (err) { if ((err as Error)?.name === 'AbortError') return 'shared' /* they closed the sheet */ }
+  }
+  try { await navigator.clipboard.writeText(url); return 'copied' } catch { return 'failed' }
+}
+
+/**
+ * Keep the ranked order but never show more than two of the same kind in a row, so the top of the feed mixes
+ * research, trials, regulation and video instead of six trial updates back to back.
+ */
+export function diversify(events: PulseEvent[], maxRun = 2): PulseEvent[] {
+  const pool = [...events], out: PulseEvent[] = []
+  while (pool.length) {
+    const tail = out.slice(-maxRun)
+    const blocked = tail.length === maxRun && tail.every((x) => x.lane === tail[0].lane) ? tail[0].lane : null
+    const i = blocked ? pool.findIndex((x) => x.lane !== blocked) : 0
+    out.push(pool.splice(i === -1 ? 0 : i, 1)[0])
+  }
+  return out
+}

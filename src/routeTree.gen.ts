@@ -29,6 +29,7 @@ import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as ClaimIdRouteImport } from './routes/claim.$id'
 import { Route as CompoundSlugRouteImport } from './routes/compound.$slug'
 import { Route as LearnSlugRouteImport } from './routes/learn.$slug'
+import { Route as PulseReviewRouteImport } from './routes/pulse_.review'
 import { Route as StatusCompoundRouteImport } from './routes/status.$compound'
 import { Route as StudyPmidRouteImport } from './routes/study.$pmid'
 
@@ -132,6 +133,11 @@ const LearnSlugRoute = LearnSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => LearnRoute,
 } as any)
+const PulseReviewRoute = PulseReviewRouteImport.update({
+  id: '/pulse_/review',
+  path: '/pulse/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StatusCompoundRoute = StatusCompoundRouteImport.update({
   id: '/status/$compound',
   path: '/status/$compound',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
+  '/pulse/review': typeof PulseReviewRoute
   '/status/$compound': typeof StatusCompoundRoute
   '/study/$pmid': typeof StudyPmidRoute
 }
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
+  '/pulse/review': typeof PulseReviewRoute
   '/status/$compound': typeof StatusCompoundRoute
   '/study/$pmid': typeof StudyPmidRoute
 }
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
+  '/pulse_/review': typeof PulseReviewRoute
   '/status/$compound': typeof StatusCompoundRoute
   '/study/$pmid': typeof StudyPmidRoute
 }
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
+    | '/pulse/review'
     | '/status/$compound'
     | '/study/$pmid'
   fileRoutesByTo: FileRoutesByTo
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
+    | '/pulse/review'
     | '/status/$compound'
     | '/study/$pmid'
   id:
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
+    | '/pulse_/review'
     | '/status/$compound'
     | '/study/$pmid'
   fileRoutesById: FileRoutesById
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   TimelineRoute: typeof TimelineRoute
   ClaimIdRoute: typeof ClaimIdRoute
   CompoundSlugRoute: typeof CompoundSlugRoute
+  PulseReviewRoute: typeof PulseReviewRoute
   StatusCompoundRoute: typeof StatusCompoundRoute
   StudyPmidRoute: typeof StudyPmidRoute
 }
@@ -457,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnSlugRouteImport
       parentRoute: typeof LearnRoute
     }
+    '/pulse_/review': {
+      id: '/pulse_/review'
+      path: '/pulse/review'
+      fullPath: '/pulse/review'
+      preLoaderRoute: typeof PulseReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/status/$compound': {
       id: '/status/$compound'
       path: '/status/$compound'
@@ -504,6 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   TimelineRoute: TimelineRoute,
   ClaimIdRoute: ClaimIdRoute,
   CompoundSlugRoute: CompoundSlugRoute,
+  PulseReviewRoute: PulseReviewRoute,
   StatusCompoundRoute: StatusCompoundRoute,
   StudyPmidRoute: StudyPmidRoute,
 }

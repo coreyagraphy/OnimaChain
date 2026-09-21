@@ -442,3 +442,27 @@ The newest repository commit after this file is saved is the handoff update itse
 - Corey's order: no safety or "research chemical" caveats in the page; the disclaimers live up front.
 
 **Copy:** all 36 product descriptions were rewritten to benefit-aware, factual wording with no "not proven" endings. The Safety row was removed from the research grid.
+
+### 5e-2. Review queue, YouTube on, extras (2026-09-21)
+
+**YouTube is on.**
+- The key is set on Netlify as `YOUTUBE_API_KEY`. Locally it lives in the git-ignored `.env`.
+- Only English videos are kept: the declared language, or a title check when none is declared.
+- A video links to a peptide only when the title or the opening of the description names it.
+- Videos with under 200 views rank down.
+- Thumbnails and view counts show on video cards.
+
+**Review queue** at `/pulse/review` (noindex, not linked anywhere):
+- The key is `PULSE_ADMIN_TOKEN`, set on Netlify. The copy is in `_HQ/_Private_Credentials/CYRAVON_PULSE_ADMIN.txt`.
+- Actions: approve, reject, pull from feed, undo, editor's note, and "Check sources now" (starts the background run).
+- Decisions live in Blobs `pulse/decisions` and are applied every time the feed is read (`src/pulse/review.ts`), so they take effect immediately and survive later runs.
+- Approved items show "Checked by our team". Notes show on the card as "Editor's note".
+
+**Extras:**
+- Follow a peptide, kept on the device with no account. It gets a Following tab, followed peptides come first in the home rail, and the "Since your last visit" box counts them.
+- Native share sheet, falling back to copying the link. `/pulse?e=<id>` deep links open with that update pinned and highlighted.
+- "New" markers on anything since the last visit.
+- The Now feed and rails never show more than 2 of one type in a row.
+- Trial and video cards say "See the trial" and "Watch on YouTube".
+
+**Tests:** `npm run test:pulse` now has 16 cases; `tools/pulse2-check.mjs` is the browser check.

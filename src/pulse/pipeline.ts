@@ -48,7 +48,7 @@ const phaseLabel = (p: string[]) => (p.length ? p.map((x) => x.replace('PHASE', 
 const statusLabel = (s: string) => s.toLowerCase().replace(/_/g, ' ').replace(/^./, (x) => x.toUpperCase())
 
 /** Run every adapter, then fold the results into the previous snapshot. */
-export async function collect(prev: PulseSnapshot | null, opts: { youtubeKey?: string; newsFeeds?: string[]; ncbiKey?: string; now?: Date } = {}): Promise<PulseSnapshot> {
+export async function collect(prev: PulseSnapshot | null, opts: { youtubeKey?: string; newsFeeds?: string[]; ncbiKey?: string; now?: Date; youtubePerRun?: number } = {}): Promise<PulseSnapshot> {
   const now = opts.now ?? new Date()
   const env: AdapterEnv = { ...opts, runCount: prev?.runCount ?? 0, now }
   const timed = async (f: () => Promise<AdapterResult>) => { const t = Date.now(); const r = await f(); return { r, ms: Date.now() - t } }
@@ -74,7 +74,7 @@ export function build(prev: PulseSnapshot | null, fresh: SourceItem[], runs: Pul
   const items = new Map<string, SourceItem & { compounds: string[] }>()
   for (const it of fresh) {
     if (items.has(it.key)) continue
-    const linked = new Set(mentions(`${it.title} ${it.snippet}`))
+    const linked = new Set(mentions(it.kind === 'youtube' ? `${it.title} ${it.snippet.slice(0, 160)}` : `${it.title} ${it.snippet}`))
     if (typeof it.facts.query === 'string' && it.kind !== 'youtube') linked.add(it.facts.query)
     if (it.kind === 'youtube' && typeof it.facts.query === 'string' && linked.size === 0 && new RegExp(escape(NAME_BY_SLUG[it.facts.query] ?? ''), 'i').test(it.title)) linked.add(it.facts.query)
     items.set(it.key, { ...it, compounds: [...linked] })
@@ -262,7 +262,10 @@ function rank(e: PulseEvent, now: Date): number {
   const days = (now.getTime() - new Date(e.primary.publishedAt).getTime()) / DAY
   const label = Math.max(0, ...e.labels.map((l) => LABEL_WEIGHT[l]))
   const echo = e.mentions.length - (e.distinctVoices - 1)
-  return label + CLASS_RANK[e.primary.sourceClass] * 5 + (e.compounds.some((c) => FEATURED.has(c)) ? 10 : 0) + Math.min(10, e.distinctVoices * 2) - Math.max(0, echo) - days * 2.5 - (e.concentrated ? 8 : 0) - (e.promotional ? 10 : 0)
+  // a video nobody has watched yet shouldn't outrank research; a widely watched one earns a little
+  const views = e.primary.kind === 'youtube' ? Number(e.primary.facts.views ?? 0) : -1
+  const reach = views < 0 ? 0 : views < 200 ? -15 : Math.min(8, Math.log10(views) * 2)
+  return reach + label + CLASS_RANK[e.primary.sourceClass] * 5 + (e.compounds.some((c) => FEATURED.has(c)) ? 10 : 0) + Math.min(10, e.distinctVoices * 2) - Math.max(0, echo) - days * 2.5 - (e.concentrated ? 8 : 0) - (e.promotional ? 10 : 0)
 }
 
 function trendsFor(events: PulseEvent[], now: Date, enoughHistory: boolean): CompoundTrend[] {

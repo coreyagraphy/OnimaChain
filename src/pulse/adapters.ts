@@ -13,7 +13,7 @@ import type { SourceItem } from './types.ts'
  */
 
 export interface AdapterResult { source: string; ok: boolean; items: SourceItem[]; note: string }
-export interface AdapterEnv { youtubeKey?: string; newsFeeds?: string[]; runCount: number; now: Date; ncbiKey?: string }
+export interface AdapterEnv { youtubeKey?: string; newsFeeds?: string[]; runCount: number; now: Date; ncbiKey?: string; youtubePerRun?: number }
 
 const UA = 'PulseChain/1.0 (peptide research tracker)'
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -224,8 +224,9 @@ export async function youtube(env: AdapterEnv): Promise<AdapterResult> {
   if (!env.youtubeKey) return { source, ok: false, items: [], note: 'Off: add YOUTUBE_API_KEY to switch on' }
   try {
     const pool = COMPOUNDS.filter((c) => !SKIP.has(c.slug))
-    const start = (env.runCount * YT_PER_RUN) % pool.length
-    const batch = Array.from({ length: YT_PER_RUN }, (_, i) => pool[(start + i) % pool.length])
+    const per = Math.min(pool.length, env.youtubePerRun ?? YT_PER_RUN)
+    const start = (env.runCount * per) % pool.length
+    const batch = Array.from({ length: per }, (_, i) => pool[(start + i) % pool.length])
     const after = daysAgo(env.now, 14).toISOString()
     const found: Array<{ id: string; slug: string; sn: any }> = []
     for (const c of batch) {
@@ -238,17 +239,33 @@ export async function youtube(env: AdapterEnv): Promise<AdapterResult> {
       const j = await getJson(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${found.slice(i, i + 50).map((f) => f.id).join(',')}&key=${env.youtubeKey}`).catch(() => null)
       for (const v of j?.items ?? []) stats.set(v.id, v)
     }
-    const items: SourceItem[] = found.map(({ id, slug, sn }) => {
+    let dropped = 0
+    const items: SourceItem[] = found.filter(({ id, sn }) => {
+      // English only: trust the channel's declared language, else a light check of the title
+      const full = stats.get(id)
+      const lang: string = full?.snippet?.defaultAudioLanguage ?? full?.snippet?.defaultLanguage ?? ''
+      const ok = lang ? lang.toLowerCase().startsWith('en') : looksEnglish(decode(`${sn.title ?? ''} ${(sn.description ?? '').slice(0, 120)}`))
+      if (!ok) dropped++
+      return ok
+    }).map(({ id, slug, sn }) => {
       const full = stats.get(id)
       const desc: string = full?.snippet?.description ?? sn.description ?? ''
       return {
         key: `yt:${id}`, kind: 'youtube', sourceClass: 'commentary', outlet: decode(sn.channelTitle ?? 'YouTube'), title: decode(sn.title ?? ''),
         url: `https://www.youtube.com/watch?v=${id}`, publishedAt: sn.publishedAt ?? iso(env.now), snippet: desc.slice(0, 420),
-        facts: { query: slug, channelId: sn.channelId ?? '', views: Number(full?.statistics?.viewCount ?? 0), links: (desc.match(/https?:\/\/\S+/g) ?? []).slice(0, 8) },
+        facts: { query: slug, channelId: sn.channelId ?? '', thumb: sn.thumbnails?.medium?.url ?? `https://i.ytimg.com/vi/${id}/mqdefault.jpg`, views: Number(full?.statistics?.viewCount ?? 0), links: (desc.match(/https?:\/\/\S+/g) ?? []).slice(0, 8) },
       }
     })
-    return { source, ok: true, items, note: `${items.length} new videos for ${batch.map((c) => c.name).join(', ')}` }
+    return { source, ok: true, items, note: `${items.length} new English videos for ${batch.length} peptides${dropped ? ` (${dropped} in other languages skipped)` : ''}` }
   } catch (e) { return { source, ok: false, items: [], note: String(e).slice(0, 140) } }
+}
+
+/** Rough English check for videos with no declared language: accented letters or common Spanish/Portuguese/French words mean skip. */
+export function looksEnglish(t: string): boolean {
+  if (/[áéíóúñãõçàèêâôœ¿¡]/i.test(t)) return false
+  const w = ` ${t.toLowerCase().replace(/[^a-z ]/g, ' ')} `
+  const foreign = [' el ', ' los ', ' las ', ' del ', ' para ', ' que ', ' com ', ' uma ', ' não ', ' pour ', ' avec ', ' les ', ' une ', ' des ', ' und ', ' der ', ' die ', ' das ', ' tout ', ' sur ', ' peptidos ', ' peptideos ', ' peptides pour ']
+  return foreign.filter((x) => w.includes(x)).length < 2
 }
 
 /* ── Community sources: built as switches, off until access is licensed ── */

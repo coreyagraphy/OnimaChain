@@ -4,6 +4,8 @@
  */
 import assert from 'node:assert/strict'
 import { build, mentions } from '../src/pulse/pipeline.ts'
+import { applyDecision, publicView, queueView, tokenOk } from '../src/pulse/review.ts'
+import { looksEnglish } from '../src/pulse/adapters.ts'
 import type { PulseSnapshot, SourceItem } from '../src/pulse/types.ts'
 
 const now = new Date('2026-09-21T12:00:00Z')
@@ -100,6 +102,52 @@ test('summaries only use the stored record', () => {
   assert.match(sum.whatHappened, /Journal X/)
   assert.match(sum.whatHappened, /BPC-157 and tendons/)
   assert.match(sum.whatItDoesNotShow ?? '', /Rat results/)
+})
+
+test('review: approving a held claim publishes it, marked as checked, with the note', () => {
+  const snap = build(null, [video('x1', 'A', 'FDA approved BPC-157 today'), video('x2', 'B', 'BPC-157 FDA approved today'), video('x3', 'C', 'Today FDA approved BPC-157!')], runs, now)
+  const id = snap.review[0].id
+  let d = applyDecision({}, id, 'approve', 'Not FDA-approved. This video is wrong; shown so you know what is circulating.', now)
+  const pub = publicView(snap, d)
+  const e = pub.events.find((x) => x.id === id)!
+  assert.equal(e.reviewed?.action, 'approve')
+  assert.match(e.reviewed?.note ?? '', /Not FDA-approved/)
+  assert.equal(pub.review.length, 0)
+  assert.equal(queueView(snap, d).waiting.length, 0)
+  d = applyDecision(d, id, 'restore', undefined, now)
+  assert.equal(publicView(snap, d).events.some((x) => x.id === id), false)
+  assert.equal(queueView(snap, d).waiting.length, 1)
+})
+
+test('review: pull removes a live item and it stays out after the next run', () => {
+  const a = build(null, [paper('555', 'BPC-157 in rats')], runs, now)
+  const d = applyDecision({}, 'pmid:555', 'pull', undefined, now)
+  const b = build(a, [paper('555', 'BPC-157 in rats')], runs, new Date(now.getTime() + 4 * 36e5))
+  assert.equal(publicView(b, d).events.some((x) => x.id === 'pmid:555'), false)
+  assert.equal(queueView(b, d).decided[0].id, 'pmid:555')
+})
+
+test('review: a note alone shows on a live card without changing its status', () => {
+  const a = build(null, [paper('666', 'TB-500 wound study')], runs, now)
+  const d = applyDecision({}, 'pmid:666', 'note', 'Same group as the 2010 paper.', now)
+  const e = publicView(a, d).events.find((x) => x.id === 'pmid:666')!
+  assert.equal(e.reviewed?.action, null)
+  assert.equal(e.reviewed?.note, 'Same group as the 2010 paper.')
+})
+
+test('review key: exact match only', () => {
+  assert.ok(tokenOk('abc123', 'abc123'))
+  assert.ok(!tokenOk('abc124', 'abc123'))
+  assert.ok(!tokenOk('abc12', 'abc123'))
+  assert.ok(!tokenOk('anything', undefined))
+  assert.ok(!tokenOk(null, 'abc123'))
+})
+
+test('YouTube language filter keeps English, drops Spanish/Portuguese/French', () => {
+  assert.ok(looksEnglish('BPC-157: What the science actually says'))
+  assert.ok(!looksEnglish('GHK-Cu: El péptido de cobre que está revolucionando'))
+  assert.ok(!looksEnglish('GHK Cu peptídios de colágeno facial'))
+  assert.ok(!looksEnglish('Tout savoir sur la R3 pour les débutants'))
 })
 
 console.log(`pulse engine: ${passed} passed`)

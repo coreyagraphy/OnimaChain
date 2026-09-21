@@ -658,3 +658,34 @@ body { background: transparent; }
 p.cr-list { padding-left:0; }
 .cr-none { margin-top:6px; font-size:14px; color:rgba(242,238,230,.55); }
 @media (prefers-reduced-motion: reduce) { .pulse-live, .pulse-skeleton { animation:none; } }
+
+/* ── PulseChain v2: video thumbs, share, follow, review queue ── */
+.pulse-thumb { position:relative; display:block; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#0b0d14; border:1px solid rgba(242,238,230,.1); }
+.pulse-thumb img { width:100%; height:100%; object-fit:cover; transition:transform .5s cubic-bezier(.2,.8,.2,1); }
+.pulse-thumb:hover img { transform:scale(1.04); }
+.pulse-play { position:absolute; left:50%; top:50%; width:48px; height:48px; translate:-50% -50%; border-radius:50%; background:rgba(8,9,14,.62); border:1px solid rgba(255,255,255,.5); backdrop-filter:blur(6px); box-shadow:0 0 22px rgba(198,168,255,.55); }
+.pulse-play::after { content:""; position:absolute; left:19px; top:15px; border-left:14px solid #fff; border-top:9px solid transparent; border-bottom:9px solid transparent; }
+.pulse-views { position:absolute; right:8px; bottom:8px; font-size:11px; font-weight:600; padding:.15rem .45rem; border-radius:6px; color:#fff; background:rgba(0,0,0,.7); }
+.pulse-new { font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; padding:.18rem .5rem; border-radius:99px; color:#061018; background:#6EF2A6; box-shadow:0 0 12px rgba(110,242,166,.55); }
+.pulse-card-hl { outline:2px solid var(--lane); outline-offset:3px; box-shadow:0 0 0 6px color-mix(in srgb,var(--lane) 18%,transparent),0 24px 60px -24px var(--lane); }
+.pulse-note { font-size:13.5px; line-height:1.5; padding:10px 12px; border-radius:12px; color:rgba(242,238,230,.9); border:1px solid rgba(255,196,107,.35); background:rgba(255,196,107,.08); }
+.pulse-note b { color:#FFC46B; }
+.pulse-checked { font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:.18rem .45rem; border-radius:6px; color:#FFC46B; border:1px solid rgba(255,196,107,.5); }
+.pulse-actions-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.pulse-share { display:inline-flex; align-items:center; gap:6px; min-height:44px; min-width:44px; padding:0 12px; border-radius:99px; font-size:13px; color:rgba(242,238,230,.8); border:1px solid rgba(242,238,230,.16); }
+.pulse-share:hover { border-color:var(--lane); color:var(--lane); }
+.pulse-share svg { width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.pulse-follow { display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 14px; border-radius:99px; font-size:13px; font-weight:600; color:var(--color-bone); border:1px solid rgba(255,196,107,.45); background:rgba(255,196,107,.06); }
+.pulse-follow svg { width:17px; height:17px; fill:none; stroke:#FFC46B; stroke-width:2; stroke-linejoin:round; }
+.pulse-follow[aria-pressed="true"] { color:#061018; background:#FFC46B; border-color:#FFC46B; box-shadow:0 0 18px rgba(255,196,107,.45); }
+.pulse-follow[aria-pressed="true"] svg { fill:#061018; stroke:#061018; }
+.review-health { display:flex; flex-wrap:wrap; gap:6px; }
+.review-health span { font-size:11px; padding:.25rem .55rem; border-radius:99px; color:rgba(242,238,230,.5); border:1px solid rgba(242,238,230,.14); }
+.review-health span[data-ok] { color:#6EF2A6; border-color:rgba(110,242,166,.4); }
+.review-controls { display:grid; gap:10px; padding-top:12px; margin-top:4px; border-top:1px dashed rgba(242,238,230,.16); }
+.review-reason { font-size:13px; color:#FFC46B; }
+.review-buttons { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:8px; }
+.review-buttons .btn { min-height:44px; }
+.review-toast { position:fixed; left:50%; bottom:calc(20px + env(safe-area-inset-bottom)); translate:-50% 0; z-index:95; padding:12px 18px; border-radius:99px; font-size:14px; color:#061018; background:#6EF2A6; box-shadow:0 12px 30px -10px #000; }
+
+.review-head .btn { min-height:44px; }

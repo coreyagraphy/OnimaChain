@@ -10,3 +10,5 @@ shots
 # raw video masters (encoded copies live in public/videos)
 media/raw/*
 !media/raw/README.txt
+.env
+.env.*

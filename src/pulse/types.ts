@@ -81,6 +81,8 @@ export interface PulseEvent {
   tier: PublishTier
   firstSeen: string
   updatedAt: string
+  /** Set when a person has looked at it in the review queue. */
+  reviewed?: { action: 'approve' | 'reject' | 'pull' | null; note?: string; at: string }
 }
 
 export type Activity = 'none' | 'low' | 'medium' | 'high' | 'rising'

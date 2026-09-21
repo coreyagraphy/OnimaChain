@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties } from 'react'
 import { BRAND } from '~/brand'
 import { COMPOUNDS, COMPOUND_BY_SLUG, displayName } from '~/data/compounds'
-import { PulseCard, SinceLastVisit } from '~/components/Pulse'
-import { LANE_META, timeAgo, usePulse } from '~/pulse/usePulse'
+import { FollowButton, PulseCard, SinceLastVisit, isNewSince } from '~/components/Pulse'
+import { LANE_META, diversify, timeAgo, useFollows, useLastVisit, usePulse } from '~/pulse/usePulse'
 import type { Activity, Lane, PulseEvent } from '~/pulse/types'
 
 export const Route = createFileRoute('/pulse')({
-  validateSearch: (s: Record<string, unknown>): { c?: string; tab?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { c?: string; tab?: string; e?: string } => ({
+    ...(typeof s.e === 'string' ? { e: s.e } : {}),
     ...(typeof s.c === 'string' ? { c: s.c } : {}),
     ...(typeof s.tab === 'string' ? { tab: s.tab } : {}),
   }),
@@ -15,9 +16,10 @@ export const Route = createFileRoute('/pulse')({
   component: PulsePage,
 })
 
-type Tab = 'now' | Lane | 'changed' | 'week'
+type Tab = 'now' | 'following' | Lane | 'changed' | 'week'
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: 'now', label: 'Now' },
+  { id: 'following', label: 'Following' },
   { id: 'research', label: 'Research' },
   { id: 'trials', label: 'Trials' },
   { id: 'regulation', label: 'Regulation' },
@@ -35,6 +37,11 @@ function PulsePage() {
   const [tab, setTab] = useState<Tab>((TABS.some((t) => t.id === search.tab) ? search.tab : 'now') as Tab)
   const [q, setQ] = useState(search.c ? displayName(COMPOUND_BY_SLUG[search.c] ?? COMPOUNDS[0]) : '')
   const events = snap?.events ?? []
+  const { follows } = useFollows()
+  const last = useLastVisit()
+  // a shared link (?e=…) opens with that update pinned and highlighted
+  const shared = search.e ? events.find((x) => x.id === search.e) ?? null : null
+  useEffect(() => { if (shared) requestAnimationFrame(() => document.getElementById(`e-${shared.id}`)?.scrollIntoView({ block: 'center' })) }, [shared])
 
   // search resolves names and aliases to compounds, and also matches words in headlines
   const filtered = useMemo(() => {
@@ -44,14 +51,22 @@ function PulsePage() {
     return events.filter((e) => e.compounds.some((c) => slugs.includes(c)) || e.headline.toLowerCase().includes(t))
   }, [events, q])
 
+  const matched = useMemo(() => {
+    const t = q.trim().toLowerCase()
+    if (!t) return null
+    const hits = COMPOUNDS.filter((c) => displayName(c).toLowerCase() === t || c.name.toLowerCase() === t || c.aliases.some((a) => a.toLowerCase() === t) || displayName(c).toLowerCase().startsWith(t))
+    return hits.length === 1 ? hits[0].slug : null
+  }, [q])
+
   const shown = useMemo(() => {
-    if (tab === 'now') return filtered.slice(0, 30)
+    if (tab === 'now') return diversify(filtered).slice(0, 30)
+    if (tab === 'following') return filtered.filter((e) => e.compounds.some((c) => follows.includes(c)))
     if (tab === 'changed') return filtered.filter((e) => e.change || e.labels.includes('CORRECTION') || e.labels.includes('CLAIM MOVEMENT'))
     if (tab === 'week') return []
     return filtered.filter((e) => e.lane === tab)
-  }, [filtered, tab])
+  }, [filtered, tab, follows])
 
-  const counts = useMemo(() => Object.fromEntries(TABS.map((t) => [t.id, t.id === 'now' ? Math.min(30, filtered.length) : t.id === 'week' ? 0 : t.id === 'changed' ? filtered.filter((e) => e.change || e.labels.includes('CORRECTION') || e.labels.includes('CLAIM MOVEMENT')).length : filtered.filter((e) => e.lane === t.id).length])), [filtered])
+  const counts = useMemo(() => Object.fromEntries(TABS.map((t) => [t.id, t.id === 'now' ? Math.min(30, filtered.length) : t.id === 'following' ? filtered.filter((e) => e.compounds.some((c) => follows.includes(c))).length : t.id === 'week' ? 0 : t.id === 'changed' ? filtered.filter((e) => e.change || e.labels.includes('CORRECTION') || e.labels.includes('CLAIM MOVEMENT')).length : filtered.filter((e) => e.lane === t.id).length])), [filtered, follows])
 
   return (
     <div className="pt-24 pb-24">
@@ -70,7 +85,7 @@ function PulsePage() {
             <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search a peptide, e.g. BPC-157" enterKeyHint="search" />
             {q && <button onClick={() => setQ('')} aria-label="Clear search">Clear</button>}
           </label>
-          {q && <p className="mt-2 text-[13px] text-bone/60" role="status">{filtered.length} {filtered.length === 1 ? 'update' : 'updates'} for “{q}”</p>}
+          {q && <div className="mt-2 flex flex-wrap items-center gap-3"><p className="text-[13px] text-bone/60" role="status">{filtered.length} {filtered.length === 1 ? 'update' : 'updates'} for “{q}”</p>{matched && <FollowButton slug={matched} />}</div>}
 
           <div className="pulse-tabs mt-4" role="tablist" aria-label="PulseChain sections">
             {TABS.map((t) => (
@@ -84,7 +99,7 @@ function PulsePage() {
             {loading && <div className="grid gap-4">{[0, 1, 2].map((i) => <div key={i} className="pulse-card pulse-skeleton" />)}</div>}
             {!loading && tab === 'week' && <ChainReaction events={filtered} trends={snap?.trends ?? []} />}
             {!loading && tab !== 'week' && (shown.length ? (
-              <div className="pulse-list">{shown.map((e) => <PulseCard key={e.id} e={e} />)}</div>
+              <div className="pulse-list">{(shared && tab === 'now' ? [shared, ...shown.filter((x) => x.id !== shared.id)] : shown).map((e) => <PulseCard key={e.id} e={e} isNew={isNewSince(e, last)} highlight={shared?.id === e.id} />)}</div>
             ) : <EmptyLane tab={tab} runs={snap?.runs ?? []} />)}
           </div>
         </div>
@@ -101,6 +116,7 @@ function PulsePage() {
 
 function EmptyLane({ tab, runs }: { tab: Tab; runs: Array<{ source: string; ok: boolean; note: string }> }) {
   const off = (name: string) => runs.find((r) => r.source === name && !r.ok)
+  if (tab === 'following') return <div className="pulse-empty"><p className="font-semibold">You’re not following any peptides yet.</p><p className="mt-1 text-[14px] text-bone/65">Search for one above and tap Follow. Its updates show up here and first on the home page. No account needed.</p></div>
   const note = tab === 'video' ? off('YouTube')?.note : tab === 'community' ? 'Reddit and TikTok are switched off until licensed access is in place.' : tab === 'industry' ? off('News feeds')?.note : null
   return <div className="pulse-empty"><p className="font-semibold">Nothing here right now.</p><p className="mt-1 text-[14px] text-bone/65">{note ?? 'New items show up here as soon as the next check finds them.'}</p></div>
 }
@@ -115,7 +131,7 @@ function ChainReaction({ events, trends }: { events: PulseEvent[]; trends: Array
   const kinds = new Map<string, number>()
   for (const e of research) { const k = String(e.primary.facts.studyKind ?? 'unclear'); kinds.set(k, (kinds.get(k) ?? 0) + 1) }
   const KIND: Record<string, string> = { 'human-trial': 'human trials', human: 'studies in people', rats: 'rat studies', mice: 'mouse studies', animals: 'other animal studies', cells: 'lab studies', review: 'reviews', case: 'case reports', unclear: 'other papers' }
-  const claims = week.filter((e) => e.primary.sourceClass !== 'primary')
+  const claims = week.filter((e) => e.primary.sourceClass !== 'primary').sort((a, b) => (b.distinctVoices - a.distinctVoices) || (Number(b.primary.facts.views ?? 0) - Number(a.primary.facts.views ?? 0))).slice(0, 8)
   return (
     <div className="chain-reaction">
       <p className="label label-violet">The Chain Reaction</p>

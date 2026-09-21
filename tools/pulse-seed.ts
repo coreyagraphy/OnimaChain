@@ -10,12 +10,16 @@ import { dirname, resolve } from 'node:path'
 import { collect } from '../src/pulse/pipeline.ts'
 import type { PulseSnapshot } from '../src/pulse/types.ts'
 
+// local keys live in the git-ignored .env (YOUTUBE_API_KEY etc.)
+try { process.loadEnvFile(resolve(dirname(fileURLToPath(import.meta.url)), '../.env')) } catch { /* no local keys */ }
 const out = resolve(dirname(fileURLToPath(import.meta.url)), '../public/pulse.json')
 let prev: PulseSnapshot | null = null
 try { prev = JSON.parse(readFileSync(out, 'utf8')) } catch { /* first run */ }
 try {
   const snap = await collect(prev, {
     youtubeKey: process.env.YOUTUBE_API_KEY,
+    // one-off wider sweep: PULSE_YT_PER_RUN=35 (each compound costs 100 of the 10,000 daily YouTube units)
+    youtubePerRun: process.env.PULSE_YT_PER_RUN ? Number(process.env.PULSE_YT_PER_RUN) : undefined,
     ncbiKey: process.env.NCBI_API_KEY,
     newsFeeds: (process.env.PULSE_NEWS_FEEDS ?? '').split(',').map((s) => s.trim()).filter(Boolean),
   })
