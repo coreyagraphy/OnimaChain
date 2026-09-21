@@ -10,7 +10,7 @@ import { useCanvasAllowed, useDocumentVisible, useQuality } from '~/motion/useRe
  * Hero and the dossier stage (LOD-0, with postprocessing) use their own <Lod0Canvas> because EffectComposer
  * inside a scissored View composites unreliably; everything else (cards, rigs, atlas nodes) shares this one.
  *
- * Every canvas pauses its render loop when the tab is hidden; Lod0Canvas also pauses when scrolled off-screen.
+ * Every canvas pauses its render loop when the tab is hidden.
  */
 export function GlobalCanvas() {
   const allowed = useCanvasAllowed()
@@ -67,24 +67,15 @@ interface Lod0Props {
 /** Dedicated canvas for LOD-0 scenes (hero, dossier stage, constellation) that carry postprocessing. */
 export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, cameraZ = 14 }: Lod0Props) {
   const fired = useRef(false)
-  const wrap = useRef<HTMLDivElement>(null)
   const visible = useDocumentVisible()
   const q = useQuality()
-  const [onScreen, setOnScreen] = useState(true)
-  useEffect(() => {
-    const el = wrap.current
-    if (!el || typeof IntersectionObserver === 'undefined') return
-    const io = new IntersectionObserver((entries) => setOnScreen(entries.some((e) => e.isIntersecting)), { rootMargin: '80% 0px' })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
   return (
-    <div ref={wrap} className={className} style={style}>
+    <div className={className} style={style}>
       <Canvas
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
         gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
         dpr={dpr ?? q.dpr}
-        frameloop={visible && onScreen ? 'always' : 'never'}
+        frameloop={visible ? 'always' : 'never'}
         camera={{ fov: 38, near: 0.1, far: 200, position: [0, 0, cameraZ] }}
         onCreated={({ gl }) => {
           gl.setClearColor('#0A0B0E', 0)

@@ -92,12 +92,9 @@ export const useVisualStore = create<VisualState>((set) => ({
   setVisible: (visible) => set({ visible }),
 }))
 
-/** Call once on the client after idle. Also wires background-tab pausing. */
+/** Call once on the client. Also wires background-tab pausing. */
 export function initVisualMode() {
-  const run = () => useVisualStore.getState().init()
-  const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }
-  if (w.requestIdleCallback) w.requestIdleCallback(run, { timeout: 1500 })
-  else setTimeout(run, 300)
+  useVisualStore.getState().init()
   const onVis = () => useVisualStore.getState().setVisible(document.visibilityState !== 'hidden')
   document.addEventListener('visibilitychange', onVis)
   onVis()
