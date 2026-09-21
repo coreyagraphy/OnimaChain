@@ -21,9 +21,8 @@ interface Props {
 const FIT = 5.6 // world radius of the chain
 const TILT: [number, number, number] = [0.12, 0.18, 0]
 
-// Camera path: full view (chain upper-right of the headline) → close on the N-terminus → skim THROUGH the
-// structure just above the PPP hinge (residues pass at the frame edges) → out past the C-terminus → look back
-// as the structure resolves into research → claim → signal.
+// Camera path: full molecule → close on the N-terminus → travel THROUGH the PPP hinge → clear the
+// C-terminus → look back as the molecule gives way to plain-language context and the final HTML message.
 const CAM = new THREE.CatmullRomCurve3(
   [
     new THREE.Vector3(-5.6, -0.2, 16.0),
@@ -131,9 +130,9 @@ function Bond({ a, b, color, opacity }: { a: RefObject<THREE.Vector3>; b: RefObj
 
 /** Resolve-graph node offsets in camera space: [right, up, depth]. Same shape grammar as the lineage graph. */
 const RESOLVE: Array<{ kind: 'research' | 'claim' | 'signal'; off: [number, number, number]; color: string; k: string; sub: string }> = [
-  { kind: 'research', off: [1.4, -0.7, 10.5], color: '#5FE3FF', k: 'Research record', sub: 'verified PMID · indexed' },
-  { kind: 'claim', off: [3.3, 0.3, 12.5], color: '#F2EEE6', k: 'Claim', sub: 'tracked · not labelled true/false' },
-  { kind: 'signal', off: [5.1, 1.3, 14.5], color: '#B9A2FF', k: 'Human signal', sub: 'no corpus · no source access' },
+  { kind: 'research', off: [1.4, -0.7, 10.5], color: '#5FE3FF', k: 'What was studied', sub: 'Original sources, checked and linked' },
+  { kind: 'claim', off: [3.3, 0.3, 12.5], color: '#F2EEE6', k: 'What people may say', sub: 'Kept separate from the studies' },
+  { kind: 'signal', off: [5.1, 1.3, 14.5], color: '#B9A2FF', k: 'What is still unknown', sub: 'No made-up answers or customer stories' },
 ]
 
 export function HeroScene({ progress, pointer, onPhase }: Props) {
@@ -190,7 +189,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
 
   const hazeTex = useMemo(() => radialTexture([[0, 'rgba(95,227,255,0.26)'], [0.5, 'rgba(138,99,255,0.10)'], [1, 'rgba(34,71,214,0)']], 128), [])
   const backdropTex = useMemo(() => radialTexture([[0, 'rgba(34,71,214,0.22)'], [0.35, 'rgba(24,30,58,0.16)'], [0.7, 'rgba(12,13,20,0.06)'], [1, 'rgba(10,11,14,0)']], 512), [])
-  const textTex = useTextTexture('TRACE THE SIGNAL')
+  const textTex = useTextTexture('LOOK CLOSER')
 
   const born = useRef(-1)
   const t = useRef(0)
@@ -231,9 +230,10 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
       root.current.rotation.x = THREE.MathUtils.degToRad(-s.py * 2)
     }
     if (chain.current) {
-      // slow, weighted float — never a bounce
+      // The opening is the object itself: a slow weighted turn before scroll becomes a camera move.
       chain.current.position.y = Math.sin(t.current * 0.35) * 0.18
       chain.current.rotation.x = Math.sin(t.current * 0.12) * 0.08 + p * 0.9
+      chain.current.rotation.y = t.current * 0.16 * (1 - smooth01(0.08, 0.32, p)) + p * 0.5
       chain.current.rotation.z = Math.sin(t.current * 0.09) * 0.03
     }
     if (far.current) far.current.position.x = -p * 6 + s.px * 0.6
@@ -254,9 +254,9 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
     // KEY LIGHT responds subtly to the pointer (light response, not object chase)
     if (keyLight.current) keyLight.current.position.set(4 + s.px * 2.5, 6 - s.py * 2, 8)
 
-    // STATE 3: typography sits deep in the scene while the camera passes through the hinge
+    // STATE 3: one short phrase appears beyond the hinge, after the camera has entered the molecule.
     if (text.current) {
-      const k = smooth01(0.4, 0.55, p) * (1 - smooth01(0.72, 0.86, p)) * reveal
+      const k = smooth01(0.53, 0.66, p) * (1 - smooth01(0.74, 0.84, p)) * reveal
       const m = text.current.material as THREE.MeshBasicMaterial
       m.opacity = k
       text.current.visible = k > 0.01
@@ -264,8 +264,8 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
       const ts = portrait ? 0.62 : 1
       text.current.scale.set(11 * ts, 2.75 * ts, 1)
     }
-    // STATE 4: on exit the structure resolves into research → claim → signal (laid out in camera space so it always frames)
-    const rk = smooth01(0.76, 0.97, p) * reveal
+    // STATE 4: three plain-language ideas bridge the molecule to the final commerce message, then clear away.
+    const rk = smooth01(0.64, 0.76, p) * (1 - smooth01(0.84, 0.94, p)) * reveal
     resolveK.current = rk
     if (resolve.current) resolve.current.visible = rk > 0.01
     if (rk > 0) {
@@ -354,8 +354,8 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
           <group key={l.k} ref={(g) => { labelGroups.current[i] = g }}>
             <Html zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }}>
               <div ref={(el) => { labelEls.current[i] = el }} style={{ opacity: 0, transform: 'translateY(10px)', whiteSpace: 'nowrap', paddingLeft: 34, textAlign: 'left' }}>
-                <div style={{ fontFamily: 'Inter Variable, sans-serif', fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 600, color: l.color }}>{l.k}</div>
-                <div style={{ fontFamily: 'JetBrains Mono Variable, monospace', fontSize: 10, color: 'rgba(242,238,230,0.55)', marginTop: 3 }}>{l.sub}</div>
+                <div style={{ fontFamily: 'Manrope Variable, sans-serif', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 750, color: l.color }}>{l.k}</div>
+                <div style={{ fontFamily: 'Inter Variable, sans-serif', fontSize: 11, color: 'rgba(242,238,230,0.7)', marginTop: 4 }}>{l.sub}</div>
               </div>
             </Html>
           </group>
@@ -387,7 +387,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
   )
 }
 
-/** Resolve-graph node: research = sphere, claim = octahedron, signal = hollow ring (no corpus). Follows its camera-space anchor. */
+/** Resolve-graph node: source = sphere, claim = octahedron, open question = hollow ring. */
 function ResolveNode({ at, color, k, kind }: { at: RefObject<THREE.Vector3>; color: string; k: RefObject<number>; kind: 'research' | 'claim' | 'signal' }) {
   const g = useRef<THREE.Group>(null)
   const mat = useRef<THREE.MeshPhysicalMaterial>(null)
