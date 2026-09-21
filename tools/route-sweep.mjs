@@ -3,7 +3,7 @@ import { chromium } from 'playwright'
 import { mkdirSync } from 'node:fs'
 const base = process.argv[2] ?? 'http://127.0.0.1:8082'
 mkdirSync('shots/sweep', { recursive: true })
-const routes = ['/', '/explore', '/explore?topic=longevity', '/compound/bpc-157', '/compound/ghk-cu', '/compound/wolverine-blend', '/claim/CLAIM-BPC157-TENDON-REPAIR', '/claims', '/signal', '/learn', '/learn/how-internet-claims-mutate', '/bond-theory', '/compare', '/timeline', '/methodology', '/coverage', '/corrections', '/status/bpc-157', '/study/21030672', '/saved', '/about', '/contact', '/privacy', '/terms', '/nope-404']
+const routes = ['/', '/explore', '/explore?topic=longevity', '/compound/bpc-157', '/compound/ghk-cu', '/compound/wolverine-blend', '/claim/CLAIM-BPC157-TENDON-REPAIR', '/claims', '/signal', '/learn', '/learn/how-internet-claims-mutate', '/bond-theory', '/pulse', '/pulse?c=tirzepatide', '/compare', '/timeline', '/methodology', '/coverage', '/corrections', '/status/bpc-157', '/study/21030672', '/saved', '/about', '/contact', '/privacy', '/terms', '/nope-404']
 const b = await chromium.launch({ channel: 'chrome', args: ['--use-gl=angle', '--use-angle=default', '--ignore-gpu-blocklist'] })
 const rows = []
 for (const [tag, w, h] of [['desk', 1440, 900], ['mob', 390, 844]]) {

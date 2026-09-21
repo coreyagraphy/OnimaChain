@@ -15,5 +15,5 @@
     "allowImportingTsExtensions": true,
     "paths": { "~/*": ["./src/*"] }
   },
-  "include": ["src", "vite.config.ts", "tools"]
+  "include": ["src", "vite.config.ts", "tools", "netlify"]
 }

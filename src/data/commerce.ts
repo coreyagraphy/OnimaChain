@@ -81,27 +81,42 @@ export function wordmarkStyle(theme: CompoundTheme): CSSProperties {
 }
 
 const DESCRIPTIONS: Record<string, string> = {
-  'retatrutide': 'Retatrutide, shown here as GLP3, is an experimental medicine that targets three appetite and metabolism signals at once. Researchers are studying it for weight management, but it is not yet an approved treatment.',
-  'tirzepatide': 'Tirzepatide is a prescription medicine that works on two gut-hormone signals involved in appetite and blood sugar. It is approved for certain people with obesity, overweight, or type 2 diabetes under specific brand names.',
-  'semaglutide': 'Semaglutide is the well-known GLP-1 medicine behind brands such as Wegovy and Ozempic. It can help eligible patients manage appetite, blood sugar, and weight when prescribed for the right use.',
-  'tesamorelin': 'Tesamorelin signals the body to release more of its own growth hormone. Its approved use is narrow: reducing excess abdominal fat in adults with HIV-related lipodystrophy—not general belly-fat loss.',
-  'mots-c': 'MOTS-c is a tiny peptide made by mitochondria, the energy centers inside cells. Researchers are exploring links to exercise and metabolism, but the human evidence does not support calling it “exercise in a bottle.”',
-  'follistatin-344': 'Follistatin 344 is a large binding protein studied for how it interacts with myostatin and other growth signals. Muscle-building claims are experimental, and its safety and benefit in people are not established.',
-  'igf-1-lr3': 'IGF-1 LR3 is a longer-lasting laboratory version of an insulin-like growth signal. It is discussed in muscle research, but it is not an approved shortcut for size, strength, or recovery.',
-  'cjc-1295': 'CJC-1295 is an experimental peptide designed to imitate a natural signal that triggers growth-hormone release. Human data are limited, so anti-aging, fat-loss, and muscle-building promises run ahead of the evidence.',
-  'ipamorelin': 'Ipamorelin is an experimental peptide that activates a growth-hormone release signal. It is often marketed for sleep, recovery, or body composition, but those uses are not established treatments.',
-  'bpc-157': 'BPC-157 is a 15-amino-acid research peptide commonly promoted for injuries, joints, and gut problems. Most of the evidence is still preclinical, so fast-healing promises have not been proven in people.',
-  'tb-500': 'TB-500 is a research product related to thymosin beta-4, a peptide involved in cell movement and repair. It is widely discussed for recovery, but claims that it rebuilds tissue or erases pain are not proven clinical outcomes.',
-  'wolverine-blend': 'The Wolverine Blend combines BPC-157 and TB-500 in one product concept. The dramatic recovery claims come from marketing—not strong human trials of the blend—and no single molecular structure applies.',
-  'kpv': 'KPV is a three-amino-acid fragment of a natural signaling peptide. Early research explores inflammation in the gut and skin, but it is not a proven cure for bowel, skin, or allergy problems.',
-  'thymosin-alpha-1': 'Thymosin alpha-1 is an immune-signaling peptide used medically in some countries and studied in several immune conditions. It may influence immune response, but “instant immune boost” is not an accurate promise.',
-  'kisspeptin-10': 'Kisspeptin-10 is a short form of a natural signal that helps control reproductive hormones. Researchers study it in fertility and hormone testing; it is not a guaranteed testosterone or libido booster.',
-  'pt-141': 'PT-141, or bremelanotide, acts on melanocortin signals in the brain. A prescription form is approved for a specific sexual-desire disorder in some premenopausal women—not as a general performance enhancer.',
-  'epitalon': 'Epitalon is a four-amino-acid experimental peptide promoted for sleep and longevity. Claims that it protects DNA, resets aging, or turns back time remain unproven.',
-  'ghk-cu': 'GHK-Cu is a tiny copper-binding peptide used in many skin and hair products. Research explores collagen, firmer-looking skin, wound repair, and hair growth.',
-  'pinealon': 'Pinealon is a three-amino-acid experimental peptide marketed for memory and healthy aging. Evidence for sharper focus or protection from brain aging is still limited.',
-  'semax': 'Semax is a seven-amino-acid peptide studied for effects on brain signaling and attention. It is used in a few countries, but claims of instant focus, faster learning, or effortless productivity are not well established.',
-  'selank': 'Selank is a seven-amino-acid experimental peptide related to an immune peptide called tuftsin. Early studies explore anxiety and mood, but it is not proven to erase stress on demand.',
+  'retatrutide': "Retatrutide, shown here as GLP3, targets three appetite and metabolism signals at once. In a phase 2 trial, people lost about 24% of their body weight on average over 48 weeks, and it is now in late-stage trials.",
+  'tirzepatide': "Tirzepatide works on two gut-hormone signals, GLP-1 and GIP, that control appetite and blood sugar. It is approved as Zepbound and Mounjaro, with about 21% average weight loss at the top dose in its main trial.",
+  'semaglutide': "Semaglutide is the GLP-1 medicine behind Wegovy and Ozempic. It turns down appetite and steadies blood sugar, with about 15% average weight loss in its main weight trial.",
+  'tesamorelin': "Tesamorelin signals the body to release more of its own growth hormone. It is approved as Egrifta to reduce belly fat in adults with HIV-related fat buildup, and is studied for body composition.",
+  'mots-c': "MOTS-c is a tiny peptide made by mitochondria, the energy centers inside cells. In mice it boosted exercise capacity and insulin sensitivity, which is why people call it an exercise signal.",
+  'follistatin-344': "Follistatin 344 is a binding protein that blocks myostatin, the body’s natural brake on muscle growth. In animal research, raising follistatin led to noticeably more muscle.",
+  'igf-1-lr3': "IGF-1 LR3 is a longer-lasting version of IGF-1, one of the body’s main growth signals. Lab research uses it for its strong effect on muscle and cell growth.",
+  'cjc-1295': "CJC-1295 copies the natural signal that triggers growth-hormone release, built to last much longer. Early human trials showed growth hormone and IGF-1 stayed higher for days after a single dose.",
+  'ipamorelin': "Ipamorelin uses the ghrelin signal to release growth hormone, with little effect on stress hormones in animal studies. People look it up for sleep, recovery and body composition.",
+  'sermorelin': "Sermorelin is a short copy of the body’s own growth-hormone release signal. It was once FDA-approved to test and treat growth hormone deficiency in children, and is still discussed for healthy aging.",
+  'hexarelin': "Hexarelin is one of the strongest growth-hormone triggers in its class. Rat studies also found it protected heart tissue.",
+  'ghrp-2': "GHRP-2 uses the ghrelin signal to release growth hormone. Human studies show it raises both growth hormone and appetite.",
+  'ghrp-6': "GHRP-6 releases growth hormone through the ghrelin signal and is known for a strong boost in hunger. It is discussed for building size and recovery.",
+  'bpc-157': "BPC-157 is a 15-amino-acid peptide based on a protein found in stomach juice. In rat studies it sped up healing of tendons, ligaments, muscle and the gut lining, making it one of the most talked-about recovery peptides.",
+  'tb-500': "TB-500 is based on thymosin beta-4, a protein that helps cells move to where repair is needed. Animal studies link it to faster wound healing and tissue recovery, and it is a staple of recovery conversations.",
+  'wolverine-blend': "The Wolverine Blend pairs BPC-157 and TB-500, two of the most-discussed recovery peptides, in one product. Each half has its own animal repair research, and the pairing is a favorite in recovery circles.",
+  'kpv': "KPV is a three-amino-acid piece of alpha-MSH, a natural calming signal. Mouse studies found it settled gut inflammation, and researchers are exploring it for skin as well.",
+  'thymosin-alpha-1': "Thymosin alpha-1 is an immune-signaling peptide that helps train and activate immune cells. It is approved in several countries as Zadaxin and is studied across a range of immune conditions.",
+  'thymalin': "Thymalin is a thymus-derived peptide mix that supports immune cells. It has been used in Russia, is studied mostly by one research group, and is discussed for immune support with age.",
+  'thymogen': "Thymogen is a two-amino-acid thymus peptide used in Russia to support immune function.",
+  'll-37': "LL-37 is a germ-fighting peptide your own body makes. Animal studies show it kills bacteria and speeds wound healing, and a small human trial found faster healing of leg ulcers.",
+  'kisspeptin-10': "Kisspeptin-10 is a short form of the natural signal that starts the body’s sex-hormone chain. In human studies it briefly raised LH and testosterone, and it is used in fertility and hormone research.",
+  'pt-141': "PT-141, or bremelanotide, works on desire signals in the brain rather than blood flow. A prescription form, Vyleesi, is approved for low sexual desire in some premenopausal women.",
+  'melanotan-ii': "Melanotan II switches on the skin’s pigment signal and a brain desire signal. Small human studies showed tanning and improved erections, which is why it is known as the tanning peptide.",
+  'epitalon': "Epitalon is a four-amino-acid peptide researched for sleep and longevity. Rodent studies linked it to melatonin changes and longer lifespan, making it a favorite in the anti-aging world.",
+  'ghk-cu': "GHK-Cu is a tiny copper-binding peptide found in many skin and hair products. Research links it to collagen, firmer-looking skin, wound repair and hair growth.",
+  'pinealon': "Pinealon is a three-amino-acid peptide aimed at brain cells. Rat and lab studies found it protected nerve cells, and it is popular with people interested in memory and healthy aging.",
+  'semax': "Semax is a seven-amino-acid peptide that raises BDNF, a growth factor for brain cells. It is used in Russia for stroke recovery and attention, and draws interest for focus and memory.",
+  'selank': "Selank is a seven-amino-acid peptide related to tuftsin, an immune peptide. Russian studies found calming effects in anxiety, and people look it up for stress and a clearer head.",
+  'cerebrolysin': "Cerebrolysin is a mix of brain-derived peptides that support nerve cells. It is used in several countries and has been tested in stroke and brain-injury trials.",
+  'p21': "P21 is a lab-designed peptide built from a brain growth factor. In mice it improved memory and the growth of new nerve cells.",
+  'ss-31': "SS-31, also called elamipretide, protects the inner wall of mitochondria, the cell’s power plants. It has been tested in trials for rare mitochondrial diseases and restored muscle function in old mice.",
+  'humanin': "Humanin is a protective signal made by mitochondria. Mouse studies link it to healthier metabolism, and higher levels are associated with healthy aging in people.",
+  'nad-plus': "NAD+ is a molecule every cell needs to turn food into energy, and levels drop with age. Small human studies show boosters raise NAD levels, and it sits at the center of the longevity conversation.",
+  'glutathione': "Glutathione is the body’s main built-in antioxidant, a three-amino-acid peptide. Small trials found brighter, more even skin tone, and it is popular for skin and recovery.",
+  'aod-9604': "AOD-9604 is a fragment of growth hormone designed to target fat without growth effects. It burned fat in obese mice; human weight-loss trials did not beat placebo.",
 }
 
 const SHOP_TOPICS: Record<DomainId, string> = {
@@ -121,5 +136,5 @@ export function shopTopicFor(compound: Compound): string {
 export function descriptionFor(compound: Compound): string {
   if (DESCRIPTIONS[compound.slug]) return DESCRIPTIONS[compound.slug]
   const length = compound.sequence ? `${compound.sequence.length}-residue` : 'structurally distinct'
-  return `${displayName(compound)} is a ${length} compound often discussed around ${SHOP_TOPICS[compound.domain]}. See what it is, why people look it up, and what the available research can—and cannot—tell us.`
+  return `${displayName(compound)} is a ${length} compound often discussed around ${SHOP_TOPICS[compound.domain]}. See what it is, why people look it up, and what the research shows.`
 }

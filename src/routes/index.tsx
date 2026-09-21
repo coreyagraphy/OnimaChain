@@ -3,6 +3,8 @@ import { useEffect, useRef, type CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
 import { FeaturedOrbit } from '~/components/FeaturedOrbit'
 import { LiquidGlassLink } from '~/components/LiquidGlassLink'
+import { PulseStream, SinceLastVisit } from '~/components/Pulse'
+import { usePulse } from '~/pulse/usePulse'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
 import { BRAND } from '~/brand'
@@ -10,7 +12,7 @@ import { BRAND } from '~/brand'
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
-  return <><Hero /><FeaturedCollection /><Difference /><ResearchDomains /><MethodPreview /><FinalShop /></>
+  return <><Hero /><FeaturedCollection /><PulseHome /><Difference /><ResearchDomains /><MethodPreview /><FinalShop /></>
 }
 
 function FeaturedCollection() {
@@ -22,6 +24,24 @@ function FeaturedCollection() {
         <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length}</LiquidGlassLink>
       </div>
       <FeaturedOrbit compounds={featured} />
+    </section>
+  )
+}
+
+function PulseHome() {
+  const { snap } = usePulse()
+  return (
+    <section className="section pulse-home" aria-labelledby="pulse-h">
+      <div className="wrap grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <p className="label label-cyan"><span className="pulse-live" aria-hidden />PulseChain</p>
+          <h2 id="pulse-h" className="display text-[clamp(2.2rem,5.4vw,4.6rem)] mt-3 leading-[0.98]">The peptide world<br />doesn’t stand still.</h2>
+          <p className="lede mt-4 max-w-xl">New papers. Trial changes. Regulatory news. Videos gaining traction. We pull it together so you don’t have to hunt for it.</p>
+        </div>
+        {snap && <SinceLastVisit events={snap.events} />}
+      </div>
+      <div className="mt-8"><PulseStream limit={10} /></div>
+      <div className="wrap mt-6"><Link to="/pulse" className="btn">Open PulseChain →</Link></div>
     </section>
   )
 }

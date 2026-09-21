@@ -16,6 +16,7 @@ import { ClaimCard } from '~/components/ClaimCard'
 import { TimelineLane } from '~/components/TimelineLane'
 import { ProvenanceDrawer } from '~/components/ProvenanceDrawer'
 import { PeptideVideo } from '~/components/PeptideVideo'
+import { PulseStream } from '~/components/Pulse'
 import { ProvenanceLabel } from '~/components/SourceBadge'
 import { ScrollTrigger } from '~/motion/timeline'
 import { BRAND } from '~/brand'
@@ -123,6 +124,10 @@ function Dossier() {
         </div>
       </section>
 
+      <section className="py-10" aria-labelledby="whatsnew-h">
+        <div className="wrap flex flex-wrap items-end justify-between gap-3"><div><p className="label label-cyan"><span className="pulse-live" aria-hidden />PulseChain</p><h2 id="whatsnew-h" className="display-md text-[clamp(1.5rem,3.4vw,2.3rem)] mt-2">What’s new with {displayName(c)}</h2></div><Link to="/pulse" search={{ c: slug }} className="btn btn-sm">See the full {displayName(c)} pulse →</Link></div>
+        <div className="mt-5"><PulseStream compound={slug} limit={5} /></div>
+      </section>
       <nav className="research-tabs" aria-label="Product research sections"><a href="#snapshot">Overview</a><a href="#genome">Research</a><a href="#signal">Why people look it up</a><a href="#translation">How far it has been tested</a><a href="#timeline">Timeline</a><a href="#sources">Sources</a></nav>
 
       {/* B — snapshot */}

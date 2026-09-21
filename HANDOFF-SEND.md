@@ -396,3 +396,49 @@ The newest repository commit after this file is saved is the handoff update itse
 - Use plain language first; allow deeper evidence behind it.
 - Never turn an evidence gap into sales copy.
 - Update this file after material changes and copy it to Downloads before sending it onward.
+
+## 5e. PulseChain + Bond Theory v2 (2026-09-21)
+
+**PulseChain** is the site's live research and news feed. It's built around events, not articles.
+- **Pages:** `/pulse`, a home section after Featured, "What's new with X" on every product page, and a Pulse link in the nav.
+- **Engine:** `src/pulse/` (types, adapters, pipeline). Every step runs from stored source records, with fixed-wording summaries and no AI rewrite:
+  - dedupe by identity
+  - link to compounds (with collision guards for p21, glutathione and NAD+)
+  - cluster copies and videos into the primary event
+  - labels, not scores
+  - significance ranking
+  - trial status changes between runs
+  - trend levels, which need 14 days of history before anything is called "rising"
+- **Sources:**
+
+  | Source | State |
+  |---|---|
+  | PubMed, ClinicalTrials.gov, FDA RSS | On, no keys needed |
+  | YouTube | On when `YOUTUBE_API_KEY` is set (6 compounds per run, stays inside the free quota) |
+  | News RSS | On when `PULSE_NEWS_FEEDS` (a comma list) is set |
+  | Reddit, TikTok | Built as switches, off until licensed |
+
+  `NCBI_API_KEY` is optional and speeds up PubMed.
+- **Runtime:**
+  - `netlify/functions/pulse-collect.mts` runs on a schedule every 4 hours. It hands off to `pulse-run-background.mts` (15-minute limit, needs a plan with background functions) or runs inline.
+  - Results are stored in Netlify Blobs, store `pulse`, keys `latest` and `runs/<hour>`.
+  - `GET /api/pulse` (`pulse.mts`) serves the public feed; the review queue never leaves the server.
+  - `npm run build` also writes `public/pulse.json`, so the feed has real content on day one and when the API is down. The client tries `/api/pulse` first, then `/pulse.json`.
+- **Publishing tiers:**
+  - Primary sources publish automatically.
+  - Commentary publishes with its label.
+  - A conflict ("FDA approved X" when X isn't) combined with 3 or more voices goes to review.
+  - Items not linked to anything are held.
+- **Tests:** `npm run test:pulse` runs 11 offline attack cases (echo collapse, PMID citing, creator spam, FDA clickbait, review queue, promo flag, trial delta, cross-run dedupe, trend guard, summaries only from the record). `tools/pulse-check.mjs` covers the browser.
+- **Open:**
+  - Add a YouTube key and news feeds in Netlify env.
+  - An admin view of the review queue (for now, read Blobs `latest.review`).
+  - Email for the weekly "Chain Reaction" digest.
+  - pgvector clustering if volume grows past Blobs.
+
+**Bond Theory v2** is goal-first:
+- The flow is: goal text or chips, then research matches (`src/data/goals.ts` PROFILES), then the stack, then the "What they do together" card (Overlap / How they get there / Adds / Studied together / Gap, plus a matrix and ladder), with "Save as picture".
+- Community reports go in `src/data/reports.ts`, which is empty and requires a link for every entry.
+- Corey's order: no safety or "research chemical" caveats in the page; the disclaimers live up front.
+
+**Copy:** all 36 product descriptions were rewritten to benefit-aware, factual wording with no "not proven" endings. The Safety row was removed from the research grid.
