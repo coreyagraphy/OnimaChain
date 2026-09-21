@@ -1,0 +1,216 @@
+{
+  "reachable": true,
+  "checkedAt": "2026-09-21T01:53:11.169Z",
+  "records": {
+    "21030672": {
+      "pmid": "21030672",
+      "title": "The promoting effect of pentadecapeptide BPC 157 on tendon healing involves tendon outgrowth, cell survival, and cell migration.",
+      "year": 2011,
+      "journal": "J Appl Physiol (1985)",
+      "authors": [
+        "Chang CH",
+        "Tsai WC",
+        "Lin MS",
+        "Hsu YH",
+        "Pang JH"
+      ],
+      "lastAuthor": "Pang JH",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1152/japplphysiol.00945.2010",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "32245208": {
+      "pmid": "32245208",
+      "title": "Thymosin β4-Enhancing Therapeutic Efficacy of Human Adipose-Derived Stem Cells in Mouse Ischemic Hindlimb Model.",
+      "year": 2020,
+      "journal": "Int J Mol Sci",
+      "authors": [
+        "Kim JH",
+        "Lim IR",
+        "Park CY",
+        "Joo HJ",
+        "Noh JM",
+        "Choi SC",
+        "Hong SJ",
+        "Lim DS"
+      ],
+      "lastAuthor": "Lim DS",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.3390/ijms21062166",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "34170491": {
+      "pmid": "34170491",
+      "title": "Effects of thymosin β4-derived peptides on migration and invasion of ovarian cancer cells.",
+      "year": 2021,
+      "journal": "Genes Genomics",
+      "authors": [
+        "Yoon HJ",
+        "Oh YL",
+        "Ko EJ",
+        "Kang A",
+        "Eo WK",
+        "Kim KH",
+        "Lee JY",
+        "Kim A",
+        "Chun S",
+        "Kim H",
+        "Ock MS",
+        "Cha HJ"
+      ],
+      "lastAuthor": "Cha HJ",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1007/s13258-021-01127-7",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "36706591": {
+      "pmid": "36706591",
+      "title": "Cell starvation increases uptake of extracellular Thymosin β4 and its complexes with calcium.",
+      "year": 2023,
+      "journal": "Int Immunopharmacol",
+      "authors": [
+        "Piludu M",
+        "Pichiri G",
+        "Coni P",
+        "Piras M",
+        "Congiu T",
+        "Faa G",
+        "Lachowicz JI"
+      ],
+      "lastAuthor": "Lachowicz JI",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1016/j.intimp.2023.109743",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "40756949": {
+      "pmid": "40756949",
+      "title": "Emerging Use of BPC-157 in Orthopaedic Sports Medicine: A Systematic Review.",
+      "year": 2025,
+      "journal": "HSS J",
+      "authors": [
+        "Vasireddi N",
+        "Hahamyan H",
+        "Salata MJ",
+        "Karns M",
+        "Calcei JG",
+        "Voos JE",
+        "Apostolakos JM"
+      ],
+      "lastAuthor": "Apostolakos JM",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.1177/15563316251355551",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "40789979": {
+      "pmid": "40789979",
+      "title": "Regeneration or Risk? A Narrative Review of BPC-157 for Musculoskeletal Healing.",
+      "year": 2025,
+      "journal": "Curr Rev Musculoskelet Med",
+      "authors": [
+        "McGuire FP",
+        "Martinez R",
+        "Lenz A",
+        "Skinner L",
+        "Cushman DM"
+      ],
+      "lastAuthor": "Cushman DM",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.1007/s12178-025-09990-7",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "41235866": {
+      "pmid": "41235866",
+      "title": "Engineered Tandem Thymosin Peptide Promotes Corneal Wound Healing.",
+      "year": 2025,
+      "journal": "Invest Ophthalmol Vis Sci",
+      "authors": [
+        "Nguyen J",
+        "Verma S",
+        "Vuong VT",
+        "Queener H",
+        "Coulson-Thomas VJ",
+        "Gesteira TF"
+      ],
+      "lastAuthor": "Gesteira TF",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, N.I.H., Extramural"
+      ],
+      "doi": "10.1167/iovs.66.14.31",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "41754849": {
+      "pmid": "41754849",
+      "title": "Tendon, Ligament, and Muscle Injury, Osteotendinous, Myotendinous, and Muscle-to-Bone Junction Therapy Perspectives with Growth Factors and Stable Gastric Pentadecapeptide BPC 157-A Review.",
+      "year": 2026,
+      "journal": "Pharmaceuticals (Basel)",
+      "authors": [
+        "Matek D",
+        "Matek I",
+        "Japjec M",
+        "Matek M",
+        "Prenc J",
+        "Staresinic B",
+        "Staresinic E",
+        "Prtoric A",
+        "Sikiric S",
+        "Beketic Oreskovic L",
+        "Oreskovic I",
+        "Strbe S",
+        "Kordic M",
+        "Tvrdeic A",
+        "Seiwerth S",
+        "Sikiric P",
+        "Boban Blagaic A",
+        "Skrtic A",
+        "Bojanic I",
+        "Dobric I",
+        "Staresinic M"
+      ],
+      "lastAuthor": "Staresinic M",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.3390/ph19020309",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    },
+    "42542926": {
+      "pmid": "42542926",
+      "title": "Effects of BPC-157 and TB-500 on Achilles tendon healing in rats: A histopathological and biomechanical study.",
+      "year": 2026,
+      "journal": "Jt Dis Relat Surg",
+      "authors": [
+        "Biçer O",
+        "Adanir O",
+        "Güleryüz Y",
+        "Balci EC",
+        "Dinçel YM",
+        "Yenigün MY",
+        "Aydin C",
+        "Bayrak BY"
+      ],
+      "lastAuthor": "Bayrak BY",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.52312/jdrs.2026.2951",
+      "verifiedAt": "2026-09-21T01:53:11.169Z"
+    }
+  }
+}
