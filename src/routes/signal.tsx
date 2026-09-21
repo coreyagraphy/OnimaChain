@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useMemo, useState, type CSSProperties } from 'react'
 import { CompoundCard } from '~/components/CompoundCard'
+import { PortalTitle } from '~/components/PortalTitle'
 import { BRAND } from '~/brand'
 import { COMPOUNDS, displayName, type Compound } from '~/data/compounds'
 import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
@@ -30,7 +31,7 @@ const TOPIC_LABELS: Record<DomainId, string> = {
 const STARTING_SLUGS = ['bpc-157', 'tb-500', 'ghk-cu', 'ipamorelin', 'cjc-1295', 'semaglutide', 'tirzepatide', 'retatrutide']
 
 export const Route = createFileRoute('/signal')({
-  head: () => ({ meta: [{ title: `Peptide Finder — ${BRAND}` }, { name: 'description', content: 'Choose a peptide, explore nearby compounds, and open the sources behind each record.' }] }),
+  head: () => ({ meta: [{ title: `Portal of Tides — ${BRAND}` }, { name: 'description', content: 'Choose a peptide, explore nearby compounds, and open the sources behind each record.' }] }),
   component: SignalMap,
 })
 
@@ -55,13 +56,14 @@ function SignalMap() {
     <div className="signal-world pt-28" style={{ '--signal-a': theme.primary, '--signal-b': theme.secondary, '--signal-c': theme.tertiary } as CSSProperties}>
       <div className="signal-depth" aria-hidden><i /><i /><i /></div>
       <header className="wrap relative z-[2]">
-        <p className="label signal-kicker">Peptide finder</p>
-        <h1 className="signal-title mt-4">Find your way<br /><span>through the names.</span></h1>
+        <p className="label signal-kicker">Explore the current</p>
+        <PortalTitle className="mt-4" />
+        <h2 className="portal-finder-tagline mt-7">Find your way through the names.</h2>
         <p className="lede mt-6 max-w-2xl">New to peptides? Start here. Choose a name, see what people connect it with, then open the product page when you want the deeper research.</p>
         <p className="mt-4 text-sm text-bone/58 max-w-2xl">This is a map of our collection—not a popularity ranking, a promise, or medical advice.</p>
       </header>
 
-      <section className="wrap relative z-[2] mt-10 grid xl:grid-cols-[310px_minmax(0,1fr)] gap-5" aria-label="Peptide finder controls and map">
+      <section className="wrap relative z-[2] mt-10 grid xl:grid-cols-[310px_minmax(0,1fr)] gap-5" aria-label="Portal of Tides controls and map">
         <aside className="signal-controls liquid-panel p-5">
           <p className="label">Start with a name</p>
           <label className="grid gap-2 mt-5">
@@ -81,7 +83,7 @@ function SignalMap() {
           <div className="signal-selected mt-6" style={{ '--product': theme.primary, '--product-2': theme.secondary } as CSSProperties}>
             <p className="label" style={{ color: theme.primary }}>{TOPIC_LABELS[selected.domain]}</p>
             <h2 className="wordmark text-3xl mt-2" style={wordmarkStyle(theme)}>{displayName(selected)}</h2>
-            <p className="mt-3 text-sm text-bone/72 leading-relaxed">{descriptionFor(selected)}</p>
+            <p className="mt-3 text-sm font-semibold text-bone/82 leading-relaxed">{descriptionFor(selected)}</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {selected.tags.slice(0, 3).map((tag) => <span className="signal-tag" key={tag}>{humanize(tag)}</span>)}
             </div>

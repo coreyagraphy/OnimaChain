@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import type { CSSProperties } from 'react'
 import { LESSONS } from '~/data/lessons'
 import { BRAND } from '~/brand'
+import { PortalTitle } from '~/components/PortalTitle'
 
 export const Route = createFileRoute('/learn')({
   head: () => ({ meta: [{ title: `Portal of Tides — ${BRAND}` }, { name: 'description', content: 'Interactive lessons for navigating molecular research, claims, and evidence.' }] }),
@@ -15,7 +16,7 @@ function PortalOfTides() {
         <div className="portal-caustics" aria-hidden><i/><i/><i/></div>
         <div className="wrap relative z-10 py-20 md:py-28">
           <p className="label portal-label">The learning current</p>
-          <h1 className="portal-title mt-5" aria-label="Portal of Tides"><span>Portal</span><span className="portal-title-small">of</span><span>Tides</span></h1>
+          <PortalTitle className="mt-5" />
           <div className="mt-10 grid md:grid-cols-[1fr_.75fr] gap-8 items-end">
             <p className="lede max-w-2xl">Ideas change as they travel. Enter a lesson, follow the current back to its source, and learn where evidence ends and interpretation begins.</p>
             <p className="mono text-[11px] text-right text-bone/45 hidden md:block">10 passages · 1 interactive now<br/>new lessons surface as they are verified</p>

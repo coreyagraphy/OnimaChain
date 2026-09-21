@@ -38,7 +38,7 @@ export function CompoundCard({ compound, index, layout, fluid = false }: Props) 
       <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span><span className="mono text-[10px] text-bone/45">{geometry.placeholder ? 'STRUCTURE PENDING' : `${geometry.length} AA`}</span></div>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
         <div className="flex items-end justify-between gap-3"><h3 className="wordmark text-[clamp(1.8rem,3vw,2.6rem)]" style={wordmarkStyle(theme)}>{displayName(compound)}</h3><strong className="mono text-sm whitespace-nowrap">{PRICE_PLACEHOLDER}</strong></div>
-        <p className="mt-2 text-[12px] text-bone/58 line-clamp-2">{descriptionFor(compound)}</p>
+        <p className="mt-2 text-[12px] font-semibold leading-relaxed text-bone/78 line-clamp-3">{descriptionFor(compound)}</p>
         <div className="mt-3 flex gap-3 mono text-[10px] text-bone/50"><span>{compound.sequence ? `${compound.sequence.length} residues` : 'length pending'}</span><span>{mw ? `${mw} Da` : 'MW pending'}</span></div>
         <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Quick view</button><button className="btn btn-sm commerce-btn justify-center" onClick={quickAdd} data-cursor="add">{added ? 'Added' : 'Add to cart'}</button></div>
       </div>

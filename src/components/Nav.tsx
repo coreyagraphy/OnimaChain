@@ -7,8 +7,8 @@ import { cartCount, useCommerceStore } from '~/stores/commerce'
 const links = [
   { to: '/explore', label: 'Shop' },
   { to: '/claims', label: 'Research' },
-  { to: '/signal', label: 'Peptide Finder' },
-  { to: '/learn', label: 'Portal of Tides' },
+  { to: '/signal', label: 'Portal of Tides' },
+  { to: '/learn', label: 'Learn' },
   { to: '/about', label: 'About' },
 ] as const
 

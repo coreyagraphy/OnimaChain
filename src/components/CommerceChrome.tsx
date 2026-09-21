@@ -96,7 +96,7 @@ function QuickView() {
             <p className="label" style={{ color: theme.primary }}>{domain.name} research</p>
             <h2 className="wordmark text-[clamp(2.8rem,6vw,5.5rem)] mt-3" style={wordmarkStyle(theme)}>{displayName(c)}</h2>
             <p className="display-md text-2xl mt-5">{PRICE_PLACEHOLDER}</p>
-            <p className="text-sm text-bone/75 leading-relaxed mt-5">{descriptionFor(c)}</p>
+            <p className="text-sm font-semibold text-bone/82 leading-relaxed mt-5">{descriptionFor(c)}</p>
             <dl className="mini-specs mt-6">
               <div><dt>Length</dt><dd>{c.sequence ? `${c.sequence.length} aa` : 'Pending'}</dd></div>
               <div><dt>MW</dt><dd>{mw ? `${mw} Da` : 'Pending'}</dd></div>

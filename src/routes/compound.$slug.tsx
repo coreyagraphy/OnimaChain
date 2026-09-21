@@ -76,7 +76,7 @@ function Dossier() {
         <div className="wrap !mr-0 py-12 lg:py-16 flex flex-col justify-center relative z-10">
           <p className="label" style={{ color: domain.palette.base }}>{domain.name} · commonly explored around {shopTopicFor(c)}</p>
           <h1 className="wordmark text-[clamp(3.4rem,7.5vw,7.2rem)] mt-4" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>
-          <p className="mt-5 text-base text-bone/76 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
+          <p className="mt-5 text-base font-semibold text-bone/84 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
           <div className="mt-7 flex items-end gap-6"><div><p className="label">Temporary price</p><p className="display-md text-3xl mt-1">{PRICE_PLACEHOLDER}</p></div><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
           {c.displayName && <p className="mono text-[12px] text-bone/55 mt-2">Compound: {c.name.toLowerCase()}</p>}
           {c.aliases.length > 0 && <p className="mt-4 text-sm muted">Also indexed as {c.aliases.join(' · ')}</p>}
@@ -112,7 +112,7 @@ function Dossier() {
       <Section id="snapshot" k="B" title="Snapshot">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <Snap title="What we have checked" onOpen={() => setDrawer('research')}>{studies.length ? `${studies.length} source${studies.length === 1 ? '' : 's'} total${dist.human ? ` · ${dist.human} involving people` : ''}${dist.animal ? ` · ${dist.animal} using animals` : ''}${dist.review ? ` · ${dist.review} review${dist.review === 1 ? '' : 's'}` : ''}` : 'We haven’t added a checked source for this yet.'}</Snap>
-          <Snap title="Why people look it up" onOpen={() => setDrawer('signal')}>{shopTopicFor(c)} · open the Peptide Finder to see nearby names</Snap>
+          <Snap title="Why people look it up" onOpen={() => setDrawer('signal')}>{shopTopicFor(c)} · open the Portal of Tides to see nearby names</Snap>
           <Snap title="How far the research has gone" onOpen={() => setDrawer('translation')}>{translation.length ? translation.map((t) => `${t.outcome}: ${t.stages.length ? TRANSLATION_STAGES.filter((s) => t.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'no supported stage'}`).join(' · ') : 'No outcome mapped yet'}</Snap>
           <Snap title="What's new" onOpen={() => setDrawer('change')} amber>{change ? `${change.date} — ${change.change}` : 'No change recorded'}</Snap>
           <Snap title="Regulatory snapshot" onOpen={() => setDrawer('regulatory')}>No regulatory record indexed · <Link to="/status/$compound" params={{ compound: slug }} className="underline">jurisdiction view</Link></Snap>
@@ -146,8 +146,8 @@ function Dossier() {
       {/* E — human signal */}
       <Section id="signal" k="E" title="Why people look it up" lede="A plain-language starting point. This is not a promise that the product will cause a result.">
         <div className="panel p-6 md:p-8 grid md:grid-cols-[1fr_auto] gap-6 items-center" style={{ '--panel-accent': productTheme.primary } as CSSProperties}>
-          <div><p className="label" style={{ color: productTheme.primary }}>{shopTopicFor(c)}</p><h3 className="display-md text-2xl mt-3">See {displayName(c)} beside similar names.</h3><p className="mt-3 text-sm muted max-w-2xl">The Peptide Finder lets you switch between a constellation, connection view, checked-source timeline, and topic map. It uses the products already in our collection—no fake customer counts.</p></div>
-          <Link to="/signal" className="btn commerce-btn">Open Peptide Finder</Link>
+          <div><p className="label" style={{ color: productTheme.primary }}>{shopTopicFor(c)}</p><h3 className="display-md text-2xl mt-3">See {displayName(c)} beside similar names.</h3><p className="mt-3 text-sm muted max-w-2xl">The Portal of Tides lets you switch between a constellation, connection view, checked-source timeline, and topic map. It uses the products already in our collection—no fake customer counts.</p></div>
+          <Link to="/signal" className="btn commerce-btn">Open Portal of Tides</Link>
         </div>
       </Section>
 
@@ -281,7 +281,7 @@ function drawerTitle(k: string | null) {
 function drawerBody(k: string | null, c: Compound, n: number, groups: number) {
   switch (k) {
     case 'research': return <><p>{n} PMIDs listed in studies.ts for {displayName(c)} resolved against NCBI eutils at build time. Study type and species come from the record title / publication type; tags from the abstract.</p><p>{groups} distinct last-author surname(s) — a proxy, not an institution map.</p></>
-    case 'signal': return <><p>People commonly explore {displayName(c)} around {shopTopicFor(c)}.</p><p>We do not have live social feeds connected, so we do not invent mention counts or customer stories. Use the Peptide Finder to see related names in this collection.</p></>
+    case 'signal': return <><p>People commonly explore {displayName(c)} around {shopTopicFor(c)}.</p><p>We do not have live social feeds connected, so we do not invent mention counts or customer stories. Use the Portal of Tides to see related names in this collection.</p></>
     case 'translation': return <p>Stages are lit from claims.ts → translation, which is populated only when a verified record with the matching species / model exists. Nothing is inferred from reviews.</p>
     case 'change': return <p>Derived from claims.ts change history. The only event so far is claim creation, dated 2026-09-20. Nothing has been rewritten.</p>
     case 'regulatory': return <p>No regulatory connector is enabled. The status page shows jurisdiction and date fields with an explicit empty state. An advisory vote is never shown as an approval.</p>
