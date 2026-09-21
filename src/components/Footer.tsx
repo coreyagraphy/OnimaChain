@@ -3,7 +3,7 @@ import { CORPUS_CHECKED_AT } from '~/data/studies'
 import { BRAND } from '~/brand'
 
 const cols = [
-  [['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Signal'], ['/learn', 'Portal of Tides']],
+  [['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Peptide Finder'], ['/learn', 'Portal of Tides']],
   [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
   [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const
@@ -14,9 +14,9 @@ export function Footer() {
       <div className="wrap py-14 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <p className="display text-[15px] tracking-[0.18em] uppercase">{BRAND}</p>
-          <p className="mt-3 text-sm muted max-w-sm">The Molecular Evidence &amp; Signal Atlas. See what research found, what people report, and how the story changed between them.</p>
+          <p className="mt-3 text-sm muted max-w-sm">Shop the collection, learn what each peptide is, and open the original sources when you want to go deeper.</p>
           <p className="mt-4 mono text-[11px] text-bone/40">Working brand only until final domain and trademark clearance.</p>
-          <p className="mono text-[11px] text-bone/40">Corpus check: {CORPUS_CHECKED_AT.slice(0, 10)} · PMIDs verified via NCBI eutils</p>
+          <p className="mono text-[11px] text-bone/40">Sources last checked: {CORPUS_CHECKED_AT.slice(0, 10)} · PubMed records verified through NCBI</p>
         </div>
         {cols.map((c, i) => (
           <ul key={i} className="grid gap-2 content-start">

@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { COMPOUNDS, displayName, type Compound } from './compounds'
-import { DOMAIN_BY_ID } from './domains'
+import { DOMAIN_BY_ID, type DomainId } from './domains'
 
 export const PRICE_PLACEHOLDER = '$XX.XX'
 
@@ -58,12 +58,12 @@ export function themeFor(compound: Compound): CompoundTheme {
 
 export function wordmarkStyle(theme: CompoundTheme): CSSProperties {
   const styles: Record<CompoundTheme['titleStyle'], CSSProperties> = {
-    condensed: { fontStretch: '75%', letterSpacing: '-0.055em' },
-    wide: { fontStretch: '120%', letterSpacing: '0.015em' },
-    mineral: { fontWeight: 650, letterSpacing: '-0.018em' },
-    kinetic: { fontStyle: 'italic', fontStretch: '85%', letterSpacing: '-0.04em' },
-    sculptural: { fontWeight: 820, letterSpacing: '-0.045em' },
-    precise: { fontWeight: 720, letterSpacing: '-0.025em' },
+    condensed: { fontFamily: 'Inter Variable, sans-serif', fontStretch: '72%', fontWeight: 860, letterSpacing: '-0.075em' },
+    wide: { fontFamily: 'Manrope Variable, sans-serif', fontStretch: '125%', fontWeight: 610, letterSpacing: '0.025em' },
+    mineral: { fontFamily: 'Georgia, Cambria, serif', fontWeight: 700, letterSpacing: '-0.035em' },
+    kinetic: { fontFamily: 'Inter Variable, sans-serif', fontStyle: 'italic', fontStretch: '78%', fontWeight: 780, letterSpacing: '-0.06em' },
+    sculptural: { fontFamily: 'Manrope Variable, sans-serif', fontWeight: 900, letterSpacing: '-0.065em' },
+    precise: { fontFamily: 'JetBrains Mono Variable, monospace', fontWeight: 650, letterSpacing: '-0.045em' },
   }
   return {
     ...styles[theme.titleStyle],
@@ -74,16 +74,29 @@ export function wordmarkStyle(theme: CompoundTheme): CSSProperties {
 }
 
 const DESCRIPTIONS: Record<string, string> = {
-  'bpc-157': 'BPC-157 is a short 15-amino-acid peptide that has attracted research interest around tissue response and recovery-related pathways. Most research indexed here comes from laboratory and animal models.',
-  'tb-500': 'TB-500 is presented here alongside the thymosin beta-4 research record: a longer, flexible peptide studied in cell movement and tissue-response models.',
-  'ghk-cu': 'GHK-Cu is a three-amino-acid copper complex studied in skin, matrix, and cellular signaling research. Its copper center gives it a distinct structural identity.',
-  'mots-c': 'MOTS-c is a compact mitochondrial-derived peptide studied in cellular energy and metabolic signaling research.',
-  'pt-141': 'PT-141 is a cyclic melanocortin peptide with a compact ring structure. Its research record and regulatory context are kept separate below.',
+  'bpc-157': 'BPC-157 is a short peptide made from 15 amino acids. People often look it up when learning about recovery and tissue repair. Its page shows what researchers checked—and what is still unknown.',
+  'tb-500': 'TB-500 is connected to thymosin beta-4, a longer peptide involved in how cells move. Its page separates the studies from the bigger claims you may see online.',
+  'ghk-cu': 'GHK-Cu is a tiny peptide joined to copper. It is commonly discussed in skin and hair care. Open its page to see the molecule and the research behind those conversations.',
+  'mots-c': 'MOTS-c is a small peptide made inside mitochondria, the parts of cells that help make energy. Its page explains why people look it up and what has actually been studied.',
+  'pt-141': 'PT-141 is a small peptide shaped like a ring. Its page explains the molecule, the names it is sold under, and the difference between a study and a claim.',
+}
+
+const SHOP_TOPICS: Record<DomainId, string> = {
+  repair: 'recovery and tissue repair',
+  metabolic: 'metabolism and appetite',
+  somatotropic: 'growth-hormone signals',
+  dermal: 'skin and hair',
+  cognitive: 'the brain and focus',
+  longevity: 'cell energy and ageing',
+  immune: 'immune response',
+}
+
+export function shopTopicFor(compound: Compound): string {
+  return SHOP_TOPICS[compound.domain]
 }
 
 export function descriptionFor(compound: Compound): string {
   if (DESCRIPTIONS[compound.slug]) return DESCRIPTIONS[compound.slug]
-  const domain = DOMAIN_BY_ID[compound.domain]
   const length = compound.sequence ? `${compound.sequence.length}-residue` : 'structurally distinct'
-  return `${displayName(compound)} is a ${length} compound researchers have explored in ${domain.name.toLowerCase()} studies. Open the research record below to see what was studied and where the evidence currently stops.`
+  return `${displayName(compound)} is a ${length} compound often discussed around ${SHOP_TOPICS[compound.domain]}. See what it is, why people look it up, and what the available research can—and cannot—tell us.`
 }

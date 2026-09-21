@@ -27,10 +27,14 @@ export function CompoundCard({ compound, index, layout, fluid = false }: Props) 
   const style = { '--product': theme.primary, '--product-2': theme.secondary, '--product-3': theme.tertiary, transform: hover ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-7px)` : undefined } as CSSProperties
   const quickAdd = () => { add(compound.slug); setAdded(true); window.setTimeout(() => setAdded(false), 1200) }
   return (
-    <article className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[440px]' : SIZE[lay]}`} style={style} onPointerEnter={() => setHover(true)} onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }} onPointerMove={(e) => { const r=e.currentTarget.getBoundingClientRect(); setTilt({ x:-((e.clientY-r.top)/r.height-.5)*5, y:((e.clientX-r.left)/r.width-.5)*5 }) }}>
+    <article className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[440px]' : SIZE[lay]}`} data-title-style={theme.titleStyle} style={style} onPointerEnter={() => setHover(true)} onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }} onPointerMove={(e) => { const r=e.currentTarget.getBoundingClientRect(); setTilt({ x:-((e.clientY-r.top)/r.height-.5)*5, y:((e.clientX-r.left)/r.width-.5)*5 }) }}>
       <div className="product-card-atmosphere" aria-hidden />
+      <div className="product-neon-lens" aria-hidden><i /><i /><i /></div>
       <Link to="/compound/$slug" params={{ slug: compound.slug }} className="absolute inset-0 z-[1]" aria-label={`Open ${displayName(compound)}`} data-cursor="product" />
-      <div className="absolute inset-x-0 top-0 h-[58%] pointer-events-none"><SceneView className="absolute inset-0" fallback={<SequenceSVG geometry={geometry} tint={theme.primary} className="absolute inset-0 w-full h-full p-6 opacity-90" />}><Suspense fallback={null}><DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.25 : 1.32} /></Suspense></SceneView></div>
+      <div className="product-molecule absolute inset-x-0 top-0 h-[60%] pointer-events-none">
+        <SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />
+        <SceneView className="absolute inset-0" fallback={null}><Suspense fallback={null}><DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.5 : 1.5} /></Suspense></SceneView>
+      </div>
       <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span><span className="mono text-[10px] text-bone/45">{geometry.placeholder ? 'STRUCTURE PENDING' : `${geometry.length} AA`}</span></div>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
         <div className="flex items-end justify-between gap-3"><h3 className="wordmark text-[clamp(1.8rem,3vw,2.6rem)]" style={wordmarkStyle(theme)}>{displayName(compound)}</h3><strong className="mono text-sm whitespace-nowrap">{PRICE_PLACEHOLDER}</strong></div>
