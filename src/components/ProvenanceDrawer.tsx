@@ -2,25 +2,31 @@ import { useEffect, type ReactNode } from 'react'
 
 interface Props { open: boolean; onClose: () => void; title: string; children: ReactNode }
 
-/** Slide-over that shows how a derived data point was created. */
+/**
+ * Provenance drawer: looking behind the visible conclusion.
+ * While open, <body data-depth-open="1"> pushes the page (the interpretation) backward and dims it;
+ * the drawer (the evidence) comes forward as a layered glass surface. The 3D scene keeps moving behind.
+ */
 export function ProvenanceDrawer({ open, onClose, title, children }: Props) {
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    document.body.dataset.depthOpen = '1'
+    return () => { window.removeEventListener('keydown', onKey); delete document.body.dataset.depthOpen }
   }, [open, onClose])
   if (!open) return null
   return (
     <div className="fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-label={title}>
-      <button className="absolute inset-0 bg-obsidian/70" onClick={onClose} aria-label="Close" />
-      <aside className="absolute right-0 top-0 h-full w-[min(92vw,480px)] bg-graphite border-l hairline p-6 overflow-y-auto fade-up" data-lenis-prevent>
-        <div className="flex items-center justify-between">
-          <p className="label label-cyan">Provenance</p>
+      <button className="absolute inset-0 veil" onClick={onClose} aria-label="Close" />
+      <aside className="absolute right-0 top-0 h-full w-[min(92vw,500px)] glass border-l p-6 md:p-8 overflow-y-auto drawer-in" data-lenis-prevent style={{ borderRadius: 0 }}>
+        <div className="relative flex items-center justify-between">
+          <p className="label label-cyan">Provenance · underneath the interpretation</p>
           <button className="btn btn-sm" onClick={onClose}>Close</button>
         </div>
-        <h3 className="display-md text-xl mt-3">{title}</h3>
-        <div className="mt-4 text-sm prose-block">{children}</div>
+        <h3 className="relative display-md text-xl md:text-2xl mt-4">{title}</h3>
+        <div className="relative mt-4 text-sm prose-block">{children}</div>
+        <p className="relative mt-8 mono text-[11px] text-bone/40 border-t hairline pt-4">Interpretation on top · evidence underneath. Nothing here is generated from outside the indexed records.</p>
       </aside>
     </div>
   )

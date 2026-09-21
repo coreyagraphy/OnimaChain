@@ -1,4 +1,3 @@
-import { BRAND } from '~/brand'
 /*
  * Human Signal data. The product has NO platform access in this build.
  * Every panel renders the corpus header and an explicit empty state. Nothing here is a number

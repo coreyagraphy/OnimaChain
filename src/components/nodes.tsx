@@ -46,7 +46,7 @@ interface SvgNodeProps {
 export function SvgNode({ kind, x, y, r = 14, hollow = false, label, sublabel, active = false, onClick }: SvgNodeProps) {
   const s = NODE_STYLE[kind]
   return (
-    <g transform={`translate(${x} ${y})`} style={{ cursor: onClick ? 'pointer' : 'default' }} onClick={onClick} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
+    <g className="lg-node" transform={`translate( )`} style={{ cursor: onClick ? 'pointer' : 'default' }} onClick={onClick} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
       {active && <path d={shapePath(s.shape, r + 7)} fill="none" stroke={s.color} strokeOpacity={0.35} strokeWidth={1} />}
       <path d={shapePath(s.shape, r)} fill={hollow ? 'transparent' : s.color} fillOpacity={hollow ? 0 : kind === 'claim' ? 0.95 : 0.85} stroke={s.color} strokeWidth={hollow ? 1.2 : 1} strokeDasharray={hollow ? '3 3' : undefined} />
       {label && (
@@ -104,7 +104,7 @@ export function LineageEdge({ x1, y1, x2, y2, relationship, unresolved = false, 
   const my = (y1 + y2) / 2
   return (
     <g>
-      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeOpacity={lit ? (unresolved ? 0.35 : 0.6) : 0.15} strokeWidth={unresolved ? 1 : 1.4} strokeDasharray={unresolved ? '4 4' : undefined} />
+      <line className="lg-edge" pathLength={1} x1={x1} y1={y1} x2={x2} y2={y2} stroke={color} strokeOpacity={lit ? (unresolved ? 0.35 : 0.6) : 0.15} strokeWidth={unresolved ? 1 : 1.4} strokeDasharray={unresolved ? '4 4' : undefined} />
       {relationship && (
         <text x={mx} y={my - 6} textAnchor="middle" fill={color} fillOpacity={0.8} fontSize={9.5} fontFamily="JetBrains Mono Variable, monospace" letterSpacing="0.08em">
           {relationship}

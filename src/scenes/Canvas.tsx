@@ -1,17 +1,21 @@
 import { Canvas } from '@react-three/fiber'
 import { View } from '@react-three/drei/web/View'
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { useCanvasAllowed } from '~/motion/useReducedMotion'
+import { useCanvasAllowed, useDocumentVisible, useQuality } from '~/motion/useReducedMotion'
 
 /**
  * One persistent R3F canvas per document, rendered fixed behind the page.
  * Sections declare a <SceneView> (drei <View>) which tracks a DOM rect and draws into the shared context.
  *
- * Hero and TRUTH (LOD-0, with postprocessing) use their own <Lod0Canvas> because EffectComposer
+ * Hero and the dossier stage (LOD-0, with postprocessing) use their own <Lod0Canvas> because EffectComposer
  * inside a scissored View composites unreliably; everything else (cards, rigs, atlas nodes) shares this one.
+ *
+ * Every canvas pauses its render loop when the tab is hidden; Lod0Canvas also pauses when scrolled off-screen.
  */
 export function GlobalCanvas() {
   const allowed = useCanvasAllowed()
+  const visible = useDocumentVisible()
+  const q = useQuality()
   const [ready, setReady] = useState(false)
   useEffect(() => {
     if (allowed) setReady(true)
@@ -19,11 +23,11 @@ export function GlobalCanvas() {
   if (!ready) return null
   return (
     <Canvas
-      id="cyravon-global-canvas"
+      id="atlas-global-canvas"
       style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 20 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      dpr={[1, 1.75]}
-      frameloop="always"
+      dpr={q.dpr}
+      frameloop={visible ? 'always' : 'never'}
       eventSource={typeof document !== 'undefined' ? document.body : undefined}
       eventPrefix="client"
     >
@@ -60,26 +64,38 @@ interface Lod0Props {
   cameraZ?: number
 }
 
-/** Dedicated canvas for LOD-0 scenes (hero, TRUTH tab) that carry postprocessing. */
-export function Lod0Canvas({ children, className, style, onFirstFrame, dpr = [1, 1.5], cameraZ = 14 }: Lod0Props) {
+/** Dedicated canvas for LOD-0 scenes (hero, dossier stage, constellation) that carry postprocessing. */
+export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, cameraZ = 14 }: Lod0Props) {
   const fired = useRef(false)
+  const wrap = useRef<HTMLDivElement>(null)
+  const visible = useDocumentVisible()
+  const q = useQuality()
+  const [onScreen, setOnScreen] = useState(true)
+  useEffect(() => {
+    const el = wrap.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver((entries) => setOnScreen(entries.some((e) => e.isIntersecting)), { rootMargin: '120px 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   return (
-    <Canvas
-      className={className}
-      style={style}
-      gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
-      dpr={dpr}
-      frameloop="always"
-      camera={{ fov: 38, near: 0.1, far: 200, position: [0, 0, cameraZ] }}
-      onCreated={({ gl }) => {
-        gl.setClearColor('#0A0B0E', 0)
-        if (!fired.current) {
-          fired.current = true
-          requestAnimationFrame(() => requestAnimationFrame(() => onFirstFrame?.()))
-        }
-      }}
-    >
-      {children}
-    </Canvas>
+    <div ref={wrap} className={className} style={style}>
+      <Canvas
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
+        dpr={dpr ?? q.dpr}
+        frameloop={visible && onScreen ? 'always' : 'never'}
+        camera={{ fov: 38, near: 0.1, far: 200, position: [0, 0, cameraZ] }}
+        onCreated={({ gl }) => {
+          gl.setClearColor('#0A0B0E', 0)
+          if (!fired.current) {
+            fired.current = true
+            requestAnimationFrame(() => requestAnimationFrame(() => onFirstFrame?.()))
+          }
+        }}
+      >
+        {children}
+      </Canvas>
+    </div>
   )
 }

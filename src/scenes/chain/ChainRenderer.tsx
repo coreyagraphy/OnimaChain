@@ -30,6 +30,21 @@ export interface ChainRendererProps {
   tilt?: [number, number, number]
   /** Draw hotspot ring markers (off in the cinematic hero). */
   markers?: boolean
+  /** Signal light: a window of residues (by index) lifted toward the tint. Read every frame; null = no highlight. */
+  highlight?: RefObject<Highlight | null>
+  /** 0..1 global dim (provenance open dims the molecule while evidence comes forward). Read every frame. */
+  dim?: RefObject<number>
+}
+
+export interface Highlight {
+  /** Residue index at the centre of the lit window (fractional allowed). */
+  center: number
+  /** Half-width in residues. */
+  width: number
+  /** 0..1 lift toward the tint colour. */
+  strength: number
+  /** Optional explicit residue indices (theme focus). Overrides the window when set. */
+  indices?: number[]
 }
 
 const STAGGER = 3 // residues in flight at once
@@ -38,6 +53,8 @@ const V = new THREE.Vector3()
 const S = new THREE.Vector3()
 const M = new THREE.Matrix4()
 const Q = new THREE.Quaternion()
+const C = new THREE.Color()
+const TINT = new THREE.Color()
 
 function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3)
@@ -58,6 +75,8 @@ export function ChainRenderer({
   reducedEffects = false,
   tilt = [0.25, 0.35, 0],
   markers: showMarkers = true,
+  highlight,
+  dim,
 }: ChainRendererProps) {
   const group = useRef<THREE.Group>(null)
   const scaler = useRef<THREE.Group>(null)
@@ -131,10 +150,14 @@ export function ChainRenderer({
         color: new THREE.Color(tint).multiplyScalar(0.42),
         emissive: new THREE.Color(tint),
         emissiveIntensity: 0.22 * intensity,
-        roughness: 0.32,
-        metalness: 0.35,
-        clearcoat: 0.6,
-        clearcoatRoughness: 0.35,
+        roughness: 0.26,
+        metalness: 0.28,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.22,
+        sheen: 0.35,
+        sheenRoughness: 0.6,
+        sheenColor: new THREE.Color(tint),
+        envMapIntensity: 1.35,
         transparent: g.placeholder,
         opacity: g.placeholder ? 0.25 : 1,
       }),
@@ -144,10 +167,15 @@ export function ChainRenderer({
   const sphereMat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
-        roughness: 0.38,
-        metalness: 0.08,
-        clearcoat: 0.8,
-        clearcoatRoughness: 0.25,
+        roughness: 0.3,
+        metalness: 0.06,
+        clearcoat: 1,
+        clearcoatRoughness: 0.18,
+        sheen: 0.5,
+        sheenRoughness: 0.55,
+        sheenColor: new THREE.Color('#DCE8EE'),
+        specularIntensity: 0.9,
+        envMapIntensity: 1.25,
         emissive: new THREE.Color('#ffffff'),
         emissiveIntensity: 0.06 * intensity,
         vertexColors: false,
@@ -173,6 +201,7 @@ export function ChainRenderer({
   )
 
   const tRef = useRef(0)
+  const hlWas = useRef(false)
   const scatterK = lod === 2 ? 0.3 : lod === 1 ? 0.5 : 0.55
   const [cx, cy, cz] = g.bounds.center
 
@@ -242,7 +271,33 @@ export function ChainRenderer({
         inst.current.setMatrixAt(i, M)
       }
       inst.current.instanceMatrix.needsUpdate = true
+      // Signal light: lift the highlighted residues toward the tint (glow with hierarchy, never every atom).
+      const hl = highlight?.current ?? null
+      if (hl || hlWas.current) {
+        const tintC = TINT.set(tint)
+        for (let i = 0; i < n; i++) {
+          let w = 0
+          if (hl) {
+            if (hl.indices) w = hl.indices.includes(i) ? 1 : 0
+            else {
+              const d = (i - hl.center) / Math.max(0.001, hl.width)
+              w = Math.exp(-d * d * 1.6)
+            }
+            w *= hl.strength
+          }
+          C.setRGB(colors[i * 3], colors[i * 3 + 1], colors[i * 3 + 2])
+          if (w > 0) C.lerp(tintC, Math.min(1, w * 0.85)).multiplyScalar(1 + w * 1.6)
+          inst.current.setColorAt(i, C)
+        }
+        if (inst.current.instanceColor) inst.current.instanceColor.needsUpdate = true
+        hlWas.current = !!hl
+      }
     }
+    const dimK = 1 - 0.7 * THREE.MathUtils.clamp(dim?.current ?? 0, 0, 1)
+    tubeMat.emissiveIntensity = 0.22 * intensity * dimK
+    sphereMat.emissiveIntensity = 0.06 * intensity * dimK
+    tubeMat.envMapIntensity = 1.35 * dimK
+    sphereMat.envMapIntensity = 1.25 * dimK
   })
 
   return (

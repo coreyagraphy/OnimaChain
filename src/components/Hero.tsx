@@ -3,17 +3,24 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Lod0Canvas } from '~/scenes/Canvas'
 import { useCanvasAllowed } from '~/motion/useReducedMotion'
 import { createScrub } from '~/motion/timeline'
+import { SceneLoader } from './SceneLoader'
 
 const HeroScene = lazy(() => import('~/scenes/hero/HeroScene').then((m) => ({ default: m.HeroScene })))
 
 const CAPTIONS: Array<{ from: number; to: number; k: string; v: string }> = [
   { from: 0.04, to: 0.24, k: 'Structure', v: 'BPC-157 · 15 residues · GEPPPGKPADDAGLV' },
-  { from: 0.26, to: 0.48, k: 'N-terminus', v: 'Gly1 → Glu2 — the loose end of a short chain' },
-  { from: 0.45, to: 0.74, k: 'Hinge', v: 'Pro3–Pro5 — three consecutive prolines; the helix breaks here' },
-  { from: 0.78, to: 1.12, k: 'C-terminus', v: 'Leu14 → Val15 — where the sequence stops and the claim begins' },
+  { from: 0.26, to: 0.46, k: 'N-terminus', v: 'Gly1 → Glu2 — the loose end of a short chain' },
+  { from: 0.45, to: 0.72, k: 'Hinge', v: 'Pro3–Pro5 — three consecutive prolines; the helix breaks here' },
+  { from: 0.74, to: 0.88, k: 'C-terminus', v: 'Leu14 → Val15 — where the sequence stops and the claim begins' },
+  { from: 0.9, to: 1.2, k: 'Resolve', v: 'Molecule → research record → claim → human signal. Three worlds, kept separate.' },
 ]
 
-/** Cinematic hero: one BPC-157 chain in true depth; scroll flies the camera through it across a 250vh pinned section. */
+/**
+ * Cinematic hero. STATE 1: near-black, particulate drift, the BPC-157 chain emerges from darkness.
+ * STATE 2–3: scroll flies the camera into and through the hinge across a 250vh pinned section while the headline
+ * sits in the scene. STATE 4: on exit the structure resolves into research → claim → signal.
+ * Poster-first LCP; reduced motion keeps the static poster.
+ */
 export function Hero() {
   const allowed = useCanvasAllowed()
   const section = useRef<HTMLElement>(null)
@@ -33,7 +40,7 @@ export function Hero() {
       trigger: section.current,
       end: '+=150%',
       pin: true,
-      scrub: 0.8,
+      scrub: 0.9,
       onProgress: (p) => {
         progress.current = p
         if (copyRef.current) {
@@ -85,6 +92,9 @@ export function Hero() {
           </Suspense>
         </Lod0Canvas>
       )}
+      {allowed && !firstFrame && <SceneLoader />}
+      {/* STATE 1 veil: the screen begins almost black and the molecule emerges */}
+      {allowed && <div className="hero-veil" style={{ opacity: firstFrame ? 0 : 0.92 }} aria-hidden />}
       {/* readability veil, bottom-weighted */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(10,11,14,0.35) 0%, rgba(10,11,14,0) 35%, rgba(10,11,14,0) 55%, rgba(10,11,14,0.78) 100%)' }} />
 
@@ -109,7 +119,7 @@ export function Hero() {
       {/* flight captions */}
       <div className="absolute left-5 md:left-10 bottom-[9vh] z-10 pointer-events-none">
         {CAPTIONS.map((c, i) => (
-          <div key={c.k} ref={(el) => { capRefs.current[i] = el }} className="absolute bottom-0 left-0 w-[min(80vw,520px)]" style={{ opacity: 0 }}>
+          <div key={c.k} ref={(el) => { capRefs.current[i] = el }} className="absolute bottom-0 left-0 w-[min(80vw,560px)]" style={{ opacity: 0 }}>
             <p className="label label-cyan mb-2">{c.k}</p>
             <p className="mono text-[13px] md:text-[15px] text-bone/85">{c.v}</p>
           </div>
