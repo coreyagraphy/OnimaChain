@@ -3,6 +3,7 @@
 @import "@fontsource-variable/manrope";
 @import "@fontsource-variable/jetbrains-mono";
 @import "@fontsource/lilita-one";
+@import "@fontsource-variable/unbounded";
 
 @theme {
   --color-obsidian: #0A0B0E;
@@ -468,3 +469,50 @@ body { background: transparent; }
 
 /* the shop header glow extended 288px past the viewport; keep decoration inside the page */
 .shop-hero { overflow-x: clip; }
+
+/* ── Featured headline: textured foil lettering with a neon tube glow behind it ── */
+.atmo-title { font-family:'Unbounded Variable',var(--font-display); font-weight:800; font-size:clamp(2rem,5.1vw,4.9rem); line-height:1.02; letter-spacing:-.035em; text-wrap:balance; max-width:13ch; }
+.atmo-line { display:block; color:transparent; background:linear-gradient(180deg,rgba(248,245,238,.94),rgba(206,212,222,.82)),url(/textures/foil.webp) 30% 40%/380px; background-blend-mode:luminosity; -webkit-background-clip:text; background-clip:text; filter:drop-shadow(0 2px 0 rgba(0,0,0,.45)); }
+.atmo-neon { position:relative; display:block; isolation:isolate; margin-top:.06em; }
+.atmo-foil { position:relative; display:block; color:transparent; background:linear-gradient(rgba(150,225,255,.42),rgba(150,225,255,.42)),url(/textures/foil.webp) 0 0/360px; background-blend-mode:screen; -webkit-background-clip:text; background-clip:text; filter:brightness(1.15) saturate(1.25) contrast(1.02) drop-shadow(0 0 1px rgba(220,250,255,.95)); animation:foilDrift 26s linear infinite; }
+.atmo-glow { position:absolute; inset:0; z-index:-1; color:#5FE3FF; text-shadow:0 0 18px #5FE3FF,0 0 42px #5FE3FF,0 0 80px rgba(95,227,255,.8); filter:blur(8px); opacity:1; animation:neonHum 5.5s ease-in-out infinite; pointer-events:none; user-select:none; }
+.atmo-glow-b { color:#AE66FF; text-shadow:0 0 40px #AE66FF,0 0 90px #AE66FF; filter:blur(30px); opacity:.85; transform:translate(.04em,.06em) scale(1.02); animation-delay:-2.2s; }
+@keyframes foilDrift { to { background-position:0 0,360px 720px; } }
+@keyframes neonHum { 0%,100%{opacity:.8} 47%{opacity:1} 48%{opacity:.45} 49%{opacity:1} 51%{opacity:.6} 52%{opacity:1} 70%{opacity:.9} }
+
+/* ── Featured row: slow 3D carousel ── */
+.orbit-stage { position:relative; height:540px; perspective:1500px; perspective-origin:50% 40%; touch-action:pan-y; user-select:none; cursor:grab; overflow:hidden; padding-block:40px; }
+.orbit-stage:active { cursor:grabbing; }
+.orbit-card { position:absolute; left:0; top:40px; width:var(--card-w); will-change:transform; transform-origin:50% 60%; }
+.orbit-card .product-card { transition:transform .45s cubic-bezier(.2,.8,.2,1),box-shadow .4s; }
+.orbit-arrow { width:44px; height:44px; display:grid; place-items:center; border-radius:50%; font-size:22px; line-height:1; color:var(--color-bone); border:1px solid rgba(242,238,230,.2); background:rgba(12,14,20,.6); backdrop-filter:blur(10px); transition:border-color .25s,box-shadow .25s; }
+.orbit-arrow:hover,.orbit-arrow:focus-visible { border-color:var(--color-cyan); box-shadow:0 0 18px rgba(95,227,255,.35); }
+@media (max-width:639px){ .orbit-stage{ height:500px; } }
+
+/* ── "Shop all" liquid glass pill ── */
+.liquid-glass { --mx:30%; --my:20%; --rx:0deg; --ry:0deg; position:relative; isolation:isolate; display:inline-flex; align-items:center; justify-content:center; min-height:58px; padding:0 34px; border-radius:999px; overflow:hidden;
+  font-family:'Unbounded Variable',var(--font-display); font-weight:700; font-size:14px; letter-spacing:.02em; color:#F4FEFF;
+  background:radial-gradient(120% 140% at 50% 120%,rgba(95,227,255,.55),transparent 60%),linear-gradient(180deg,rgba(255,255,255,.22),rgba(120,200,255,.08) 45%,rgba(174,102,255,.22));
+  border:1px solid rgba(220,250,255,.55);
+  backdrop-filter:blur(16px) saturate(1.9) brightness(1.15); -webkit-backdrop-filter:blur(16px) saturate(1.9) brightness(1.15);
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.85), inset 0 -10px 18px -6px rgba(95,227,255,.65), inset 0 0 0 1px rgba(255,255,255,.08), 0 0 0 1px rgba(95,227,255,.25), 0 0 26px rgba(95,227,255,.55), 0 0 70px -10px rgba(174,102,255,.7), 0 18px 34px -14px rgba(0,0,0,.9), 0 6px 0 -1px rgba(40,90,140,.45);
+  transform:perspective(600px) rotateX(var(--rx)) rotateY(var(--ry)); transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .3s; animation:glassBreath 4.8s ease-in-out infinite; text-shadow:0 0 12px rgba(95,227,255,.9),0 1px 1px rgba(0,0,0,.45); }
+.liquid-glass:hover { box-shadow:inset 0 1.5px 0 rgba(255,255,255,.95), inset 0 -12px 22px -6px rgba(95,227,255,.85), 0 0 0 1px rgba(95,227,255,.45), 0 0 40px rgba(95,227,255,.8), 0 0 95px -10px rgba(174,102,255,.9), 0 22px 40px -14px rgba(0,0,0,.9), 0 6px 0 -1px rgba(40,90,140,.5); }
+.liquid-glass:active { transform:perspective(600px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(2px) scale(.98); }
+.liquid-glass:focus-visible { outline:2px solid #5FE3FF; outline-offset:4px; }
+.liquid-glass-label { position:relative; z-index:3; }
+.liquid-glass-shine { position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
+  background:radial-gradient(38% 70% at var(--mx) var(--my),rgba(255,255,255,.75),rgba(255,255,255,.12) 45%,transparent 70%), linear-gradient(180deg,rgba(255,255,255,.45),rgba(255,255,255,0) 48%);
+  mix-blend-mode:screen; opacity:.8; }
+.liquid-glass-caustic { position:absolute; inset:-60%; z-index:1; pointer-events:none;
+  background:conic-gradient(from 0deg,rgba(95,227,255,0),rgba(95,227,255,.7),rgba(255,255,255,.2),rgba(174,102,255,.75),rgba(95,227,255,0) 70%);
+  filter:blur(12px); opacity:.65; border-radius:42% 58% 63% 37% / 45% 38% 62% 55%; animation:causticSwim 7s linear infinite; }
+.liquid-glass::after { content:""; position:absolute; inset:0; z-index:2; border-radius:inherit; pointer-events:none; padding:1.5px;
+  background:linear-gradient(115deg,rgba(255,255,255,.95),rgba(95,227,255,.2) 30%,rgba(174,102,255,.9) 70%,rgba(255,255,255,.6));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+@keyframes causticSwim { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.15); border-radius:58% 42% 37% 63% / 55% 62% 38% 45%} 100%{transform:rotate(360deg) scale(1)} }
+@keyframes glassBreath { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.18)} }
+
+@media (prefers-reduced-motion: reduce) {
+  .atmo-foil,.atmo-glow,.liquid-glass,.liquid-glass-caustic { animation:none; }
+}

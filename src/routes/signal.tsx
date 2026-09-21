@@ -8,6 +8,7 @@ import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyl
 import { DOMAINS, type DomainId } from '~/data/domains'
 import { studiesForCompound } from '~/data/studies'
 import { useCommerceStore } from '~/stores/commerce'
+import { LiquidGlassLink } from '~/components/LiquidGlassLink'
 
 type View = 'constellation' | 'network' | 'timeline' | 'heatmap'
 
@@ -103,7 +104,7 @@ function SignalMap() {
       <section className="wrap relative z-[2] py-20">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
           <div><p className="label signal-kicker">Nearby in the collection</p><h2 className="display text-[clamp(2.2rem,5vw,4.8rem)] mt-3">More in {shopTopicFor(selected)}.</h2></div>
-          <Link to="/explore" className="btn">Shop all {COMPOUNDS.length}</Link>
+          <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length}</LiquidGlassLink>
         </div>
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
           {nearby.length ? nearby.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} fluid />) : <p className="muted">No nearby products are in this topic yet.</p>}

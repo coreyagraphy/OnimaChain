@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
-import { CompoundCard } from '~/components/CompoundCard'
+import { FeaturedOrbit } from '~/components/FeaturedOrbit'
+import { LiquidGlassLink } from '~/components/LiquidGlassLink'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
 import { BRAND } from '~/brand'
@@ -13,14 +14,14 @@ function Home() {
 }
 
 function FeaturedCollection() {
-  const featured = ['bpc-157', 'tb-500', 'ghk-cu', 'mots-c', 'pt-141', 'semaglutide'].map((slug) => COMPOUND_BY_SLUG[slug])
+  const featured = ['bpc-157', 'tb-500', 'ghk-cu', 'mots-c', 'pt-141', 'semaglutide', 'semax', 'epitalon'].map((slug) => COMPOUND_BY_SLUG[slug])
   return (
     <section className="section collection-stage" aria-label="Featured compounds">
       <div className="wrap flex flex-wrap items-end justify-between gap-6">
-        <div><p className="label label-cyan">Featured compounds</p><h2 className="display text-[clamp(2.5rem,6vw,5.7rem)] mt-3">Every molecule has<br/><span className="outline-word">its own atmosphere.</span></h2></div>
-        <Link to="/explore" className="btn">Shop all {COMPOUNDS.length}</Link>
+        <div><p className="label label-cyan">Featured compounds</p><h2 className="atmo-title mt-4"><span className="atmo-line">Every molecule has</span><span className="atmo-neon"><span className="atmo-glow" aria-hidden>its own atmosphere.</span><span className="atmo-glow atmo-glow-b" aria-hidden>its own atmosphere.</span><span className="atmo-foil">its own atmosphere.</span></span></h2></div>
+        <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length}</LiquidGlassLink>
       </div>
-      <div className="mt-12 overflow-x-auto rail pb-8"><div className="wrap flex gap-5 items-end w-max">{featured.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} />)}</div></div>
+      <FeaturedOrbit compounds={featured} />
     </section>
   )
 }
