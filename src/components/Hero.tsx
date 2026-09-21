@@ -33,6 +33,7 @@ export function Hero() {
     return ()=>{ cleanup(); window.removeEventListener('pointermove',onMove) }
   },[isStatic])
   return (
+    <div className="hero-pin-root">
     <section ref={section} className="hero-shell relative h-[100vh] w-full overflow-hidden bg-obsidian grain" aria-label="Molecular collection introduction">
       <picture><source media="(max-aspect-ratio: 4/5)" srcSet="/posters/hero-portrait.jpg"/><img src="/posters/hero.jpg" alt="A glowing sequence-derived molecular chain in a deep cyan and violet laboratory environment" width={1440} height={900} fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1400ms]" style={{opacity:firstFrame?0:1}}/></picture>
       <div className="hero-chroma" aria-hidden/><div className="hero-orbit hero-orbit-a" aria-hidden/><div className="hero-orbit hero-orbit-b" aria-hidden/>
@@ -48,5 +49,6 @@ export function Hero() {
       <div className="absolute left-5 md:left-10 bottom-[9vh] z-10 pointer-events-none">{CAPTIONS.map((c,i)=><div key={c.k} ref={(el)=>{capRefs.current[i]=el}} className="absolute bottom-0 left-0 w-[min(80vw,560px)]" style={{opacity:0}}><p className="label label-cyan mb-2">{c.k}</p><p className="mono text-[13px] md:text-[15px] text-bone/85">{c.v}</p></div>)}</div>
       <div className="absolute bottom-0 inset-x-0 h-[2px] bg-bone/10 z-10"><div ref={barRef} className="h-full bg-cyan origin-left" style={{transform:'scaleX(0)'}}/></div>
     </section>
+    </div>
   )
 }

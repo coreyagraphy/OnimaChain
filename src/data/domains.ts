@@ -11,7 +11,12 @@ export type RigId = 'dock' | 'pulse' | 'branch' | 'bloom' | 'propagate' | 'rekni
 
 export interface Domain {
   id: DomainId
+  /** Plain, consumer-facing topic name (shown everywhere). */
   name: string
+  /** One persuasive line; describes what people look into, never promises a result. */
+  tagline: string
+  /** Faded background image for the topic card (public/topics). Illustrative only. */
+  image: string
   /** "Compounds investigated in X research" — never "best for". */
   researchLabel: string
   rig: RigId
@@ -25,8 +30,10 @@ export interface Domain {
 export const DOMAINS: Domain[] = [
   {
     id: 'repair',
-    name: 'Tissue repair',
-    researchLabel: 'Compounds investigated in tissue-repair research',
+    name: 'Recovery & Repair',
+    tagline: 'For the days after the hard days.',
+    image: '/topics/repair.webp',
+    researchLabel: 'Peptides people look into for recovery and repair',
     rig: 'branch',
     grammar: 'Branch — a line network grows from the edges toward the centre and closes over a mask.',
     palette: { base: '#5FE3FF', accent: '#9FF0FF', glow: '#5FE3FF' },
@@ -34,8 +41,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'metabolic',
-    name: 'Metabolic',
-    researchLabel: 'Compounds investigated in metabolic research',
+    name: 'Weight & Metabolism',
+    tagline: 'The GLP names everyone is talking about.',
+    image: '/topics/metabolic.webp',
+    researchLabel: 'Peptides people look into for weight and metabolism',
     rig: 'dock',
     grammar: 'Dock — a ligand approaches a receptor ring; on contact, a signal wave propagates inward.',
     palette: { base: '#4F7BFF', accent: '#8FB0FF', glow: '#2247D6' },
@@ -43,8 +52,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'somatotropic',
-    name: 'Somatotropic',
-    researchLabel: 'Compounds investigated in growth-hormone-axis research',
+    name: 'Growth & Muscle',
+    tagline: 'Studied around your body’s own growth signals.',
+    image: '/topics/somatotropic.webp',
+    researchLabel: 'Peptides people look into for growth and muscle',
     rig: 'pulse',
     grammar: 'Pulse — emissive intensity rides a night-weighted 24h waveform; bursts on the peaks.',
     palette: { base: '#8A63FF', accent: '#B9A2FF', glow: '#8A63FF' },
@@ -52,8 +63,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'dermal',
-    name: 'Dermal & matrix',
-    researchLabel: 'Compounds investigated in skin and extracellular-matrix research',
+    name: 'Skin, Hair & Glow',
+    tagline: 'Collagen, color, and that lit-from-within look.',
+    image: '/topics/dermal.webp',
+    researchLabel: 'Peptides people look into for skin and hair',
     rig: 'bloom',
     grammar: 'Bloom — a point emits a radial diffusion field that spreads outward and settles.',
     palette: { base: '#9FD8E8', accent: '#D7EEF5', glow: '#7FC8DD' },
@@ -61,8 +74,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'cognitive',
-    name: 'Cognitive & neural',
-    researchLabel: 'Compounds investigated in neural research',
+    name: 'Focus & Mood',
+    tagline: 'Brain peptides people talk about for calm and clarity.',
+    image: '/topics/cognitive.webp',
+    researchLabel: 'Peptides people look into for focus and mood',
     rig: 'propagate',
     grammar: 'Propagate — a single packet hops a sparse graph; edges flash in sequence as it crosses.',
     palette: { base: '#A98BFF', accent: '#CBB8FF', glow: '#8A63FF' },
@@ -70,8 +85,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'longevity',
-    name: 'Mitochondrial & ageing',
-    researchLabel: 'Compounds investigated in mitochondrial and ageing research',
+    name: 'Aging & Cell Energy',
+    tagline: 'The fountain-of-youth research: what’s real, what’s hype.',
+    image: '/topics/longevity.webp',
+    researchLabel: 'Peptides people look into for aging and cell energy',
     rig: 'reknit',
     grammar: 'Reknit — an assembly curve played in reverse with slow rotation.',
     palette: { base: '#7FD1C9', accent: '#B2EBE5', glow: '#5FE3FF' },
@@ -79,8 +96,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'immune',
-    name: 'Immune & antimicrobial',
-    researchLabel: 'Compounds investigated in immune and antimicrobial research',
+    name: 'Immune Defense',
+    tagline: 'Studied around how the body guards itself.',
+    image: '/topics/immune.webp',
+    researchLabel: 'Peptides people look into for immune support',
     rig: 'sweep',
     grammar: 'Sweep — a cone of light sweeps a field of points, locks on one, flags it, and resumes.',
     palette: { base: '#B7C6D6', accent: '#E3ECF3', glow: '#9FD8E8' },

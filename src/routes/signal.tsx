@@ -18,15 +18,7 @@ const VIEW_LABELS: Record<View, string> = {
   heatmap: 'Topic map',
 }
 
-const TOPIC_LABELS: Record<DomainId, string> = {
-  repair: 'Recovery',
-  metabolic: 'Metabolism',
-  somatotropic: 'Growth signals',
-  dermal: 'Skin & hair',
-  cognitive: 'Brain & focus',
-  longevity: 'Cell energy',
-  immune: 'Immune response',
-}
+const TOPIC_LABELS = Object.fromEntries(DOMAINS.map((d) => [d.id, d.name])) as Record<DomainId, string>
 
 const STARTING_SLUGS = ['bpc-157', 'tb-500', 'ghk-cu', 'ipamorelin', 'cjc-1295', 'semaglutide', 'tirzepatide', 'retatrutide']
 

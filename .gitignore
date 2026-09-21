@@ -6,3 +6,7 @@ shots
 
 # Local Netlify folder
 .netlify
+
+# raw video masters (encoded copies live in public/videos)
+media/raw/*
+!media/raw/README.txt

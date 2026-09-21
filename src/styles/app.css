@@ -367,3 +367,44 @@ input[type="range"]:active { cursor: grabbing; }
 @media(max-width:900px){.signal-controls{position:relative;top:auto}.signal-stage,.signal-constellation,.signal-network,.signal-timeline,.signal-heatmap{min-height:540px}.signal-network-grid{grid-template-columns:1fr}.signal-title{line-height:.82}}
 @media(max-width:640px){.signal-world{padding-top:96px}.signal-title{font-size:clamp(3.2rem,17vw,5.4rem);line-height:.84}.signal-stage,.signal-constellation,.signal-network,.signal-timeline,.signal-heatmap{min-height:590px}.signal-node{width:74px;height:74px}.signal-node:nth-of-type(n+7){display:none}.signal-node-core{width:118px;height:118px}.signal-node-core span{font-size:15px}.signal-view-note{white-space:normal;text-align:center;width:90%}.timeline-simple::before{left:44px}.timeline-simple li{grid-template-columns:56px 1fr;gap:15px}.timeline-simple li::before{left:39px}.signal-network{padding:24px 20px}.signal-heatmap{padding:24px 16px}}
 @media(prefers-reduced-motion:reduce){.signal-depth::before,.signal-depth i,.signal-stage-light,.signal-orbit,.signal-node,.product-card-atmosphere,.product-neon-lens i,.product-molecule-fallback{animation:none!important}.product-card{animation:none!important;translate:none!important;filter:none!important}.signal-node,.network-compound{transition:none!important}}
+
+/* ---------- topic cards: faded image, slow drift, sheen, staggered reveal ---------- */
+.topic-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; }
+.topic-card { position:relative; overflow:hidden; isolation:isolate; min-height:300px; padding:22px; border-radius:22px; display:flex; flex-direction:column;
+  border:1px solid color-mix(in srgb,var(--domain) 28%,transparent); background:#08090D;
+  opacity:0; transform:translateY(28px) scale(.98); transition:transform .9s cubic-bezier(.2,.8,.2,1), opacity .9s cubic-bezier(.2,.8,.2,1), border-color .4s; transition-delay:calc(var(--i) * 70ms); }
+.topic-grid[data-inview="1"] .topic-card { opacity:1; transform:none; }
+.topic-card-1 { grid-column:span 3; min-height:360px } .topic-card-2 { grid-column:span 3; min-height:360px }
+.topic-card-3, .topic-card-4, .topic-card-5 { grid-column:span 2 } .topic-card-6 { grid-column:span 3 } .topic-card-7 { grid-column:span 3 }
+.topic-img { position:absolute; inset:-6%; z-index:0; background-size:cover; background-position:70% 50%; opacity:.5; filter:saturate(1.08);
+  transform:scale(1.04); animation:topicDrift 22s ease-in-out infinite alternate; animation-delay:calc(var(--i) * -3s); transition:opacity .6s; will-change:transform; }
+@keyframes topicDrift { from { transform:scale(1.04) translate3d(-1.2%,0,0) } to { transform:scale(1.12) translate3d(1.2%,-1%,0) } }
+.topic-veil { position:absolute; inset:0; z-index:1; background:
+  linear-gradient(90deg, rgba(8,9,13,.92) 0%, rgba(8,9,13,.62) 45%, rgba(8,9,13,.15) 100%),
+  radial-gradient(80% 90% at 100% 0%, color-mix(in srgb,var(--domain) 22%,transparent), transparent 70%); }
+.topic-sheen { position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0; transform:translateX(-120%);
+  background:linear-gradient(110deg, transparent 35%, color-mix(in srgb,var(--domain) 30%,transparent) 50%, transparent 65%); transition:transform 1.1s cubic-bezier(.2,.8,.2,1), opacity .3s; }
+.topic-card::after { content:""; position:absolute; inset:0; border-radius:inherit; z-index:3; pointer-events:none; opacity:0; transition:opacity .45s;
+  box-shadow:inset 0 0 0 1px var(--domain), 0 30px 70px -30px var(--domain); }
+.topic-card:hover .topic-img, .topic-card:focus-visible .topic-img { opacity:.78 }
+.topic-card:hover .topic-sheen, .topic-card:focus-visible .topic-sheen { opacity:1; transform:translateX(120%) }
+.topic-card:hover::after, .topic-card:focus-visible::after { opacity:1 }
+.topic-grid[data-inview="1"] .topic-card:hover { transform:translateY(-6px) }
+.topic-count { font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--domain); padding:.3rem .6rem; border-radius:999px; border:1px solid color-mix(in srgb,var(--domain) 45%,transparent); background:rgba(8,9,13,.55); backdrop-filter:blur(6px); }
+.topic-cta { display:inline-block; margin-top:16px; font-size:12px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--domain); transform:translateX(0); transition:transform .4s cubic-bezier(.2,.8,.2,1); }
+.topic-card:hover .topic-cta { transform:translateX(6px) }
+@media (max-width:1024px) { .topic-grid { grid-template-columns:1fr 1fr } .topic-card-1,.topic-card-2,.topic-card-3,.topic-card-4,.topic-card-5,.topic-card-6,.topic-card-7 { grid-column:auto; min-height:260px } .topic-card-7 { grid-column:span 2 } }
+@media (max-width:640px) { .topic-grid { grid-template-columns:1fr } .topic-card-7 { grid-column:auto } .topic-card { min-height:220px } .topic-img { opacity:.6 } }
+@media (prefers-reduced-motion:reduce) { .topic-card { opacity:1; transform:none; transition:none } .topic-img { animation:none } .topic-sheen { display:none } }
+
+/* ---------- peptide intro video slot (4:5) ---------- */
+.peptide-video { position:relative; width:100%; overflow:hidden; border-radius:24px; background:var(--env-deep,#0A0B0E); border:1px solid color-mix(in srgb,var(--env) 30%,transparent);
+  box-shadow:0 40px 90px -40px color-mix(in srgb,var(--env) 55%,transparent), inset 0 1px 0 rgba(242,238,230,.06); }
+.peptide-video-empty { display:flex; flex-direction:column;
+  background: radial-gradient(90% 70% at 70% 25%, color-mix(in srgb,var(--env) 30%,transparent), transparent 65%), radial-gradient(80% 60% at 20% 100%, color-mix(in srgb,var(--env-2) 18%,transparent), transparent 70%), var(--env-deep); }
+.pv-orb { position:absolute; width:62%; aspect-ratio:1; left:22%; top:14%; border-radius:50%; filter:blur(38px); background:color-mix(in srgb,var(--env) 55%,transparent); opacity:.55; animation:pvFloat 9s ease-in-out infinite alternate; }
+.pv-orb-2 { width:38%; left:52%; top:40%; background:color-mix(in srgb,var(--env-2) 60%,transparent); opacity:.35; animation-duration:12s; animation-delay:-4s; }
+@keyframes pvFloat { from { transform:translate3d(-6%,4%,0) scale(1) } to { transform:translate3d(6%,-5%,0) scale(1.12) } }
+.pv-play { display:inline-grid; place-items:center; width:52px; height:52px; border-radius:50%; color:var(--env-deep,#0A0B0E); background:var(--env); box-shadow:0 0 0 8px color-mix(in srgb,var(--env) 18%,transparent); }
+.pv-play-btn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border:0; cursor:pointer; z-index:2 }
+@media (prefers-reduced-motion:reduce) { .pv-orb { animation:none } }

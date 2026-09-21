@@ -7,13 +7,14 @@ import { CompoundCard } from '~/components/CompoundCard'
 import { useCommerceStore } from '~/stores/commerce'
 import { BRAND } from '~/brand'
 
-const TOPIC_NAME: Record<DomainId, string> = { repair:'Recovery', metabolic:'Metabolism', somatotropic:'Growth signals', dermal:'Skin & hair', cognitive:'Brain & focus', longevity:'Cell energy', immune:'Immune response' }
+const TOPIC_NAME = Object.fromEntries(DOMAINS.map((d) => [d.id, d.name])) as Record<DomainId, string>
 
-export const Route = createFileRoute('/explore')({ head:()=>({meta:[{title:`Shop the molecular collection — ${BRAND}`}]}), component:Explore })
+export const Route = createFileRoute('/explore')({ validateSearch:(s:Record<string,unknown>):{ topic?: string }=>(typeof s.topic==='string' ? { topic: s.topic } : {}), head:()=>({meta:[{title:`Shop the molecular collection — ${BRAND}`}]}), component:Explore })
 type Sort='alpha'|'length'; type View='grid'|'table'
 
 function Explore(){
-  const [q,setQ]=useState(''),[domain,setDomain]=useState<DomainId|'all'>('all'),[sort,setSort]=useState<Sort>('alpha'),[view,setView]=useState<View>('grid')
+  const search=Route.useSearch()
+  const [q,setQ]=useState(''),[domain,setDomain]=useState<DomainId|'all'>(DOMAINS.some(d=>d.id===search.topic)?(search.topic as DomainId):'all'),[sort,setSort]=useState<Sort>('alpha'),[view,setView]=useState<View>('grid')
   const add=useCommerceStore((s)=>s.add), quick=useCommerceStore((s)=>s.setQuickView)
   const rows=useMemo(()=>{
     const t=q.trim().toLowerCase()

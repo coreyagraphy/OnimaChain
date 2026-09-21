@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, type CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
 import { CompoundCard } from '~/components/CompoundCard'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
@@ -38,17 +38,44 @@ function Difference() {
 }
 
 function ResearchDomains() {
+  const grid = useRef<HTMLDivElement>(null)
+  // Staggered reveal as the grid scrolls in. Transform/opacity only; reduced motion shows everything at once.
+  useEffect(() => {
+    const el = grid.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { el.dataset.inview = '1'; io.disconnect() }
+    }, { threshold: 0.15 })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   return (
-    <section className="section wrap">
-      <p className="label label-cyan">Browse by research area</p>
-      <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">Seven ways into the collection.</h2>
-      <div className="domain-spectrum mt-10">
-        {DOMAINS.map((d, i) => (
-          <Link key={d.id} to="/explore" className="domain-tile" style={{ '--domain': d.palette.base, '--domain-2': d.palette.accent } as CSSProperties}>
-            <span className="mono text-[10px] opacity-50">0{i + 1}</span><strong className="display-md text-xl md:text-2xl">{d.name}</strong><span className="text-[12px] text-bone/55">{COMPOUNDS.filter((c) => c.domain === d.id).length} compounds</span>
-          </Link>
-        ))}
+    <section className="section wrap" aria-label="Shop by topic">
+      <p className="label label-cyan">Shop by what you’re after</p>
+      <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">What are you here for?</h2>
+      <p className="lede mt-4 max-w-xl">Seven doors into the collection. Pick one.</p>
+      <div ref={grid} className="topic-grid mt-10">
+        {DOMAINS.map((d, i) => {
+          const count = COMPOUNDS.filter((c) => c.domain === d.id).length
+          return (
+            <Link key={d.id} to="/explore" search={{ topic: d.id }} className={`topic-card topic-card-${i + 1}`} style={{ '--domain': d.palette.base, '--domain-2': d.palette.accent, '--i': i } as CSSProperties}>
+              <span className="topic-img" style={{ backgroundImage: `url(${d.image})` }} aria-hidden />
+              <span className="topic-veil" aria-hidden />
+              <span className="topic-sheen" aria-hidden />
+              <span className="relative z-[2] flex items-center justify-between gap-3">
+                <span className="mono text-[11px] text-bone/55">0{i + 1}</span>
+                <span className="topic-count">{count} {count === 1 ? 'peptide' : 'peptides'}</span>
+              </span>
+              <span className="relative z-[2] mt-auto">
+                <strong className="display-md block text-2xl md:text-[1.9rem] leading-tight">{d.name}</strong>
+                <span className="block mt-2 text-[14px] text-bone/75 max-w-[30ch]">{d.tagline}</span>
+                <span className="topic-cta">See all {count} →</span>
+              </span>
+            </Link>
+          )
+        })}
       </div>
+      <p className="mt-4 mono text-[11px] text-bone/40">Pictures set the mood. They are not results, and they are not photos of what a product does.</p>
     </section>
   )
 }

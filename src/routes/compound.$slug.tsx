@@ -15,6 +15,7 @@ import { StudyCard } from '~/components/StudyCard'
 import { ClaimCard } from '~/components/ClaimCard'
 import { TimelineLane } from '~/components/TimelineLane'
 import { ProvenanceDrawer } from '~/components/ProvenanceDrawer'
+import { PeptideVideo } from '~/components/PeptideVideo'
 import { ProvenanceLabel } from '~/components/SourceBadge'
 import { ScrollTrigger } from '~/motion/timeline'
 import { BRAND } from '~/brand'
@@ -107,6 +108,20 @@ function Dossier() {
           <StructureViewer compound={c} tint={domain.palette.base} accent={domain.palette.accent} scrollRef={scroll} />
         </div>
       </header>
+
+      {/* intro video: 4:5 slot, placeholder until a clip is encoded */}
+      <section className="wrap py-14 md:py-20 grid md:grid-cols-[minmax(0,420px)_1fr] gap-8 md:gap-14 items-center" aria-label={`Meet ${displayName(c)}`}>
+        <PeptideVideo slug={slug} name={displayName(c)} />
+        <div>
+          <p className="label" style={{ color: productTheme.primary }}>Meet {displayName(c)}</p>
+          <h2 className="display text-[clamp(2rem,4vw,3.6rem)] mt-3">The short version, before the deep dive.</h2>
+          <p className="lede mt-5 max-w-xl">{descriptionFor(c)}</p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <a href="#snapshot" className="btn btn-primary">See the quick read</a>
+            <a href="#sources" className="btn">See the studies</a>
+          </div>
+        </div>
+      </section>
 
       <nav className="research-tabs" aria-label="Product research sections"><a href="#snapshot">Overview</a><a href="#genome">Research</a><a href="#signal">Why people look it up</a><a href="#translation">How far it has been tested</a><a href="#timeline">Timeline</a><a href="#sources">Sources</a></nav>
 
