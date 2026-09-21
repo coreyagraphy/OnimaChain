@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { BRAND } from '~/brand'
+import { requestTiltPermission } from '~/motion/tilt'
 
 const KEY = 'age-gate-21'
 
@@ -24,6 +25,8 @@ export function AgeGate() {
   }, [state])
   if (state === 'unknown' || state === 'ok') return null
   const accept = () => {
+    // this tap is a user gesture, so iOS can ask once for motion access (phone-tilt depth); declining changes nothing else
+    void requestTiltPermission()
     try { window.localStorage.setItem(KEY, '1') } catch { /* private mode: ask again next visit */ }
     setState('ok')
   }

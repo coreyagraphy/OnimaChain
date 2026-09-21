@@ -8,6 +8,8 @@ import { initVisualMode } from '~/motion/useReducedMotion'
 import { startLenis, stopLenis } from '~/motion/lenis'
 import { NotFoundFragment } from '~/components/NotFoundFragment'
 import { AgeGate } from '~/components/AgeGate'
+import { DepthBackdrop } from '~/components/DepthBackdrop'
+import { startTilt } from '~/motion/tilt'
 import { BRAND } from '~/brand'
 import { CommerceChrome } from '~/components/CommerceChrome'
 
@@ -54,12 +56,14 @@ function RootComponent() {
   const universe = universeFor(pathname)
   useEffect(() => {
     initVisualMode()
+    startTilt()
     startLenis()
     return () => stopLenis()
   }, [])
   return (
     <RootDocument>
       <AgeGate />
+      <DepthBackdrop />
       <Nav />
       <CommerceChrome />
       <GlobalCanvas />

@@ -36,6 +36,12 @@ export interface ChainRendererProps {
   highlight?: RefObject<Highlight | null>
   /** 0..1 global dim (provenance open dims the molecule while evidence comes forward). Read every frame. */
   dim?: RefObject<number>
+  /** false = the parent scene supplies the full light rig (e.g. the movable key light on product pages). */
+  ownLights?: boolean
+  /** Tracks one residue in world space (for Look closer / What is this?). */
+  anchorRef?: RefObject<THREE.Object3D | null>
+  /** Residue index the anchor follows. Read every frame. */
+  anchorIndex?: RefObject<number>
 }
 
 export interface Highlight {
@@ -79,6 +85,9 @@ export function ChainRenderer({
   markers: showMarkers = true,
   highlight,
   dim,
+  ownLights = true,
+  anchorRef,
+  anchorIndex,
 }: ChainRendererProps) {
   const group = useRef<THREE.Group>(null)
   const scaler = useRef<THREE.Group>(null)
@@ -225,6 +234,10 @@ export function ChainRenderer({
 
   useFrame((state, dt) => {
     const p = typeof progress === 'number' ? progress : (progress.current ?? 1)
+    if (anchorRef?.current) {
+      const ai = THREE.MathUtils.clamp(Math.round(anchorIndex?.current ?? Math.floor(n / 2)), 0, n - 1)
+      anchorRef.current.position.set(g.ca[ai * 3], g.ca[ai * 3 + 1], g.ca[ai * 3 + 2])
+    }
     tRef.current += dt * tempo
     // Spin the chain about its own axis (x after the axis swap), with a fixed tumble for depth.
     if (group.current && rotate) group.current.rotation.x += dt * rotate
@@ -329,13 +342,18 @@ export function ChainRenderer({
 
   return (
     <group>
-      <ambientLight intensity={0.28} color="#9FD8E8" />
-      <directionalLight position={[4, 6, 8]} intensity={1.6} color="#F2EEE6" />
-      <directionalLight position={[-6, -3, -4]} intensity={0.9} color={tint} />
-      <pointLight position={[-5, -2, 4]} intensity={2.4 * intensity} color={accent} distance={30} decay={1.5} />
+      {ownLights && (
+        <>
+          <ambientLight intensity={0.28} color="#9FD8E8" />
+          <directionalLight position={[4, 6, 8]} intensity={1.6} color="#F2EEE6" />
+          <directionalLight position={[-6, -3, -4]} intensity={0.9} color={tint} />
+          <pointLight position={[-5, -2, 4]} intensity={2.4 * intensity} color={accent} distance={30} decay={1.5} />
+        </>
+      )}
       <group ref={scaler} rotation={tilt}>
         <group ref={group}>
         <group rotation={[0, Math.PI / 2, 0]} position={centerOffsetRotated}>
+          {anchorRef && <object3D ref={anchorRef as RefObject<THREE.Object3D>} />}
           {/* backbone */}
           <mesh ref={tube} geometry={tubeGeo} material={tubeMat} frustumCulled={false} />
           <mesh ref={signalOrb} visible={false}>

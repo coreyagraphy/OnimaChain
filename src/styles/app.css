@@ -408,3 +408,46 @@ input[type="range"]:active { cursor: grabbing; }
 .pv-play { display:inline-grid; place-items:center; width:52px; height:52px; border-radius:50%; color:var(--env-deep,#0A0B0E); background:var(--env); box-shadow:0 0 0 8px color-mix(in srgb,var(--env) 18%,transparent); }
 .pv-play-btn { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); border:0; cursor:pointer; z-index:2 }
 @media (prefers-reduced-motion:reduce) { .pv-orb { animation:none } }
+
+/* ---------- molecule stage controls (44px targets, readable surfaces) ---------- */
+.stage-btn { min-height:44px; padding:.6rem 1rem; background:rgba(10,11,14,.72); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.stage-btn[aria-pressed="true"] { background:color-mix(in srgb,var(--color-cyan) 16%,rgba(10,11,14,.8)); }
+.stage-panel { position:absolute; left:12px; right:12px; bottom:72px; z-index:15; border-radius:20px; padding:18px; max-width:420px; }
+.stage-feature { width:100%; min-height:44px; display:flex; align-items:center; gap:10px; text-align:left; padding:.55rem .8rem; border-radius:12px; font-size:14px; color:var(--color-bone);
+  border:1px solid color-mix(in srgb,var(--color-bone) 12%,transparent); background:rgba(10,11,14,.45); cursor:pointer; transition:border-color .25s, background .25s; }
+.stage-feature:hover, .stage-feature[aria-pressed="true"] { border-color:var(--color-cyan); background:color-mix(in srgb,var(--color-cyan) 10%,rgba(10,11,14,.6)); }
+@media (min-width:768px) { .stage-panel { left:auto; right:12px; } }
+
+/* ---------- hero: theme lines (screen-space, sized to the phone), scroll cue, skip ---------- */
+.hero-theme-line { font-size:clamp(2rem,7.4vw,6rem); line-height:1.02; letter-spacing:-.035em; max-width:min(86vw,15ch); margin:0 0 .12em; will-change:transform,opacity;
+  text-shadow:0 0 28px color-mix(in srgb,currentColor 45%,transparent), 0 2px 0 rgba(0,0,0,.35); }
+.hero-theme-scrim { position:absolute; inset:0; z-index:-1; background:radial-gradient(70% 60% at 30% 50%, rgba(8,9,13,.72), rgba(8,9,13,.2) 70%, transparent); }
+.hero-scroll-cue { width:22px; height:34px; border-radius:12px; border:1.5px solid rgba(242,238,230,.55); position:relative; }
+.hero-scroll-cue::after { content:""; position:absolute; left:50%; top:7px; width:3px; height:7px; margin-left:-1.5px; border-radius:2px; background:var(--color-cyan); animation:cue 1.6s ease-in-out infinite; }
+@keyframes cue { 0% { transform:translateY(0); opacity:1 } 70% { transform:translateY(10px); opacity:0 } 100% { opacity:0 } }
+.hero-skip { position:absolute; right:20px; bottom:calc(9vh + 4px); z-index:12; min-height:44px; background:rgba(10,11,14,.6); backdrop-filter:blur(8px); }
+@media (max-width:640px) { .hero-skip { right:16px; bottom:auto; top:84px } .hero-theme-line { font-size:clamp(2rem,9.2vw,3rem); } }
+@media (prefers-reduced-motion:reduce) { .hero-scroll-cue::after { animation:none } }
+
+/* ---------- depth tilt: cards lean with the phone / pointer (compositor-only) ---------- */
+.depth-tilt { transform-style:preserve-3d; }
+@media (prefers-reduced-motion:no-preference) {
+  .topic-grid[data-inview="1"] .topic-card { transform:perspective(900px) rotateY(calc(var(--tilt-x,0) * 5deg)) rotateX(calc(var(--tilt-y,0) * -4deg)); }
+  .topic-grid[data-inview="1"] .topic-card:hover { transform:perspective(900px) translateY(-6px) rotateY(calc(var(--tilt-x,0) * 7deg)) rotateX(calc(var(--tilt-y,0) * -6deg)); }
+  .topic-card .topic-img { translate:calc(var(--tilt-x,0) * -14px) calc(var(--tilt-y,0) * -10px); }
+  .topic-card strong, .topic-card .topic-count { transform:translateZ(38px); }
+}
+
+/* ---------- site-wide depth backdrop: sits above the page colour, below all content ---------- */
+html {
+  background:
+    radial-gradient(120% 80% at 50% -20%, color-mix(in srgb, var(--color-cobalt) 9%, transparent), transparent 60%),
+    radial-gradient(60% 50% at 100% 100%, color-mix(in srgb, var(--color-violet) 6%, transparent), transparent 70%),
+    radial-gradient(50% 40% at 0% 80%, color-mix(in srgb, var(--color-cyan) 4%, transparent), transparent 70%),
+    var(--color-obsidian);
+  background-attachment: fixed;
+}
+body { background: transparent; }
+.depth-backdrop { position:fixed; inset:0; z-index:-1; pointer-events:none; }
+/* panels open from the top of the stage so they never cover the control row, however it wraps */
+.stage-panel { top:44px; bottom:auto; max-height:calc(100% - 150px); overflow-y:auto; }

@@ -10,6 +10,8 @@ import { ChainRenderer, type Highlight } from '../chain/ChainRenderer'
 import { buildChain, mulberry32 } from '../chain/geometry'
 import { COMPOUND_BY_SLUG } from '~/data/compounds'
 import { usePostAllowed, useQuality } from '~/motion/useReducedMotion'
+import { DepthField } from '../DepthField'
+import { tilt } from '~/motion/tilt'
 
 interface Props {
   progress: RefObject<number>
@@ -156,6 +158,10 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
   const labelEls = useRef<Array<HTMLDivElement | null>>([])
   const focus = useMemo(() => new THREE.Vector3(0, 0, 0), [])
   const smooth = useRef({ p: 0, px: 0, py: 0 })
+  const farG = useRef<THREE.Group>(null)
+  const midG = useRef<THREE.Group>(null)
+  const nearG = useRef<THREE.Group>(null)
+  const mobile = size.width < 768
   const highlight = useRef<Highlight | null>(null)
   const anchors = useRef([new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()]) // [chainEnd, research, claim, signal]
   const anchorRefs = useMemo(() => anchors.current.map((v) => ({ current: v })), [])
@@ -189,7 +195,6 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
 
   const hazeTex = useMemo(() => radialTexture([[0, 'rgba(95,227,255,0.26)'], [0.5, 'rgba(138,99,255,0.10)'], [1, 'rgba(34,71,214,0)']], 128), [])
   const backdropTex = useMemo(() => radialTexture([[0, 'rgba(34,71,214,0.22)'], [0.35, 'rgba(24,30,58,0.16)'], [0.7, 'rgba(12,13,20,0.06)'], [1, 'rgba(10,11,14,0)']], 512), [])
-  const textTex = useTextTexture('LOOK CLOSER')
 
   const born = useRef(-1)
   const t = useRef(0)
@@ -203,10 +208,12 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
 
     const s = smooth.current
     const target = progress.current ?? 0
-    // weighted, slightly lagging camera so the scrub never feels twitchy; progress, never velocity
-    s.p += (target - s.p) * Math.min(1, dt * 4.2)
-    s.px += ((pointer.current?.x ?? 0) - s.px) * Math.min(1, dt * 2.6)
-    s.py += ((pointer.current?.y ?? 0) - s.py) * Math.min(1, dt * 2.6)
+    // One rendered progress value drives camera, light, particles and the DOM text (no second smoothing layer).
+    s.p = target
+    // pointer on desktop, phone tilt on mobile — both damped so the scene has weight
+    const tx = (pointer.current?.x ?? 0) + tilt.x, ty = (pointer.current?.y ?? 0) + tilt.y
+    s.px += (THREE.MathUtils.clamp(tx, -1.4, 1.4) - s.px) * Math.min(1, dt * 2.6)
+    s.py += (THREE.MathUtils.clamp(ty, -1.4, 1.4) - s.py) * Math.min(1, dt * 2.6)
     const p = THREE.MathUtils.clamp(s.p, 0, 1)
     onPhase?.(p)
 
@@ -236,11 +243,9 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
       chain.current.rotation.y = t.current * 0.16 * (1 - smooth01(0.08, 0.32, p)) + p * 0.5
       chain.current.rotation.z = Math.sin(t.current * 0.09) * 0.03
     }
-    if (far.current) far.current.position.x = -p * 6 + s.px * 0.6
-    if (mid.current) {
-      mid.current.position.x = -p * 2 + s.px * 1.1
-      mid.current.rotation.z = t.current * 0.006
-    }
+    if (farG.current) { farG.current.position.set(-p * 5 + s.px * 0.5, -s.py * 0.3, 0); farG.current.rotation.z = t.current * 0.004 }
+    if (midG.current) { midG.current.position.set(-p * 2 + s.px * 1.4, -s.py * 0.8, 0); midG.current.rotation.z = -t.current * 0.008 }
+    if (nearG.current) nearG.current.position.set(p * 6 + s.px * 3.2, -s.py * 1.8, p * 7)
     if (near.current) near.current.position.x = p * 5 + s.px * 1.6
 
     // SIGNAL LIGHT: a window of illumination travels N→C with the camera, so the lit residues are the ones we pass.
@@ -254,18 +259,9 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
     // KEY LIGHT responds subtly to the pointer (light response, not object chase)
     if (keyLight.current) keyLight.current.position.set(4 + s.px * 2.5, 6 - s.py * 2, 8)
 
-    // STATE 3: one short phrase appears beyond the hinge, after the camera has entered the molecule.
-    if (text.current) {
-      const k = smooth01(0.53, 0.66, p) * (1 - smooth01(0.74, 0.84, p)) * reveal
-      const m = text.current.material as THREE.MeshBasicMaterial
-      m.opacity = k
-      text.current.visible = k > 0.01
-      text.current.position.z = -6.2 - (1 - k) * 0.8
-      const ts = portrait ? 0.62 : 1
-      text.current.scale.set(11 * ts, 2.75 * ts, 1)
-    }
     // STATE 4: three plain-language ideas bridge the molecule to the final commerce message, then clear away.
-    const rk = smooth01(0.64, 0.76, p) * (1 - smooth01(0.84, 0.94, p)) * reveal
+    // the three markers light up with the three HTML theme lines (52–76%), then clear before the headline
+    const rk = smooth01(0.52, 0.62, p) * (1 - smooth01(0.70, 0.76, p)) * reveal
     resolveK.current = rk
     if (resolve.current) resolve.current.visible = rk > 0.01
     if (rk > 0) {
@@ -279,7 +275,6 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
         labelGroups.current[i]?.position.copy(a)
       })
     }
-    labelEls.current.forEach((el, i) => { if (el) { const k = Math.max(0, rk - i * 0.12) / (1 - i * 0.12); el.style.opacity = String(k); el.style.transform = `translateY(${(1 - k) * 10}px)` } })
   })
 
   const dof = post && q.dof
@@ -309,28 +304,16 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
         </mesh>
       )}
 
-      {/* far dust: parallax plane, cool */}
-      <points ref={far}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[farDust, 3]} />
-        </bufferGeometry>
-        <pointsMaterial color="#7FB7D9" size={0.075} sizeAttenuation transparent opacity={0.5} depthWrite={false} />
-      </points>
-      {/* mid dust: sparse, closer, slightly violet */}
-      <points ref={mid}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[midDust, 3]} />
-        </bufferGeometry>
-        <pointsMaterial color="#B9A2FF" size={0.05} sizeAttenuation transparent opacity={0.55} depthWrite={false} />
-      </points>
-
-      {/* typography in space: behind the hinge, in front of the far residues */}
-      {textTex && (
-        <mesh ref={text} position={[3.2, -3.1, -6.2]} rotation={[0.18, 0.08, 0]} scale={[11, 2.75, 1]} visible={false} renderOrder={2}>
-          <planeGeometry />
-          <meshBasicMaterial map={textTex} transparent opacity={0} depthWrite={false} toneMapped={false} />
-        </mesh>
-      )}
+      {/* three glowing depth layers: far atmosphere · twinkling mid field · near bokeh that rushes past the lens */}
+      <group ref={farG}>
+        <DepthField count={mobile ? 200 : Math.round(800 * q.particles)} box={mobile ? { x: [-24, 24], y: [-34, 34], z: [-60, -16] } : { x: [-70, 70], y: [-38, 38], z: [-70, -16] }} size={mobile ? [0.8, 2.8] : [0.45, 1.7]} colorA="#6FA8FF" colorB="#C49BFF" opacity={1} drift={1.8} speed={0.22} twinkle={0.9} glint={0.18} fade={[70, 130]} seed={11} />
+      </group>
+      <group ref={midG}>
+        <DepthField count={mobile ? 90 : Math.round(360 * q.particles)} box={mobile ? { x: [-9, 9], y: [-14, 14], z: [-14, 8] } : { x: [-24, 24], y: [-13, 13], z: [-14, 8] }} size={mobile ? [0.28, 0.95] : [0.16, 0.6]} colorA="#5FE3FF" colorB="#E4D6FF" opacity={1} drift={0.9} speed={0.42} twinkle={0.95} glint={0.2} fade={[24, 50]} seed={23} />
+      </group>
+      <group ref={nearG}>
+        <DepthField count={mobile ? 12 : 40} box={mobile ? { x: [-5, 6], y: [-8, 8], z: [0, 15] } : { x: [-12, 14], y: [-6, 7], z: [-2, 15] }} size={[0.5, 1.6]} colorA="#8AEBFF" colorB="#F2EEE6" opacity={0.5} drift={0.5} speed={0.3} twinkle={0.35} glint={0.06} fade={[10, 22]} seed={37} />
+      </group>
 
       <group ref={chain}>
         <ChainRenderer geometry={geometry} progress={1} lod={0} fitMode="fixed" fit={FIT} rotate={0} tint="#5FE3FF" accent="#8A63FF" intensity={1.15} tilt={TILT} markers={false} highlight={highlight} />
@@ -350,16 +333,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
         {RESOLVE.map((r, i) => (
           <ResolveNode key={r.kind} at={anchorRefs[i + 1]} color={r.color} k={resolveK} kind={r.kind} />
         ))}
-        {RESOLVE.map((l, i) => (
-          <group key={l.k} ref={(g) => { labelGroups.current[i] = g }}>
-            <Html zIndexRange={[4, 0]} style={{ pointerEvents: 'none' }}>
-              <div ref={(el) => { labelEls.current[i] = el }} style={{ opacity: 0, transform: 'translateY(10px)', whiteSpace: 'nowrap', paddingLeft: 34, textAlign: 'left' }}>
-                <div style={{ fontFamily: 'Manrope Variable, sans-serif', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', fontWeight: 750, color: l.color }}>{l.k}</div>
-                <div style={{ fontFamily: 'Inter Variable, sans-serif', fontSize: 11, color: 'rgba(242,238,230,0.7)', marginTop: 4 }}>{l.sub}</div>
-              </div>
-            </Html>
-          </group>
-        ))}
+        {null}
       </group>
 
       {/* near haze sprites (volumetric-ish depth) */}
