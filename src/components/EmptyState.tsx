@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { BRAND } from '~/brand'
 
 interface Props {
   title: string
@@ -19,4 +20,4 @@ export function EmptyState({ title, detail, children, tone = 'default', compact 
   )
 }
 
-export const CORPUS_ABSENCE = 'No qualifying record is currently indexed in Cyravon’s corpus.'
+export const CORPUS_ABSENCE = `No qualifying record is currently indexed in ${BRAND}’s corpus.`

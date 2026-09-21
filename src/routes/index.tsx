@@ -8,6 +8,7 @@ import { researchPulse } from '~/data/evidence'
 import { STUDY_BY_PMID } from '~/data/studies'
 import { NODE_STYLE, shapePath } from '~/components/nodes'
 import { ScrollTrigger } from '~/motion/timeline'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -191,10 +192,10 @@ function Pulse() {
 /* ---------- Section 6 ---------- */
 function Why() {
   return (
-    <section className="section wrap" aria-label="Why Cyravon exists">
-      <p className="label label-cyan">Why Cyravon exists</p>
+    <section className="section wrap" aria-label={`Why ${BRAND} exists`}>
+      <p className="label label-cyan">Why {BRAND} exists</p>
       <blockquote className="display text-[clamp(1.6rem,3.6vw,3.2rem)] mt-6 max-w-5xl text-bone/90">
-        The same molecular claim can appear in a paper, a podcast, a Reddit story and hundreds of short-form posts. Those are not the same kind of evidence. Cyravon connects them without collapsing them together.
+        The same molecular claim can appear in a paper, a podcast, a Reddit story and hundreds of short-form posts. Those are not the same kind of evidence. {BRAND} connects them without collapsing them together.
       </blockquote>
       <div className="mt-10 flex flex-wrap gap-3">
         <Link to="/methodology" className="btn">Read the methodology</Link>

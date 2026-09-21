@@ -1,4 +1,5 @@
 import { STUDY_BY_PMID, type Relationship, type Study } from './studies'
+import { BRAND } from '~/brand'
 
 export type ClaimStatus = 'tracked'
 export type TranslationStage = 'cell' | 'mouse' | 'rat' | 'larger-animal' | 'human' | 'controlled-human' | 'approved-use'
@@ -153,7 +154,7 @@ export const CLAIMS: Claim[] = [
       'The earliest attributable support currently indexed is an ex vivo / in vitro study of tendon fibroblasts derived from rat Achilles tendon. It measured outgrowth, survival under oxidative stress and migration — not repair of an injured tendon in a living animal.',
       'One indexed rat study reports histopathological scores for BPC-157 that were numerically lower than control without reaching statistical significance for total scores. That is a partial relationship, not a contradiction.',
       'Three indexed reviews discuss the theme but do not themselves test the claim.',
-      'No controlled human study of this outcome is indexed in Cyravon’s corpus. Absence from the corpus is not evidence of absence.',
+      `No controlled human study of this outcome is indexed in ${BRAND}’s corpus. Absence from the corpus is not evidence of absence.`,
       'No community signal is available: no platform source access is enabled.',
     ],
   },

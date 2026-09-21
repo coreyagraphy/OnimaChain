@@ -1,5 +1,6 @@
+import { BRAND } from '~/brand'
 /*
- * Human Signal data. Cyravon has NO platform access in this build.
+ * Human Signal data. The product has NO platform access in this build.
  * Every panel renders the corpus header and an explicit empty state. Nothing here is a number
  * about people; every number is a count of what the corpus holds (zero).
  */

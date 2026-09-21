@@ -21,6 +21,7 @@ import { ProvenanceDrawer } from '~/components/ProvenanceDrawer'
 import { ProvenanceLabel } from '~/components/SourceBadge'
 import { SourceCard } from '~/components/SourceCard'
 import { ScrollTrigger } from '~/motion/timeline'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
@@ -33,11 +34,11 @@ export const Route = createFileRoute('/compound/$slug')({
     const name = c ? displayName(c) : 'Compound'
     return {
       meta: [
-        { title: `${name} — Cyravon dossier` },
+        { title: `${name} — ${BRAND} dossier` },
         { name: 'description', content: `${name}: research footprint, human signal, translation state and claim lineage. Evidence classes kept separate.` },
       ],
       scripts: c
-        ? [{ type: 'application/ld+json', children: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Dataset', name: `${name} evidence record`, description: 'Structured evidence and signal record. Research and educational information.', creator: { '@type': 'Organization', name: 'Cyravon' }, dateModified: '2026-09-20' }) }]
+        ? [{ type: 'application/ld+json', children: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Dataset', name: `${name} evidence record`, description: 'Structured evidence and signal record. Research and educational information.', creator: { '@type': 'Organization', name: `${BRAND}` }, dateModified: '2026-09-20' }) }]
         : [],
     }
   },

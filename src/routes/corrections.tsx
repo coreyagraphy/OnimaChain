@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { EmptyState } from '~/components/EmptyState'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/corrections')({
-  head: () => ({ meta: [{ title: 'Corrections — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Corrections — ${BRAND}` }] }),
   component: () => (
     <div className="pt-28 wrap">
       <p className="label label-amber">Corrections</p>

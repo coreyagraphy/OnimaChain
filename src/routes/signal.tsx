@@ -5,11 +5,12 @@ import { CorpusHeader } from '~/components/CorpusHeader'
 import { SignalFingerprint } from '~/components/SignalFingerprint'
 import { Lod0Canvas } from '~/scenes/Canvas'
 import { useCanvasAllowed, useMounted } from '~/motion/useReducedMotion'
+import { BRAND } from '~/brand'
 
 const Constellation = lazy(() => import('~/scenes/signal/Constellation').then((m) => ({ default: m.Constellation })))
 
 export const Route = createFileRoute('/signal')({
-  head: () => ({ meta: [{ title: 'Signal Map — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Signal Map — ${BRAND}` }] }),
   component: SignalMap,
 })
 

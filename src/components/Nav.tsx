@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { SearchModal } from './SearchModal'
+import { BRAND } from '~/brand'
 
 const links = [
   { to: '/explore', label: 'Explore' },
@@ -25,9 +26,9 @@ export function Nav() {
     <>
       <header className="fixed top-0 inset-x-0 z-40 bg-gradient-to-b from-obsidian/95 via-obsidian/70 to-transparent backdrop-blur-[2px]">
         <div className="wrap h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group" aria-label="Cyravon home">
+          <Link to="/" className="flex items-center gap-3 group" aria-label={`${BRAND} home`}>
             <Mark />
-            <span className="display text-[15px] tracking-[0.18em] uppercase text-bone group-hover:text-cyan transition-colors">Cyravon</span>
+            <span className="display text-[15px] tracking-[0.18em] uppercase text-bone group-hover:text-cyan transition-colors">{BRAND}</span>
           </Link>
           <nav className="hidden lg:flex items-center gap-7" aria-label="Primary">
             {links.map((l) => (

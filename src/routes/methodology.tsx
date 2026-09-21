@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CORPUS_CHECKED_AT, STUDIES } from '~/data/studies'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/methodology')({
-  head: () => ({ meta: [{ title: 'Methodology — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Methodology — ${BRAND}` }] }),
   component: Methodology,
 })
 
@@ -25,7 +26,7 @@ function Methodology() {
     <div className="pt-28 wrap">
       <p className="label label-cyan">Methodology</p>
       <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">Trust is part of the product.</h1>
-      <p className="lede mt-5 max-w-2xl">Exactly how Cyravon collects, verifies, relates and versions what it shows — and what it cannot currently do.</p>
+      <p className="lede mt-5 max-w-2xl">Exactly how {BRAND} collects, verifies, relates and versions what it shows — and what it cannot currently do.</p>
       <div className="mt-12 grid gap-px bg-bone/10 border hairline rounded-2xl overflow-hidden">
         {ITEMS.map((it) => (
           <section key={it.q} className="bg-obsidian p-6 md:p-8 grid md:grid-cols-[280px_1fr] gap-4">

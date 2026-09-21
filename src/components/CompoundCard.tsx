@@ -8,6 +8,7 @@ import { SceneView } from '~/scenes/Canvas'
 import { rigVariation } from '~/scenes/rigs'
 import { SequenceSVG } from './SequenceSVG'
 import { provenanceText } from './SourceBadge'
+import { BRAND } from '~/brand'
 
 const DomainRig = lazy(() => import('~/scenes/rigs').then((m) => ({ default: m.DomainRig })))
 
@@ -68,7 +69,7 @@ export function CompoundCard({ compound, index, layout, fluid = false }: Props) 
         <h3 className="display text-[22px] text-bone">{displayName(compound)}</h3>
         <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-0.5" aria-label="Evidence distribution">
           {dist.total === 0 ? (
-            <span className="text-[11px] faint">No qualifying record is currently indexed in Cyravon&rsquo;s corpus</span>
+            <span className="text-[11px] faint">No qualifying record is currently indexed in {BRAND}&rsquo;s corpus</span>
           ) : (
             <>
               {[['in vitro', dist.inVitro, '#B9A2FF'], ['animal', dist.animal, '#5FE3FF'], ['human', dist.human, '#F2EEE6'], ['review', dist.review, '#8FB0FF']].map(([l, n, c]) => (

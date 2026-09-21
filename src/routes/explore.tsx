@@ -6,9 +6,10 @@ import { distributionFor, latestChangeFor } from '~/data/evidence'
 import { studiesForCompound } from '~/data/studies'
 import { CompoundCard } from '~/components/CompoundCard'
 import { provenanceText } from '~/components/SourceBadge'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/explore')({
-  head: () => ({ meta: [{ title: 'Explore the Molecular Atlas — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Explore the Molecular Atlas — ${BRAND}` }] }),
   component: Explore,
 })
 

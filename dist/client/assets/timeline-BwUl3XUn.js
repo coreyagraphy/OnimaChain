@@ -1,0 +1,1 @@
+import{b as e,a5 as n}from"./index-CYn-jdaV.js";n.registerPlugin(e);function g(r){const t=e.create({trigger:r.trigger,start:"top top",end:r.end,pin:r.pin??!0,scrub:r.scrub??.6,anticipatePin:1,invalidateOnRefresh:!0,onUpdate:i=>r.onProgress(i.progress)});return()=>t.kill()}export{g as c};

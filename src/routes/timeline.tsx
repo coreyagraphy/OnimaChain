@@ -2,9 +2,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { CLAIMS } from '~/data/claims'
 import { TimelineLane } from '~/components/TimelineLane'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/timeline')({
-  head: () => ({ meta: [{ title: 'Timeline / change ledger — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Timeline / change ledger — ${BRAND}` }] }),
   component: Timeline,
 })
 

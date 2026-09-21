@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { LESSONS } from '~/data/lessons'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/learn')({
-  head: () => ({ meta: [{ title: 'Learn — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Learn — ${BRAND}` }] }),
   component: () => (
     <div className="pt-28 wrap">
       <p className="label label-cyan">Learn</p>

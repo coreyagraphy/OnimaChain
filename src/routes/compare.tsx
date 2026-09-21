@@ -8,10 +8,11 @@ import { distinctGroups, studiesForCompound } from '~/data/studies'
 import { longestSharedSubsequence, CLASS_COLORS, buildResidues } from '~/scenes/chain/geometry'
 import { CORPUS } from '~/data/signal'
 import { provenanceText } from '~/components/SourceBadge'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/compare')({
   validateSearch: (s: Record<string, unknown>) => ({ a: typeof s.a === 'string' ? s.a : undefined, b: typeof s.b === 'string' ? s.b : undefined }),
-  head: () => ({ meta: [{ title: 'Compare — Cyravon' }] }),
+  head: () => ({ meta: [{ title: `Compare — ${BRAND}` }] }),
   component: Compare,
 })
 
@@ -23,7 +24,7 @@ function Compare() {
     { k: 'Identity', v: cs.map((c) => `${c.name}${c.displayName ? ` (displayed as ${c.displayName})` : ''} · ${c.sequence ? `${c.sequence.length} aa` : 'sequence pending'} · MW ${(c.mw ?? computedMW(c)) ?? '—'}`) },
     { k: 'Mechanism tags', v: cs.map((c) => c.tags.join(' · ')) },
     { k: 'Research domain', v: cs.map((c) => DOMAIN_BY_ID[c.domain].name) },
-    { k: 'Evidence genome', v: cs.map((c) => { const g = evidenceGenome(c.slug).filter((x) => (x.count ?? 0) > 0 && x.id !== 'research-age'); return g.length ? g.map((x) => `${x.label} ${x.value ?? x.count}`).join(' · ') : 'No qualifying record is currently indexed in Cyravon’s corpus' }) },
+    { k: 'Evidence genome', v: cs.map((c) => { const g = evidenceGenome(c.slug).filter((x) => (x.count ?? 0) > 0 && x.id !== 'research-age'); return g.length ? g.map((x) => `${x.label} ${x.value ?? x.count}`).join(' · ') : `No qualifying record is currently indexed in ${BRAND}’s corpus` }) },
     { k: 'Translation', v: cs.map((c) => { const t = translationFor(c.slug); return t.length ? t.map((r) => `${r.outcome}: ${r.stages.length ? TRANSLATION_STAGES.filter((s) => r.stages.includes(s.id)).map((s) => s.label).join(' → ') : 'no stage'}`).join(' · ') : 'No outcome mapped' }) },
     { k: 'Human research', v: cs.map((c) => (distributionFor(c.slug).human ? `${distributionFor(c.slug).human} verified record(s)` : 'No human study indexed')) },
     { k: 'Human signal', v: cs.map(() => CORPUS.header) },

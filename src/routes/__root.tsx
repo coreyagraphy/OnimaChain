@@ -7,16 +7,17 @@ import { GlobalCanvas } from '~/scenes/Canvas'
 import { initVisualMode } from '~/motion/useReducedMotion'
 import { startLenis, stopLenis } from '~/motion/lenis'
 import { NotFoundFragment } from '~/components/NotFoundFragment'
+import { BRAND } from '~/brand'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'Cyravon — The Molecular Evidence & Signal Atlas' },
+      { title: `${BRAND} — The Molecular Evidence & Signal Atlas` },
       { name: 'description', content: 'Trace the signal. Follow the evidence. See what research found, what people report, and how the story changed between them.' },
       { name: 'theme-color', content: '#0A0B0E' },
-      { property: 'og:title', content: 'Cyravon — Trace the signal. Follow the evidence.' },
+      { property: 'og:title', content: `${BRAND} — Trace the signal. Follow the evidence.` },
       { property: 'og:description', content: 'Explore how molecular research, human reports, and internet claims connect — and where they don’t.' },
     ],
     links: [

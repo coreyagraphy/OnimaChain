@@ -13,6 +13,7 @@ import { CorpusHeader } from '~/components/CorpusHeader'
 import { TranslationTrack } from '~/components/TranslationTrack'
 import { ChangeDiff } from '~/components/ChangeDiff'
 import { SourceCard } from '~/components/SourceCard'
+import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/claim/$id')({
   loader: ({ params }) => {
@@ -21,7 +22,7 @@ export const Route = createFileRoute('/claim/$id')({
   },
   head: ({ loaderData }) => {
     const c = loaderData ? CLAIM_BY_ID[loaderData.id] : undefined
-    return { meta: [{ title: c ? `“${c.title}” — Cyravon claim record` : 'Claim' }, { name: 'description', content: 'Origin, original scope, lineage, mutation, support, contradictions, human signal, echo analysis, translation state and change history.' }] }
+    return { meta: [{ title: c ? `“${c.title}” — ${BRAND} claim record` : 'Claim' }, { name: 'description', content: 'Origin, original scope, lineage, mutation, support, contradictions, human signal, echo analysis, translation state and change history.' }] }
   },
   component: ClaimPage,
 })
@@ -103,7 +104,7 @@ function ClaimPage() {
         <ol className="grid gap-3">
           {claim.interpretation.map((line, i) => <li key={i} className="panel-flat p-4 text-sm text-bone/85 flex gap-3"><span className="mono text-bone/40">{i + 1}</span><span>{line}</span></li>)}
         </ol>
-        <p className="mt-3 text-[12px] muted">Cyravon structured summary — generated from the structured records on this page, not free-form. Supporting records: {claim.support.filter((s) => STUDY_BY_PMID[s.pmid]?.status === 'verified').map((s) => <SourceBadge key={s.pmid} pmid={s.pmid} verified link={false} />)}</p>
+        <p className="mt-3 text-[12px] muted">{BRAND} structured summary — generated from the structured records on this page, not free-form. Supporting records: {claim.support.filter((s) => STUDY_BY_PMID[s.pmid]?.status === 'verified').map((s) => <SourceBadge key={s.pmid} pmid={s.pmid} verified link={false} />)}</p>
       </Sec>
 
       <Sec i={10} title="Change history" lede="Every material modification. Nothing is silently rewritten.">

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { CORPUS_CHECKED_AT } from '~/data/studies'
+import { BRAND } from '~/brand'
 
 const cols = [
   [['/explore', 'Explore'], ['/claims', 'Claims'], ['/signal', 'Signal Map'], ['/learn', 'Learn']],
@@ -12,7 +13,7 @@ export function Footer() {
     <footer className="mt-24 border-t hairline bg-obsidian">
       <div className="wrap py-14 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <p className="display text-[15px] tracking-[0.18em] uppercase">Cyravon</p>
+          <p className="display text-[15px] tracking-[0.18em] uppercase">{BRAND}</p>
           <p className="mt-3 text-sm muted max-w-sm">The Molecular Evidence &amp; Signal Atlas. See what research found, what people report, and how the story changed between them.</p>
           <p className="mt-4 mono text-[11px] text-bone/40">Working brand only until final domain and trademark clearance.</p>
           <p className="mono text-[11px] text-bone/40">Corpus check: {CORPUS_CHECKED_AT.slice(0, 10)} · PMIDs verified via NCBI eutils</p>
@@ -28,7 +29,7 @@ export function Footer() {
       <div className="border-t hairline">
         <div className="wrap py-6">
           <p className="text-[12px] text-bone/60 max-w-3xl">
-            <b className="text-bone/80">Research and educational information. Cyravon does not provide individualized medical advice or facilitate the purchase of research compounds.</b>
+            <b className="text-bone/80">Research and educational information. {BRAND} does not provide individualized medical advice or facilitate the purchase of research compounds.</b>
           </p>
         </div>
       </div>
