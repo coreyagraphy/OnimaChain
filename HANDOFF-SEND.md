@@ -6,6 +6,8 @@ This document is the complete state of the project. Read it top to bottom before
 
 > **2026-09-21 commerce override:** Corey explicitly confirmed, “This is commerce. This is a commerce site.” The attached **CYRAVON — PREMIUM CINEMATIC E-COMMERCE OVERHAUL** now supersedes the former no-commerce rule. Product cards, Quick View, cart, placeholder pricing, and commerce-first product headers are intentional. Final prices, payments, fulfillment, and product-by-product commercial/regulatory decisions remain pending. The live site is **https://cyravon.netlify.app** (Netlify site `cyravon`).
 
+> **Learning identity:** The `/learn` experience is named **Portal of Tides**. Its signature wordmark uses animated water-caustic color flowing inside the letterforms, with a static reduced-motion treatment. Navigation, footer, page metadata, and lesson breadcrumbs use the new name.
+
 ---
 
 ## 1. Where everything is

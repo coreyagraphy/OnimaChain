@@ -16,8 +16,8 @@ function Lesson() {
   const { slug } = Route.useLoaderData()
   const l = LESSONS.find((x) => x.slug === slug)!
   return (
-    <div className="pt-28 wrap">
-      <Link to="/learn" className="label hover:!text-bone">← Learn</Link>
+    <div className="portal-page pt-28 wrap">
+      <Link to="/learn" className="label portal-label hover:!text-bone">← Portal of Tides</Link>
       <h1 className="display text-[clamp(2.4rem,6vw,5.4rem)] mt-4">{l.title}</h1>
       <p className="lede mt-4 max-w-2xl">{l.summary}</p>
       {l.status === 'interactive' ? (

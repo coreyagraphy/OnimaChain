@@ -3,7 +3,7 @@ import { CORPUS_CHECKED_AT } from '~/data/studies'
 import { BRAND } from '~/brand'
 
 const cols = [
-  [['/explore', 'Explore'], ['/claims', 'Claims'], ['/signal', 'Signal Map'], ['/learn', 'Learn']],
+  [['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Signal'], ['/learn', 'Portal of Tides']],
   [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
   [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const
@@ -29,7 +29,7 @@ export function Footer() {
       <div className="border-t hairline">
         <div className="wrap py-6">
           <p className="text-[12px] text-bone/60 max-w-3xl">
-            <b className="text-bone/80">Research and educational information. {BRAND} does not provide individualized medical advice or facilitate the purchase of research compounds.</b>
+            <b className="text-bone/80">Research and educational information. Final product pricing, payment, fulfillment, and regulatory requirements remain under review.</b>
           </p>
         </div>
       </div>
