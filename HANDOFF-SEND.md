@@ -18,7 +18,7 @@ This document is the send-ready handoff for the current OnimaChain build. Read i
 | Netlify site | `cyravon` |
 | Netlify site ID | `a9d4e072-46d2-447d-b491-58f6882bf167` |
 | Current production deploy at checkpoint | `6ab1e8c80f88f750d0b95551` (2026-09-21; verify in Netlify before deployment) |
-| Sendable handoff copy | `C:\Users\corey\Downloads\cyravon-HANDOFF-SEND.md` |
+| Older handoff export (superseded by this tracked file) | `C:\Users\corey\Downloads\cyravon-HANDOFF-SEND.md` |
 | Product brief | `CYRAVON_BRIEF.md` |
 | Build specifications | `BUILD_SPEC_CYRAVON.md` and `BUILD_SPEC.md` |
 | Earlier checkpoints | `HANDOFF-V2.md`, `HANDOFF-V3.md` |
@@ -349,7 +349,7 @@ The catalog is broader than the verified research corpus.
 2. **Hero direction:** the current camera-flight hero is live. The older scatter-to-coil concept was not built because its generic long helix would not correspond to an indexed compound.
 3. **Portal structure:** `/signal` is Portal of Tides; `/learn` is its learning area but remains a separate route.
 4. **Checkout:** cart UI exists, but real checkout, payment processing, inventory, shipping, and eligibility logic do not.
-5. **Brand:** OnimaChain is the locked public brand. The former name may remain only in legacy repository, host, credential, and historical-source identifiers until a planned infrastructure migration.
+5. **Brand:** OnimaChain is the locked public brand and the GitHub repository is `coreyagraphy/OnimaChain`. The former name remains in the local path, Netlify site/URL, credential filenames, and historical source records until those are migrated deliberately.
 
 ## 11. Exact next work, in recommended order
 
