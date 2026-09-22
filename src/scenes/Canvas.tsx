@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import { View } from '@react-three/drei/web/View'
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { useCanvasAllowed, useDocumentVisible, useQuality } from '~/motion/useReducedMotion'
+import { useCommerceStore } from '~/stores/commerce'
 
 /**
  * One persistent R3F canvas per document, rendered fixed behind the page.
@@ -15,6 +16,7 @@ import { useCanvasAllowed, useDocumentVisible, useQuality } from '~/motion/useRe
 export function GlobalCanvas() {
   const allowed = useCanvasAllowed()
   const visible = useDocumentVisible()
+  const quickViewOpen = useCommerceStore((s) => s.quickView !== null)
   const q = useQuality()
   const [ready, setReady] = useState(false)
   useEffect(() => {
@@ -27,7 +29,7 @@ export function GlobalCanvas() {
       style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 20 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       dpr={q.dpr}
-      frameloop={visible ? 'always' : 'never'}
+      frameloop={visible && !quickViewOpen ? 'always' : 'never'}
       eventSource={typeof document !== 'undefined' ? document.body : undefined}
       eventPrefix="client"
     >
@@ -62,10 +64,11 @@ interface Lod0Props {
   onFirstFrame?: () => void
   dpr?: [number, number]
   cameraZ?: number
+  preserveDrawingBuffer?: boolean
 }
 
 /** Dedicated canvas for LOD-0 scenes (hero, dossier stage, constellation) that carry postprocessing. */
-export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, cameraZ = 14 }: Lod0Props) {
+export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, cameraZ = 14, preserveDrawingBuffer = true }: Lod0Props) {
   const fired = useRef(false)
   const visible = useDocumentVisible()
   const q = useQuality()
@@ -83,7 +86,7 @@ export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, came
     <div ref={wrap} className={className} style={style}>
       <Canvas
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: true }}
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer }}
         dpr={dpr ?? q.dpr}
         frameloop={visible && onScreen ? 'always' : 'never'}
         camera={{ fov: 38, near: 0.1, far: 200, position: [0, 0, cameraZ] }}

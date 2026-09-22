@@ -10,8 +10,8 @@ const CardMoleculeScene = lazy(() => import('~/scenes/card/CardMoleculeScene').t
 const MEMBERS = [COMPOUND_BY_SLUG['bpc-157'], COMPOUND_BY_SLUG['tb-500']] as const
 
 /** A blend is two separately rendered chains, never a fused or invented molecule. */
-export function CompositeStructure({ compact = false, dedicated = false }: { compact?: boolean; dedicated?: boolean }) {
-  const allowed = useCanvasAllowed()
+export function CompositeStructure({ compact = false, dedicated = false, render3d = true }: { compact?: boolean; dedicated?: boolean; render3d?: boolean }) {
+  const allowed = useCanvasAllowed() && render3d
   const geometries = useMemo(() => MEMBERS.map((compound) => buildChain(compound)), [])
   return <div className={`composite-structure ${compact ? 'composite-structure-compact' : ''}`} data-structure-kind="blend" role="group" aria-label="Wolverine Blend contains two separate peptides, BPC-157 and TB-500">
     {MEMBERS.map((compound, index) => {

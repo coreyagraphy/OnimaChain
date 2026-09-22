@@ -14,6 +14,7 @@ import type { Drag } from '~/scenes/quick/QuickScene'
 import { brand } from '~/brand'
 import { structurePresentation } from '~/data/structure-presentation'
 import { CompositeStructure } from './CompositeStructure'
+import { getLenis } from '~/motion/lenis'
 
 export function CommerceChrome() {
   const hydrate = useCommerceStore((s) => s.hydrate)
@@ -98,29 +99,38 @@ function QuickView() {
   useEffect(() => {
     if (!c) return
     setTouched(false)
+    drag.current = { active: false, vx: 0, vy: 0, dx: 0, dy: 0 }
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setQuickView(null)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [c, setQuickView])
+  useEffect(() => {
+    if (!c) return
+    const previousOverflow = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+    getLenis()?.stop()
+    return () => { document.documentElement.style.overflow = previousOverflow; getLenis()?.start() }
+  }, [!!c])
   if (!c || !geometry) return null
   const theme = themeFor(c), domain = DOMAIN_BY_ID[c.domain]
-  const down = (e: React.PointerEvent) => { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); drag.current.active = true; last.current = { x: e.clientX, y: e.clientY, t: e.timeStamp }; setTouched(true) }
+  const down = (e: React.PointerEvent) => { e.preventDefault(); e.stopPropagation(); (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); drag.current.active = true; last.current = { x: e.clientX, y: e.clientY, t: e.timeStamp }; setTouched(true) }
   const move = (e: React.PointerEvent) => {
     if (!drag.current.active) return
+    e.preventDefault(); e.stopPropagation()
     const dx = e.clientX - last.current.x, dy = e.clientY - last.current.y, dt = Math.max(8, e.timeStamp - last.current.t)
     drag.current.dx += dx; drag.current.dy += dy; drag.current.vx = (dx / dt) * 60; drag.current.vy = (dy / dt) * 60
     last.current = { x: e.clientX, y: e.clientY, t: e.timeStamp }
   }
-  const up = () => { drag.current.active = false }
+  const up = (e: React.PointerEvent) => { drag.current.active = false; drag.current.dx = 0; drag.current.dy = 0; if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId) }
   return (
     <div className="commerce-modal fixed inset-0 z-[75] grid place-items-center p-3 md:p-8" role="dialog" aria-modal="true" aria-label={`${displayName(c)} quick view`}>
       <button className="absolute inset-0 veil w-full" aria-label="Close quick view" onClick={() => setQuickView(null)} />
       <section className="quick-view relative w-full max-w-5xl overflow-hidden" style={{ '--product': theme.primary, '--product-2': theme.secondary } as CSSProperties} data-lenis-prevent>
         <button className="btn btn-sm absolute right-4 top-4 z-20" onClick={() => setQuickView(null)}>Close</button>
         <div className="grid md:grid-cols-[1.1fr_.9fr] min-h-[560px]">
-          <div className="relative min-h-[320px] quick-view-scene" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} style={{ touchAction: 'none', cursor: 'grab' }}>
+          <div className="relative min-h-[320px] quick-view-scene" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onLostPointerCapture={up} style={{ touchAction: 'none', cursor: 'grab' }}>
             {presentation?.kind === 'blend' ? <CompositeStructure dedicated /> : !c.sequence ? <div className="structure-unavailable" role="img" aria-label={presentation?.detail}><strong>{presentation?.label}</strong><p>{presentation?.detail}</p></div> : canvasOk ? (
-              <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={6}>
+              <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={7.5} dpr={[1, 1.25]} preserveDrawingBuffer={false}>
                 <Suspense fallback={null}><QuickScene slug={c.slug} tint={theme.primary} accent={theme.secondary} drag={drag} reduced={reduced} /></Suspense>
               </Lod0Canvas>
             ) : <div className="quick-molecule absolute inset-0"><SequenceSVG geometry={geometry} tint={theme.primary} className="w-full h-full p-12 md:p-16" /></div>}

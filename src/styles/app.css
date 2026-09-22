@@ -949,3 +949,11 @@ button.move-hint { cursor:pointer; }
 .product-structure-kind{position:absolute;right:16px;top:18px;z-index:2;max-width:45%;padding:4px 7px;border:1px solid #ffffff2b;border-radius:5px;background:#04101bbd;color:#e4faffb8;font:600 8px/1.2 var(--font-mono);letter-spacing:.04em;text-align:right;text-transform:uppercase}
 .product-structure-detail{min-height:1.2em}
 @media(max-width:640px){.composite-structure{padding:12px 10px 60px}.composite-member{height:65%}.composite-member-label{font-size:10px}.composite-disclaimer{bottom:16px;font-size:11px}}
+
+/* Keep the shared WebGL viewport above the title, never through it. The title's
+   product-color glint is paired with its existing mineral outline. */
+.product-card .product-molecule{height:42%;overflow:hidden;contain:paint;transform:none}
+.product-card[data-layout="wide"] .product-molecule{height:35%}
+.product-card[data-layout="square"] .product-molecule{height:39%}
+.product-card .product-card-copy{background:linear-gradient(180deg,#070910e8 0%,#070910ee 24%,#070910fa 100%)}
+.product-card .product-card-title{position:relative;isolation:isolate;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--product) 20%,transparent))}

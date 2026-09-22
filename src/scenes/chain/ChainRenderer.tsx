@@ -18,9 +18,9 @@ export interface ChainRendererProps {
   intensity?: number
   /** Idle rotation speed (rad/s). */
   rotate?: number
-  /** 'viewport': fit is a fraction of the current viewport (cards/rigs). 'fixed': fit is a world radius (TRUTH). */
-  fitMode?: 'viewport' | 'fixed'
-  /** Fraction of viewport (viewport mode) or world-space radius (fixed mode). */
+  /** 'viewport': fit by axes; 'sphere': bound all rotations inside the view; 'fixed': world-space radius. */
+  fitMode?: 'viewport' | 'sphere' | 'fixed'
+  /** Fraction of viewport (viewport/sphere) or world-space radius (fixed). */
   fit?: number
   /** Extra time scale for tempo variations. */
   tempo?: number
@@ -236,7 +236,10 @@ export function ChainRenderer({
     // Spin the chain about its own axis (x after the axis swap), with a fixed tumble for depth.
     if (group.current && rotate) group.current.rotation.x += dt * rotate
     if (scaler.current) {
-      if (fitMode === 'viewport') {
+      if (fitMode === 'sphere') {
+        const vp = state.viewport.getCurrentViewport(state.camera)
+        scaler.current.scale.setScalar(Math.min(vp.width, vp.height) * fit / (2 * g.bounds.radius))
+      } else if (fitMode === 'viewport') {
         const vp = state.viewport.getCurrentViewport(state.camera)
         // chain axis lies along x; its cross-section along y/z
         const ex = g.bounds.extent[2] // helix axis (z) → screen x
