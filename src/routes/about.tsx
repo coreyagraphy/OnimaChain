@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { BRAND, brand } from '~/brand'
-import { BrandMark, BrandWordmark } from '~/components/BrandWordmark'
+import { BrandLogo } from '~/components/BrandWordmark'
 
 export const Route = createFileRoute('/about')({
   head: () => ({ meta: [
@@ -19,9 +19,8 @@ function About() {
           <h1 className="display text-[clamp(2.7rem,7vw,7rem)] mt-4 max-w-5xl">Peptides,<br /><span className="outline-word">made easier to see.</span></h1>
           <p className="lede mt-6 max-w-2xl">{brand.description}</p>
         </div>
-        <div className="about-brand-object" aria-label={`${BRAND} wordmark and origin`}>
-          <BrandMark size={54} />
-          <BrandWordmark />
+        <div className="about-brand-object">
+          <BrandLogo priority />
           <p>{brand.primaryTagline}</p>
         </div>
       </header>

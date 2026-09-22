@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { CORPUS_CHECKED_AT } from '~/data/studies'
 import { brand } from '~/brand'
-import { BrandWordmark } from './BrandWordmark'
+import { BrandLogo } from './BrandWordmark'
 
 const cols = [
   [['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/learn', 'Learn']],
@@ -14,7 +14,7 @@ export function Footer() {
     <footer className="mt-24 border-t hairline bg-obsidian">
       <div className="wrap py-14 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <BrandWordmark />
+          <BrandLogo className="footer-brand-logo" />
           <p className="mt-4 text-sm text-bone/80 max-w-sm">{brand.primaryTagline}</p>
           <p className="mt-2 text-sm muted max-w-sm">{brand.secondaryTagline}</p>
           <p className="mono text-[11px] text-bone/40">Sources last checked: {CORPUS_CHECKED_AT.slice(0, 10)} · PubMed records verified through NCBI</p>

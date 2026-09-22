@@ -18,6 +18,7 @@ This document is the send-ready handoff for the current OnimaChain build. Read i
 | Netlify site | `cyravon` |
 | Netlify site ID | `a9d4e072-46d2-447d-b491-58f6882bf167` |
 | Current production deploy at checkpoint | `6ab1e8c80f88f750d0b95551` (2026-09-21; verify in Netlify before deployment) |
+| Supplied logo master | `public/brand/onimachain-master.png` (optimized variants beside it) |
 | Older handoff export (superseded by this tracked file) | `C:\Users\corey\Downloads\cyravon-HANDOFF-SEND.md` |
 | Product brief | `CYRAVON_BRIEF.md` |
 | Build specifications | `BUILD_SPEC_CYRAVON.md` and `BUILD_SPEC.md` |
@@ -34,6 +35,8 @@ The GitHub repository was renamed to `coreyagraphy/OnimaChain` on 2026-09-22. Th
 OnimaChain is explicitly a **commerce site** for commonly discussed peptides, with a layered research and education experience around the catalog.
 
 The public brand is locked: **OnimaChain** / **ONIMACHAIN**. “Onima” is “Amino” read backward; “Chain” connects molecular chains, biological signals, and evidence trails. The primary tagline is “From amino chains to molecular insight.” The secondary tagline is “See the molecule. Follow the signal. Trace the evidence.” Public-facing copy must use the centralized configuration in `src/brand.ts`.
+
+The owner-supplied chrome logo is the visual source of truth. `src/components/BrandWordmark.tsx` displays lossless crops from `public/brand/`; the former CSS/SVG stand-in was removed. Keep the humanized page copy already present in the source unless the owner asks for a copy change.
 
 The user wants:
 

@@ -1,5 +1,11 @@
 # OnimaChain working ledger
 
+## Supplied logo integration — 2026-09-22
+
+The owner supplied `ChatGPT Image Sep 22, 2026, 02_45_23 PM.png` as the OnimaChain logo and confirmed that spelling. Its unchanged master is tracked at `public/brand/onimachain-master.png`; lossless crops from that same file serve the header wordmark and the full logo on About and in the footer. The browser and touch icons use its mark. The existing page copy was left alone. Earlier plain-language/humanized copy work is in commits `0230833` and `1b6a307`; the logo task did not restore older wording or apply the handoff document's alternate spelling.
+
+Local checks: TypeScript and production Vite build passed. About at 1440, 390, and 320 pixels showed loaded logo assets, no page errors, and no horizontal overflow; screenshots are in ignored `shots/logo-check/`. The payment foundation still defaults disabled. Check the Git log and Netlify site status for the source and production revision before further work.
+
 ## Recovery checkpoint — 2026-09-22
 
 The interrupted session's local work was recovered in `C:\Users\corey\Projects\cyravon\cyravon-app` and saved to the existing private GitHub repository, now `coreyagraphy/OnimaChain`, on `main`. Use `git log -1` for the checkpoint SHA. The Netlify site remains `cyravon` (site ID `a9d4e072-46d2-447d-b491-58f6882bf167`); its production deploy at this checkpoint is `6ab1e8c80f88f750d0b95551` and still serves the Cyravon-branded build. A source push does not deploy this CLI-managed site.

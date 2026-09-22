@@ -11,6 +11,9 @@ export const brand = {
   meaning: 'Onima is Amino read backward. Chain connects the molecular chains, biological signals, and evidence trails we make easier to follow.',
   cartLabel: 'OnimaChain shopping cart',
   socialImage: '/posters/hero.jpg',
+  logoFull: '/brand/onimachain-full.webp',
+  logoWordmark: '/brand/onimachain-wordmark.webp',
+  icon: '/favicon.png',
 } as const
 
 /** Backward-compatible alias for existing page titles and sentences. */

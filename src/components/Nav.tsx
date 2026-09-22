@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { SearchModal } from './SearchModal'
 import { BRAND } from '~/brand'
 import { cartCount, useCommerceStore } from '~/stores/commerce'
-import { BrandMark, BrandWordmark } from './BrandWordmark'
+import { BrandWordmark } from './BrandWordmark'
 
 const links = [
   { to: '/explore', label: 'Shop' },
@@ -31,7 +31,7 @@ export function Nav() {
     <>
       <header className="fixed top-0 inset-x-0 z-40 nav-glass">
         <div className="wrap h-[72px] flex items-center justify-between">
-          <Link to="/" className="brand-home group" aria-label={`${BRAND} home`}><BrandMark /><BrandWordmark /></Link>
+          <Link to="/" className="brand-home group" aria-label={`${BRAND} home`}><BrandWordmark decorative /></Link>
           <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
             {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
           </nav>
