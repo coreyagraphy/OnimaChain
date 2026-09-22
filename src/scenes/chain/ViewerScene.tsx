@@ -136,6 +136,9 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
   const tiltS = useRef({ x: 0, y: 0 })
   const small = useThree((s) => s.size.width) < 560
   const born = useRef(0)
+  const breatheK = useRef(0)
+  const idleK = useRef(1)
+  const reducedMotion = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
   useFrame((state, dt) => {
     if (!born.current) born.current = state.clock.elapsedTime
     const age = state.clock.elapsedTime - born.current
@@ -145,7 +148,12 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
     const intro = THREE.MathUtils.clamp((age - 0.2) / 2.6, 0, 1)
     const s = scrollRef?.current ?? 0
     const leave = THREE.MathUtils.clamp((s - 0.55) / 0.45, 0, 1)
-    progress.current = intro * (1 - 0.55 * leave)
+    // alive at rest: every 12 s the chain loosens apart and snaps back (gentler than the quick view, so it stays readable)
+    const idleAlive = !reducedMotion && intro >= 1 && leave < 0.05 && !drag.current && !(explore?.current?.close || explore?.current?.feature != null || explore?.current?.turning)
+    const k12 = (age - 3) % 12
+    const breathe = idleAlive && age > 3 && k12 > 8 ? (k12 < 9 ? smooth01(8, 9, k12) : 1 - smooth01(9.2, 11, k12)) : 0
+    breatheK.current += (breathe - breatheK.current) * Math.min(1, dt * 6)
+    progress.current = intro * (1 - 0.55 * leave) * (1 - 0.42 * breatheK.current)
     // assembly wave: illumination travels N→C just ahead of the assembling residues, then fades to a resting glow
     const wave = intro < 1 ? { center: intro * (n + 3) - 1.5, width: 2.4, strength: 0.9 } : null
     const dim = THREE.MathUtils.clamp(dimRef?.current ?? 0, 0, 1)
@@ -162,14 +170,19 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
     closeK.current += ((wantClose ? 1 : 0) - closeK.current) * Math.min(1, dt * 3.2)
     const r = rot.current
     const holdStill = wantClose || !!ex?.turning
-    if (autoRotate && !drag.current && !holdStill) r.ty += dt * 0.12
+    // livelier idle turn, a touch faster while it's loosened apart
+    if (autoRotate && !drag.current && !holdStill) r.ty += dt * (0.34 + breatheK.current * 0.9)
     // inertia: release keeps a little momentum, then settles
     if (!drag.current) { r.ty += r.vy * 0.8; r.tx += r.vx * 0.8; r.vy *= Math.pow(0.02, dt); r.vx *= Math.pow(0.02, dt) }
     r.x += (r.tx - r.x) * Math.min(1, dt * 5)
     r.y += (r.ty - r.y) * Math.min(1, dt * 5)
     if (orbit.current) {
-      orbit.current.rotation.set(THREE.MathUtils.clamp(r.x, -1.2, 1.2) + leave * 0.35, r.y, leave * 0.12)
-      orbit.current.position.y = -leave * 0.9
+      // a slow tumble and float on top of whatever the visitor has done
+      const idle = holdStill || reducedMotion ? 0 : 1
+      idleK.current += (idle - idleK.current) * Math.min(1, dt * 2)
+      const tt = state.clock.elapsedTime
+      orbit.current.rotation.set(THREE.MathUtils.clamp(r.x, -1.2, 1.2) + leave * 0.35 + Math.sin(tt * 0.45) * 0.22 * idleK.current, r.y, leave * 0.12 + Math.sin(tt * 0.31) * 0.1 * idleK.current)
+      orbit.current.position.y = -leave * 0.9 + Math.sin(tt * 0.7) * 0.18 * idleK.current
     }
     const long = geometry.length > 20
     const z = long ? 15.5 : 12.5
@@ -195,8 +208,8 @@ export function ViewerScene({ geometry, tint, accent, labels, reducedEffects, au
     // pointer / phone tilt: each depth band shifts by a different amount so the stage reads as real space
     const tlx = state.pointer.x * 0.6 + tilt.x, tly = state.pointer.y * 0.4 + tilt.y
     tiltS.current.x += (tlx - tiltS.current.x) * Math.min(1, dt * 2.5); tiltS.current.y += (tly - tiltS.current.y) * Math.min(1, dt * 2.5)
-    if (depthFar.current) { depthFar.current.position.set(tiltS.current.x * 0.8, tiltS.current.y * 0.5, 0); depthFar.current.rotation.z += dt * 0.004 }
-    if (depthMid.current) depthMid.current.position.set(tiltS.current.x * 1.8, tiltS.current.y * 1.2, 0)
+    if (depthFar.current) { depthFar.current.position.set(tiltS.current.x * 0.8, tiltS.current.y * 0.5, 0); depthFar.current.rotation.z += dt * 0.02 }
+    if (depthMid.current) { depthMid.current.position.set(tiltS.current.x * 1.8, tiltS.current.y * 1.2, 0); depthMid.current.rotation.z -= dt * 0.035; depthMid.current.rotation.y += dt * 0.02 }
     if (depthNear.current) depthNear.current.position.set(tiltS.current.x * 3.4, tiltS.current.y * 2.2, 0)
   })
 

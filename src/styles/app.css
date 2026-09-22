@@ -824,3 +824,5 @@ button.move-hint { cursor:pointer; }
 .research-beacon:hover span { transform:translateX(3px); }
 @keyframes beacon { 0%,100% { box-shadow:0 0 0 0 color-mix(in srgb,var(--product,#5FE3FF) 55%,transparent),0 0 18px color-mix(in srgb,var(--product,#5FE3FF) 45%,transparent); filter:brightness(1); } 50% { box-shadow:0 0 0 9px color-mix(in srgb,var(--product,#5FE3FF) 0%,transparent),0 0 34px color-mix(in srgb,var(--product,#5FE3FF) 80%,transparent); filter:brightness(1.18); } }
 @media (prefers-reduced-motion: reduce) { .research-beacon { animation:none; } }
+
+.move-hint[data-top] { top:84px; bottom:auto; }

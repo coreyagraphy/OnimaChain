@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 const DESKTOP = ['Drag me. I don’t bite.', 'Go on, give me a spin.', 'I’m 3D. Prove it.', 'Grab a bond and turn me.']
 const TOUCH = ['Tap here, then spin me.', 'Tap to let me move.', 'I’m 3D. Tap to prove it.']
 
-export function MoveHint({ touch = false, hidden = false, onActivate }: { touch?: boolean; hidden?: boolean; onActivate?: () => void }) {
+export function MoveHint({ touch = false, hidden = false, onActivate, top = false }: { touch?: boolean; hidden?: boolean; onActivate?: () => void; top?: boolean }) {
   const lines = touch ? TOUCH : DESKTOP
   const [i, setI] = useState(0)
   useEffect(() => { const t = setInterval(() => setI((v) => (v + 1) % lines.length), 2800); return () => clearInterval(t) }, [lines.length])
@@ -20,6 +20,6 @@ export function MoveHint({ touch = false, hidden = false, onActivate }: { touch?
       <span className="move-hint-text" key={i}>{lines[i]}</span>
     </>
   )
-  if (touch && onActivate) return <button type="button" className="move-hint" data-hidden={hidden ? '1' : undefined} onClick={onActivate} aria-label="Let me spin the molecule">{body}</button>
-  return <div className="move-hint" data-hidden={hidden ? '1' : undefined} aria-hidden>{body}</div>
+  if (touch && onActivate) return <button type="button" className="move-hint" data-top={top ? '1' : undefined} data-hidden={hidden ? '1' : undefined} onClick={onActivate} aria-label="Let me spin the molecule">{body}</button>
+  return <div className="move-hint" data-top={top ? '1' : undefined} data-hidden={hidden ? '1' : undefined} aria-hidden>{body}</div>
 }

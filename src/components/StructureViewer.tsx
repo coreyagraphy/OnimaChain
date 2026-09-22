@@ -80,7 +80,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
         <SequenceSVG geometry={geometry} tint={tint} className="absolute inset-0 w-full h-full p-8" label />
       )}
       {live && <Suspense fallback={<SceneLoader />}><span /></Suspense>}
-      {live && <MoveHint touch={touch} hidden={handled || turning || close} onActivate={() => { setTurning(true); setHandled(true) }} />}
+      {live && <MoveHint top touch={touch} hidden={handled || turning || close || panel !== null} onActivate={() => { setTurning(true); setHandled(true) }} />}
 
       <div className="absolute right-3 top-3 z-10 text-right max-w-[60%]">
         <ProvenanceLabel compound={compound} />
