@@ -19,15 +19,15 @@ export function CardMoleculeScene({ geometry, tint, accent, active = false }: Pr
       <directionalLight position={[2, -4, -5]} color={accent} intensity={active ? 2.1 : 1.6} />
       <pointLight position={[4, -1, 3]} color={tint} intensity={active ? 16 : 9} distance={13} />
       <pointLight position={[-3, 1, -1]} color={accent} intensity={active ? 9 : 5} distance={11} />
-      <group position={[0, -0.35, 0]}>
+      <group position={[0, -0.8, 0]}>
         <ChainRenderer
           geometry={geometry}
           tint={tint}
           accent={accent}
           lod={1}
           intensity={active ? 1.22 : 1}
-          fitMode="fixed"
-          fit={geometry.length > 120 ? 1.45 : 1.9}
+          fitMode="sphere"
+          fit={geometry.length > 120 ? 1.8 : 1.45}
           rotate={active ? 0.09 : 0.045}
           tempo={0.28}
           markers={false}

@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { COMPOUNDS, displayName } from '~/data/compounds'
+import { COMPOUNDS, displayName, type Compound } from '~/data/compounds'
 import { DOMAINS, type DomainId } from '~/data/domains'
-import { PRICE_PLACEHOLDER, themeFor } from '~/data/commerce'
+import { themeFor } from '~/data/commerce'
+import { defaultVariantId } from '~/data/variants'
 import { CompoundCard } from '~/components/CompoundCard'
+import { StrengthPrice } from '~/components/StrengthPrice'
 import { useCommerceStore } from '~/stores/commerce'
 import { BRAND } from '~/brand'
 import { structurePresentation } from '~/data/structure-presentation'
@@ -21,7 +23,6 @@ type Sort='alpha'|'length'; type View='grid'|'table'
 function Explore(){
   const search=Route.useSearch()
   const [q,setQ]=useState(''),[domain,setDomain]=useState<DomainId|'all'>(DOMAINS.some(d=>d.id===search.topic)?(search.topic as DomainId):'all'),[sort,setSort]=useState<Sort>('alpha'),[view,setView]=useState<View>('grid')
-  const add=useCommerceStore((s)=>s.add), quick=useCommerceStore((s)=>s.setQuickView)
   const grid=useRef<HTMLDivElement>(null)
   const rows=useMemo(()=>{
     const t=q.trim().toLowerCase()
@@ -52,10 +53,25 @@ function Explore(){
       <section className="wrap">
         <p className="mt-4 mono text-[11px] text-bone/50" role="status">{rows.length} of {COMPOUNDS.length} products{domain!=='all'&&` · ${TOPIC_NAME[domain]}`}</p>
         {view==='grid'?<div ref={grid} key={scene} className="shop-grid mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><div key={c.slug} className="shop-card" style={{'--i':Math.min(i,11)} as React.CSSProperties}><CompoundCard compound={c} index={i} fluid lively/></div>)}</div>:
-        <div className="mt-6 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Product</th><th>Topic</th><th>Structure</th><th>Price</th><th/></tr></thead><tbody>{rows.map(c=>{const t=themeFor(c), structure=structurePresentation(c);return <tr key={c.slug}><td><Link to="/compound/$slug" params={{slug:c.slug}} className="font-semibold text-lg hover:text-cyan" style={{color:t.primary}}>{displayName(c)}</Link><span className="block text-[11px] muted capitalize">{c.tags.slice(0,2).map(x=>x.replaceAll('-', ' ')).join(' · ')}</span></td><td>{TOPIC_NAME[c.domain]}</td><td className="mono">{structure.detail}</td><td className="mono">{PRICE_PLACEHOLDER}</td><td><div className="flex gap-2 justify-end"><button className="btn btn-sm" onClick={()=>quick(c.slug)}>Quick view</button><button className="btn btn-sm commerce-btn" onClick={()=>add(c.slug)}>Add to cart</button></div></td></tr>})}</tbody></table></div>}
+        <div className="mt-6 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Product</th><th>Topic</th><th>Structure</th><th>Strength and price</th><th/></tr></thead><tbody>{rows.map(c=><ProductRow key={c.slug} compound={c} />)}</tbody></table></div>}
         {rows.length===0&&<div className="panel p-10 mt-8 text-center"><h2 className="display-md text-2xl">No match yet.</h2><p className="muted text-sm mt-2">Try a different product name, alternate name, or topic.</p></div>}
         <p className="text-[12px] muted mt-10">Prices are temporary placeholders. Checkout is disabled while commercial requirements are finalized.</p>
       </section>
     </div>
   )
+}
+
+function ProductRow({ compound: c }: { compound: Compound }) {
+  const [variantId, setVariantId] = useState<string | null>(() => defaultVariantId(c.slug))
+  const add = useCommerceStore((s) => s.add)
+  const quick = useCommerceStore((s) => s.setQuickView)
+  const theme = themeFor(c)
+  const structure = structurePresentation(c)
+  return <tr>
+    <td><Link to="/compound/$slug" params={{ slug: c.slug }} className="font-semibold text-lg hover:text-cyan" style={{ color: theme.primary }}>{displayName(c)}</Link><span className="block text-[11px] muted capitalize">{c.tags.slice(0, 2).map((tag) => tag.replaceAll('-', ' ')).join(' · ')}</span></td>
+    <td>{TOPIC_NAME[c.domain]}</td>
+    <td className="mono">{structure.detail}</td>
+    <td><StrengthPrice compound={c} value={variantId} onChange={setVariantId} compact /></td>
+    <td><div className="flex gap-2 justify-end"><button className="btn btn-sm" onClick={() => quick(c.slug)}>Quick view</button><button className="btn btn-sm commerce-btn" onClick={() => add(c.slug, 1, variantId)}>Add to cart</button></div></td>
+  </tr>
 }

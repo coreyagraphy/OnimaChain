@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export interface CartLine { slug: string; quantity: number }
+export interface CartLine { slug: string; quantity: number; variantId?: string | null }
 
 interface CommerceState {
   items: CartLine[]
@@ -8,9 +8,9 @@ interface CommerceState {
   quickView: string | null
   hydrated: boolean
   hydrate: () => void
-  add: (slug: string, quantity?: number) => void
-  setQuantity: (slug: string, quantity: number) => void
-  remove: (slug: string) => void
+  add: (slug: string, quantity?: number, variantId?: string | null) => void
+  setQuantity: (slug: string, quantity: number, variantId?: string | null) => void
+  remove: (slug: string, variantId?: string | null) => void
   setCartOpen: (open: boolean) => void
   setQuickView: (slug: string | null) => void
 }
@@ -41,21 +41,22 @@ export const useCommerceStore = create<CommerceState>((set, get) => ({
       set({ items, hydrated: true })
     } catch { set({ hydrated: true }) }
   },
-  add: (slug, quantity = 1) => set((state) => {
-    const found = state.items.find((line) => line.slug === slug)
+  add: (slug, quantity = 1, variantId = null) => set((state) => {
+    const found = state.items.find((line) => line.slug === slug && (line.variantId ?? null) === variantId)
     const items = found
-      ? state.items.map((line) => line.slug === slug ? { ...line, quantity: line.quantity + quantity } : line)
-      : [...state.items, { slug, quantity }]
+      ? state.items.map((line) => line.slug === slug && (line.variantId ?? null) === variantId ? { ...line, quantity: line.quantity + quantity } : line)
+      : [...state.items, { slug, quantity, variantId }]
     save(items)
     return { items, cartOpen: true }
   }),
-  setQuantity: (slug, quantity) => set((state) => {
-    const items = quantity <= 0 ? state.items.filter((line) => line.slug !== slug) : state.items.map((line) => line.slug === slug ? { ...line, quantity } : line)
+  setQuantity: (slug, quantity, variantId = null) => set((state) => {
+    const sameLine = (line: CartLine) => line.slug === slug && (line.variantId ?? null) === variantId
+    const items = quantity <= 0 ? state.items.filter((line) => !sameLine(line)) : state.items.map((line) => sameLine(line) ? { ...line, quantity } : line)
     save(items)
     return { items }
   }),
-  remove: (slug) => set((state) => {
-    const items = state.items.filter((line) => line.slug !== slug)
+  remove: (slug, variantId = null) => set((state) => {
+    const items = state.items.filter((line) => !(line.slug === slug && (line.variantId ?? null) === variantId))
     save(items)
     return { items }
   }),

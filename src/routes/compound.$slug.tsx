@@ -20,7 +20,9 @@ import { FollowButton, PulseStream } from '~/components/Pulse'
 import { ProvenanceLabel } from '~/components/SourceBadge'
 import { ScrollTrigger } from '~/motion/timeline'
 import { BRAND, brand } from '~/brand'
-import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
+import { descriptionFor, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
+import { defaultVariantId } from '~/data/variants'
+import { StrengthPrice } from '~/components/StrengthPrice'
 import { useCommerceStore } from '~/stores/commerce'
 import { officialSourcesFor } from '~/data/official-sources'
 import { useFitText } from '~/motion/useFitText'
@@ -64,6 +66,8 @@ function Dossier() {
   const mw = c.mw ?? computedMW(c)
   const [drawer, setDrawer] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
+  const [variantId, setVariantId] = useState<string | null>(() => defaultVariantId(slug))
+  useEffect(() => setVariantId(defaultVariantId(slug)), [slug])
   const addToCart = useCommerceStore((s) => s.add)
   const header = useRef<HTMLElement>(null)
   const nameRef = useFitText<HTMLHeadingElement>([slug])
@@ -87,7 +91,7 @@ function Dossier() {
           <p className="label" style={{ color: domain.palette.base }}>{domain.name} · commonly explored around {shopTopicFor(c)}</p>
           <h1 ref={nameRef} className="wordmark text-[clamp(3rem,7.5vw,7.2rem)] mt-4 whitespace-nowrap" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>
           <p className="mt-5 text-base font-semibold text-bone/84 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
-          <div className="mt-7 flex items-end gap-6"><div><p className="label">Temporary price</p><p className="display-md text-3xl mt-1">{PRICE_PLACEHOLDER}</p></div><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
+          <div className="mt-7 flex flex-wrap items-end gap-6"><StrengthPrice compound={c} value={variantId} onChange={setVariantId} /><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
           {c.displayName && <p className="mono text-[12px] text-bone/55 mt-2">Compound: {c.name.toLowerCase()}</p>}
           {c.aliases.length > 0 && <p className="mt-4 text-sm muted">Also known as {c.aliases.join(' · ')}</p>}
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-w-lg">
@@ -104,7 +108,7 @@ function Dossier() {
           {c.note && <p className="mt-4 text-[12px] muted max-w-lg">{c.note}</p>}
           <div className="mt-8 flex flex-wrap gap-2 items-center">
             <div className="quantity-control" aria-label="Quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button onClick={() => setQuantity(quantity + 1)} aria-label="Increase quantity">+</button></div>
-            <button className="btn commerce-btn" onClick={() => addToCart(c.slug, quantity)} data-cursor="add">Add to cart</button>
+            <button className="btn commerce-btn" onClick={() => addToCart(c.slug, quantity, variantId)} data-cursor="add">Add to cart</button>
             <Link to="/compare" search={{ a: slug, b: slug === 'tb-500' ? 'bpc-157' : 'tb-500' }} className="btn">Compare</Link>
             <Link to="/saved" className="btn">Save</Link>
             <button className="btn" onClick={() => setDrawer('share')}>Share</button>

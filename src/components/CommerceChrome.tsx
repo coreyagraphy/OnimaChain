@@ -1,7 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { COMPOUND_BY_SLUG, displayName } from '~/data/compounds'
-import { descriptionFor, PRICE_PLACEHOLDER, themeFor, wordmarkStyle } from '~/data/commerce'
+import { descriptionFor, themeFor, wordmarkStyle } from '~/data/commerce'
+import { defaultVariantId, priceFor, variantFor } from '~/data/variants'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { buildChain } from '~/scenes/chain/geometry'
 import { SequenceSVG } from './SequenceSVG'
@@ -15,6 +16,7 @@ import { brand } from '~/brand'
 import { structurePresentation } from '~/data/structure-presentation'
 import { CompositeStructure } from './CompositeStructure'
 import { getLenis } from '~/motion/lenis'
+import { StrengthPrice } from './StrengthPrice'
 
 export function CommerceChrome() {
   const hydrate = useCommerceStore((s) => s.hydrate)
@@ -53,16 +55,16 @@ function CartDrawer() {
                 const theme = themeFor(c), geometry = c.sequence ? buildChain(c) : null
                 const presentation = structurePresentation(c)
                 return (
-                  <div key={line.slug} className="cart-line" style={{ '--product': theme.primary } as CSSProperties}>
+                  <div key={`${line.slug}:${line.variantId ?? ''}`} className="cart-line" style={{ '--product': theme.primary } as CSSProperties}>
                     {presentation.kind === 'blend' ? <div className="w-20 h-20 flex shrink-0">{(['bpc-157', 'tb-500'] as const).map((slug) => <SequenceSVG key={slug} geometry={buildChain(COMPOUND_BY_SLUG[slug])} tint={themeFor(COMPOUND_BY_SLUG[slug]).primary} className="w-10 h-20 p-1" />)}</div> : geometry ? <SequenceSVG geometry={geometry} tint={theme.primary} className="w-20 h-20 p-2" /> : <div className="w-20 h-20 grid place-items-center text-[10px] text-bone/60 text-center">No model</div>}
                     <div className="min-w-0 grow">
                       <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setCartOpen(false)} className="display-md text-lg hover:text-cyan">{displayName(c)}</Link>
-                      <p className="mono text-[12px] mt-1" style={{ color: theme.primary }}>{PRICE_PLACEHOLDER}</p>
+                      <p className="mono text-[12px] mt-1" style={{ color: theme.primary }}>{variantFor(c.slug, line.variantId)?.label ?? 'Strength pending'} · {priceFor(c.slug, line.variantId)} <span className="text-bone/45">placeholder</span></p>
                       <div className="mt-3 flex items-center gap-2">
-                        <button className="quantity-btn" onClick={() => setQuantity(c.slug, line.quantity - 1)} aria-label={`Decrease ${displayName(c)} quantity`}>−</button>
+                        <button className="quantity-btn" onClick={() => setQuantity(c.slug, line.quantity - 1, line.variantId)} aria-label={`Decrease ${displayName(c)} quantity`}>−</button>
                         <span className="mono text-sm w-6 text-center">{line.quantity}</span>
-                        <button className="quantity-btn" onClick={() => setQuantity(c.slug, line.quantity + 1)} aria-label={`Increase ${displayName(c)} quantity`}>+</button>
-                        <button className="text-[11px] text-bone/45 hover:text-bone underline ml-auto" onClick={() => remove(c.slug)}>Remove</button>
+                        <button className="quantity-btn" onClick={() => setQuantity(c.slug, line.quantity + 1, line.variantId)} aria-label={`Increase ${displayName(c)} quantity`}>+</button>
+                        <button className="text-[11px] text-bone/45 hover:text-bone underline ml-auto" onClick={() => remove(c.slug, line.variantId)}>Remove</button>
                       </div>
                     </div>
                   </div>
@@ -94,11 +96,13 @@ function QuickView() {
   const drag = useRef<Drag>({ active: false, vx: 0, vy: 0, dx: 0, dy: 0 })
   const last = useRef({ x: 0, y: 0, t: 0 })
   const [touched, setTouched] = useState(false)
+  const [variantId, setVariantId] = useState<string | null>(null)
   const nameRef = useFitText<HTMLHeadingElement>([slug])
   const reduced = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
   useEffect(() => {
     if (!c) return
     setTouched(false)
+    setVariantId(defaultVariantId(c.slug))
     drag.current = { active: false, vx: 0, vy: 0, dx: 0, dy: 0 }
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setQuickView(null)
     window.addEventListener('keydown', onKey)
@@ -140,7 +144,7 @@ function QuickView() {
             <p className="label" style={{ color: theme.primary }}>{domain.name}</p>
             <h2 ref={nameRef} className="wordmark text-[clamp(2.4rem,6vw,5.5rem)] mt-3 whitespace-nowrap" style={wordmarkStyle(theme)}>{displayName(c)}</h2>
             <div className="quick-price-row mt-5">
-              <p className="display-md text-2xl">{PRICE_PLACEHOLDER}</p>
+              <StrengthPrice compound={c} value={variantId} onChange={setVariantId} />
               <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setQuickView(null)} className="research-beacon">Explore this peptide <span aria-hidden>→</span></Link>
             </div>
             <p className="text-sm font-semibold text-bone/82 leading-relaxed mt-5">{descriptionFor(c)}</p>
@@ -150,7 +154,7 @@ function QuickView() {
               <div><dt>Want to know more?</dt><dd>Open the product page for studies and safety details.</dd></div>
             </dl>
             <div className="mt-7 flex flex-wrap gap-2">
-              <button className="btn commerce-btn" onClick={() => { add(c.slug); setQuickView(null) }} data-cursor="add">Add to cart</button>
+              <button className="btn commerce-btn" onClick={() => { add(c.slug, 1, variantId); setQuickView(null) }} data-cursor="add">Add to cart</button>
             </div>
           </div>
         </div>

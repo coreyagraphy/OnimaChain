@@ -950,10 +950,21 @@ button.move-hint { cursor:pointer; }
 .product-structure-detail{min-height:1.2em}
 @media(max-width:640px){.composite-structure{padding:12px 10px 60px}.composite-member{height:65%}.composite-member-label{font-size:10px}.composite-disclaimer{bottom:16px;font-size:11px}}
 
-/* Keep the shared WebGL viewport above the title, never through it. The title's
-   product-color glint is paired with its existing mineral outline. */
-.product-card .product-molecule{height:42%;overflow:hidden;contain:paint;transform:none}
+/* Each card owns a bounded canvas below its copy: molecules cannot paint over pricing. */
+.product-card .product-molecule{height:39%;overflow:hidden;contain:paint;transform:none}
 .product-card[data-layout="wide"] .product-molecule{height:35%}
-.product-card[data-layout="square"] .product-molecule{height:39%}
+.product-card[data-layout="square"] .product-molecule{height:37%}
 .product-card .product-card-copy{background:linear-gradient(180deg,#070910e8 0%,#070910ee 24%,#070910fa 100%)}
 .product-card .product-card-title{position:relative;isolation:isolate;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--product) 20%,transparent))}
+.strength-price{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:10px;max-width:470px}
+.strength-field{display:grid;gap:5px;min-width:0}
+.strength-caption{display:block;color:#e8edf3a6;font:700 9px/1.2 var(--font-mono);text-transform:uppercase;letter-spacing:.11em}
+.strength-field select{width:100%;min-height:39px;min-width:0;appearance:auto;border:1px solid color-mix(in srgb,var(--product) 45%,#ffffff30);border-radius:9px;background:#081018;color:#f2eee6;padding:7px 9px;font:600 11px/1.2 var(--font-mono);outline-offset:2px}
+.strength-field select:disabled{color:#e8edf385;cursor:not-allowed}
+.strength-field select:not(:disabled):focus-visible{outline:2px solid var(--product)}
+.strength-price-value{display:grid;gap:6px;white-space:nowrap;text-align:right;padding-bottom:6px}
+.strength-price-value strong{font-size:15px;color:#f2eee6}
+.strength-price-compact{gap:8px}
+.strength-price-compact .strength-field select{min-height:34px;padding:5px 6px;font-size:10px}
+.strength-price-compact .strength-caption{font-size:8px;letter-spacing:.05em}
+@media(max-width:640px){.product-card{height:500px!important}.strength-price-compact .strength-field select{min-height:36px}}

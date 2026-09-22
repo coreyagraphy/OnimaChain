@@ -20,7 +20,7 @@ export function CompositeStructure({ compact = false, dedicated = false, render3
       return <div key={compound.slug} className="composite-member" style={{ '--member': theme.primary } as CSSProperties}>
         <div className="composite-member-view">
           {allowed ? dedicated
-            ? <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={6}>{scene}</Lod0Canvas>
+            ? <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={6} dpr={compact ? [1, 1.2] : [1, 1.25]} preserveDrawingBuffer={false}>{scene}</Lod0Canvas>
             : <SceneView className="absolute inset-0" fallback={<SequenceSVG geometry={geometries[index]} tint={theme.primary} className="absolute inset-0 w-full h-full p-2" />}>{scene}</SceneView>
             : <SequenceSVG geometry={geometries[index]} tint={theme.primary} className="absolute inset-0 w-full h-full p-2" />}
         </div>

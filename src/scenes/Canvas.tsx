@@ -8,8 +8,8 @@ import { useCommerceStore } from '~/stores/commerce'
  * One persistent R3F canvas per document, rendered fixed behind the page.
  * Sections declare a <SceneView> (drei <View>) which tracks a DOM rect and draws into the shared context.
  *
- * Hero and the dossier stage (LOD-0, with postprocessing) use their own <Lod0Canvas> because EffectComposer
- * inside a scissored View composites unreliably; everything else (cards, rigs, atlas nodes) shares this one.
+ * Hero and the dossier stage use their own <Lod0Canvas> for postprocessing. Product cards also use a
+ * local bounded canvas so their 3D art can never draw over DOM titles, selectors, or prices.
  *
  * Every canvas pauses its render loop when the tab is hidden.
  */
@@ -67,7 +67,7 @@ interface Lod0Props {
   preserveDrawingBuffer?: boolean
 }
 
-/** Dedicated canvas for LOD-0 scenes (hero, dossier stage, constellation) that carry postprocessing. */
+/** Dedicated, DOM-bounded canvas for immersive scenes and visible product-card artwork. */
 export function Lod0Canvas({ children, className, style, onFirstFrame, dpr, cameraZ = 14, preserveDrawingBuffer = true }: Lod0Props) {
   const fired = useRef(false)
   const visible = useDocumentVisible()
