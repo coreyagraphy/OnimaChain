@@ -9,7 +9,8 @@ Date: 2026-09-22. Working branch: `codex/research-intelligence-foundation`.
 - Verified-inventory gate: cards, dossiers, quick view, Explore, Portal of Tides, Shop, cart state, and navigation show no price or purchase action without a matching stocked lot. Existing local cart entries for unverified compounds are not hydrated into the active cart.
 - `/shop`, `/watchlist`, `/watchlist/$slug`, `/targets`, `/combinations`, `/coa`, `/research-tools`, and `/research-tools/preclinical-calculator`.
 - Ten informational watchlist molecule profiles, each with target mapping, a distinct visual theme, a dated development label, and a primary-source link. New visuals are explicitly conceptual, not measured structures.
-- Community component constellations and three sourced clinical-combination records. No unified molecular structure is implied for a mixture.
+- Community component constellations show each verified core component's own sequence-derived illustration; three clinical-combination records retain conceptual placeholders where individual component sequences are not verified. No unified molecular structure is implied for a mixture.
+- Watchlist filters for target, developer and stage, plus status-date ordering. Global search indexes target profiles, combinations, watchlist aliases and any eligible current-lot report.
 - Home, primary/footer navigation, and global search links to the new research surfaces.
 - Lab-only mouse-study arithmetic with no human, syringe-unit, or dose-preset workflow.
 

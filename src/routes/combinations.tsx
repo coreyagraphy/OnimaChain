@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { COMBINATIONS, RESEARCH_BY_ID, type Combination } from '~/data/research-entities'
+import { COMPOUND_BY_SLUG } from '~/data/compounds'
+import { buildChain } from '~/scenes/chain/geometry'
+import { SequenceSVG } from '~/components/SequenceSVG'
 
 export const Route = createFileRoute('/combinations')({ head: () => ({ meta: [{ title: 'Stacks & Combinations — OnimaChain' }] }), component: CombinationsPage })
 
@@ -11,5 +14,11 @@ function CombinationsPage() {
 }
 
 function CombinationSection({ title, intro, rows }: { title: string; intro: string; rows: Combination[] }) {
-  return <section className="wrap mt-16 border-t hairline pt-9"><p className="label label-cyan">{title}</p><h2 className="display-md text-[clamp(2rem,4vw,3.5rem)] mt-2">{title}</h2><p className="muted mt-3 max-w-2xl">{intro}</p><div className="grid lg:grid-cols-2 gap-5 mt-8">{rows.map((c) => <article id={c.id} key={c.id} className="combination-card"><div className="flex flex-wrap justify-between gap-2"><span className="research-status-pill">Informational profile</span><span className="research-status-pill">{c.type === 'COMMUNITY_STACK' ? 'Community stack' : 'Clinical combination'}</span></div><h3 className="display-md text-3xl mt-6">{c.name}</h3><p className="text-sm muted mt-3">{c.summary}</p><div className="component-constellation mt-7" aria-label={`${c.name} has ${c.componentIds.length} separate components`}>{c.componentIds.map((id) => { const member = RESEARCH_BY_ID[id]; return <Link key={id} to={member?.researchStatus === 'WATCHLIST' ? '/watchlist/$slug' : '/compound/$slug'} params={{ slug: id }} className="component-node"><span className="component-sphere" /><strong>{member?.name ?? id}</strong><small>{member?.structureProvenance === 'sequence-derived' ? 'Sequence-derived' : 'Conceptual / pending'}</small></Link> })}</div><p className="mono text-[10px] text-bone/45 mt-5">Component constellation · no unified molecular structure</p>{c.source && <a href={c.source} target="_blank" rel="noreferrer noopener" className="btn btn-sm mt-5">Open study source ↗</a>}</article>)}</div></section>
+  return <section className="wrap mt-16 border-t hairline pt-9"><p className="label label-cyan">{title}</p><h2 className="display-md text-[clamp(2rem,4vw,3.5rem)] mt-2">{title}</h2><p className="muted mt-3 max-w-2xl">{intro}</p><div className="grid lg:grid-cols-2 gap-5 mt-8">{rows.map((c) => <article id={c.id} key={c.id} className="combination-card"><div className="flex flex-wrap justify-between gap-2"><span className="research-status-pill">Informational profile</span><span className="research-status-pill">{c.type === 'COMMUNITY_STACK' ? 'Community stack' : 'Clinical combination'}</span></div><h3 className="display-md text-3xl mt-6">{c.name}</h3><p className="text-sm muted mt-3">{c.summary}</p><div className="component-constellation mt-7" aria-label={`${c.name} has ${c.componentIds.length} separate components`}>{c.componentIds.map((id) => { const member = RESEARCH_BY_ID[id]; return <Link key={id} to={member?.researchStatus === 'WATCHLIST' ? '/watchlist/$slug' : '/compound/$slug'} params={{ slug: id }} className="component-node"><ComponentVisual id={id} /><strong>{member?.name ?? id}</strong><small>{member?.structureProvenance === 'sequence-derived' ? 'Sequence-derived illustration' : 'Conceptual / pending'}</small></Link> })}</div><p className="mono text-[10px] text-bone/45 mt-5">Component constellation · no unified molecular structure</p>{c.source && <a href={c.source} target="_blank" rel="noreferrer noopener" className="btn btn-sm mt-5">Open study source ↗</a>}</article>)}</div></section>
+}
+
+function ComponentVisual({ id }: { id: string }) {
+  const compound = COMPOUND_BY_SLUG[id]
+  if (!compound?.sequence) return <span className="component-sphere" aria-label="Conceptual illustration; component sequence not verified" />
+  return <span className="component-sequence" role="img" aria-label={`${compound.name}: sequence-derived illustration, not measured 3D coordinates`}><SequenceSVG geometry={buildChain(compound)} tint="#5FE3FF" className="w-full h-full p-1" /></span>
 }

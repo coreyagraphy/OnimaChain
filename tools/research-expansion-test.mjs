@@ -22,7 +22,7 @@ for (const width of [1440, 390]) {
     if (route === '/explore' && (result.price || result.addToCart)) errors.push('Unverified commerce control on Explore')
     if (!response?.ok() || !result.heading || result.overflow || errors.length) failures++
     console.log(width, route, response?.status(), JSON.stringify(result), errors)
-    if (['/watchlist', '/targets', '/research-tools/preclinical-calculator'].includes(route)) {
+    if (['/watchlist', '/targets', '/combinations', '/research-tools/preclinical-calculator'].includes(route)) {
       await page.screenshot({ path: `shots/research-${width}-${route.slice(1).replaceAll('/', '-')}.png` })
     }
     page.off('pageerror', onError)

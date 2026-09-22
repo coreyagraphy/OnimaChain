@@ -4,9 +4,9 @@ import { COMPOUNDS, displayName } from '~/data/compounds'
 import { CLAIMS } from '~/data/claims'
 import { verifiedStudies } from '~/data/studies'
 import { brand } from '~/brand'
-import { COMBINATIONS, TARGETS, WATCHLIST } from '~/data/research-entities'
+import { COMBINATIONS, TARGETS, WATCHLIST, publicCurrentCoas } from '~/data/research-entities'
 
-interface Hit { group: 'Compounds' | 'Aliases' | 'Targets' | 'Watchlist' | 'Combinations' | 'Claims' | 'Studies'; label: string; sub: string; href: string }
+interface Hit { group: 'Compounds' | 'Aliases' | 'Targets' | 'Watchlist' | 'Combinations' | 'Lab Reports' | 'Claims' | 'Studies'; label: string; sub: string; href: string }
 
 function index(): Hit[] {
   const hits: Hit[] = []
@@ -20,6 +20,7 @@ function index(): Hit[] {
   }
   for (const c of COMBINATIONS) hits.push({ group: 'Combinations', label: c.name, sub: c.type === 'COMMUNITY_STACK' ? 'Community stack' : 'Clinical combination', href: `/combinations#${c.id}` })
   for (const t of TARGETS) hits.push({ group: 'Targets', label: t.label, sub: 'Receptor map', href: '/targets' })
+  for (const coa of publicCurrentCoas()) hits.push({ group: 'Lab Reports', label: coa.lotNumber, sub: `${coa.compoundId} · current lot report`, href: '/coa' })
   for (const cl of CLAIMS) hits.push({ group: 'Claims', label: cl.title, sub: cl.id, href: `/claim/${cl.id}` })
   for (const s of verifiedStudies()) hits.push({ group: 'Studies', label: s.title ?? '', sub: `PMID ${s.pmid} · ${s.journal} ${s.year ?? ''}`, href: `/compound/${s.compounds[0]}#sources` })
   return hits
