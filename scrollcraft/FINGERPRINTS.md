@@ -29,6 +29,7 @@ changes only grammar and world will fail it.
 | Build | Grammar | Nav treatment | Hero device | Act-sequence shape | Close pattern | Signature move | World | Port |
 |---|---|---|---|---|---|---|---|---|
 | OnimaChain hero | Molecular threshold | Fixed commerce nav | Live WebGL molecular fly-through | Rotate → enter → pass through → plain-language bridge → commerce reveal | Existing collection continues below | Molecular threshold fly-through resolves into the shop message | Neon molecular nocturne | Netlify production |
+| OnimaChain Learning Lab | Research exhibit index | Existing fixed nav plus in-page topic filters | Operable five-stage claim-transmission instrument | Purpose → three research habits → four topic exhibits → optional beginner path → philosophy | Three paths into Explore, Watchlist, and Claims | Claim wording changes as context is progressively lost, with a sourced lesson one click away | Luminous technical editorial lab | Existing `/learn` route |
 
 ---
 
