@@ -19,6 +19,8 @@ export interface DomainRigProps {
   sequence?: string | null
   lod?: 0 | 1 | 2
   intensity?: number
+  /** Motion speed multiplier (the shop grid runs livelier than elsewhere). */
+  speed?: number
 }
 
 const RIGS: Record<string, (p: RigProps) => React.JSX.Element> = {
@@ -51,9 +53,9 @@ export function geometryFor(compound?: Compound, sequence?: string | null, slug 
 }
 
 /** DomainRig dispatcher. Contract: { domain, sequence | compound, lod, intensity }. */
-export function DomainRig({ domain, compound, sequence, lod = 2, intensity = 1 }: DomainRigProps) {
+export function DomainRig({ domain, compound, sequence, lod = 2, intensity = 1, speed = 1 }: DomainRigProps) {
   const geometry = useMemo(() => geometryFor(compound, sequence, compound?.slug), [compound, sequence])
   const v = useMemo(() => rigVariation(domain, geometry), [domain, geometry])
   const Rig = RIGS[DOMAIN_BY_ID[domain].rig]
-  return <Rig geometry={geometry} tint={v.tint} accent={v.accent} glow={v.glow} lod={lod} intensity={intensity} tempo={v.tempo} seed={hashString(geometry.slug)} />
+  return <Rig geometry={geometry} tint={v.tint} accent={v.accent} glow={v.glow} lod={lod} intensity={intensity} tempo={v.tempo * speed} seed={hashString(geometry.slug)} />
 }

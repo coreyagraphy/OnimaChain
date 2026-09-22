@@ -1,11 +1,16 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { COMPOUND_BY_SLUG, computedMW, displayName } from '~/data/compounds'
 import { descriptionFor, PRICE_PLACEHOLDER, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { buildChain } from '~/scenes/chain/geometry'
 import { SequenceSVG } from './SequenceSVG'
 import { useCommerceStore } from '~/stores/commerce'
+import { Lod0Canvas } from '~/scenes/Canvas'
+import { useCanvasAllowed } from '~/motion/useReducedMotion'
+import { useFitText } from '~/motion/useFitText'
+import { MoveHint } from './MoveHint'
+import type { Drag } from '~/scenes/quick/QuickScene'
 
 export function CommerceChrome() {
   const hydrate = useCommerceStore((s) => s.hydrate)
@@ -71,31 +76,58 @@ function CartDrawer() {
   )
 }
 
+const QuickScene = lazy(() => import('~/scenes/quick/QuickScene').then((m) => ({ default: m.QuickScene })))
+
 function QuickView() {
   const slug = useCommerceStore((s) => s.quickView)
   const setQuickView = useCommerceStore((s) => s.setQuickView)
   const add = useCommerceStore((s) => s.add)
+  const canvasOk = useCanvasAllowed()
   const c = slug ? COMPOUND_BY_SLUG[slug] : undefined
   const geometry = useMemo(() => c ? buildChain(c) : null, [c])
+  const drag = useRef<Drag>({ active: false, vx: 0, vy: 0, dx: 0, dy: 0 })
+  const last = useRef({ x: 0, y: 0, t: 0 })
+  const [touched, setTouched] = useState(false)
+  const nameRef = useFitText<HTMLHeadingElement>([slug])
+  const reduced = typeof window !== 'undefined' && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false)
   useEffect(() => {
     if (!c) return
+    setTouched(false)
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setQuickView(null)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [c, setQuickView])
   if (!c || !geometry) return null
   const theme = themeFor(c), domain = DOMAIN_BY_ID[c.domain], mw = c.mw ?? computedMW(c)
+  const down = (e: React.PointerEvent) => { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); drag.current.active = true; last.current = { x: e.clientX, y: e.clientY, t: e.timeStamp }; setTouched(true) }
+  const move = (e: React.PointerEvent) => {
+    if (!drag.current.active) return
+    const dx = e.clientX - last.current.x, dy = e.clientY - last.current.y, dt = Math.max(8, e.timeStamp - last.current.t)
+    drag.current.dx += dx; drag.current.dy += dy; drag.current.vx = (dx / dt) * 60; drag.current.vy = (dy / dt) * 60
+    last.current = { x: e.clientX, y: e.clientY, t: e.timeStamp }
+  }
+  const up = () => { drag.current.active = false }
   return (
     <div className="commerce-modal fixed inset-0 z-[75] grid place-items-center p-3 md:p-8" role="dialog" aria-modal="true" aria-label={`${displayName(c)} quick view`}>
       <button className="absolute inset-0 veil w-full" aria-label="Close quick view" onClick={() => setQuickView(null)} />
       <section className="quick-view relative w-full max-w-5xl overflow-hidden" style={{ '--product': theme.primary, '--product-2': theme.secondary } as CSSProperties} data-lenis-prevent>
         <button className="btn btn-sm absolute right-4 top-4 z-20" onClick={() => setQuickView(null)}>Close</button>
         <div className="grid md:grid-cols-[1.1fr_.9fr] min-h-[560px]">
-          <div className="relative min-h-[320px] quick-view-scene"><div className="quick-molecule absolute inset-0"><SequenceSVG geometry={geometry} tint={theme.primary} className="w-full h-full p-12 md:p-16" /></div></div>
-          <div className="p-7 md:p-10 flex flex-col justify-center">
+          <div className="relative min-h-[320px] quick-view-scene" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} style={{ touchAction: 'none', cursor: 'grab' }}>
+            {canvasOk ? (
+              <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={6}>
+                <Suspense fallback={null}><QuickScene slug={c.slug} tint={theme.primary} accent={theme.secondary} drag={drag} reduced={reduced} /></Suspense>
+              </Lod0Canvas>
+            ) : <div className="quick-molecule absolute inset-0"><SequenceSVG geometry={geometry} tint={theme.primary} className="w-full h-full p-12 md:p-16" /></div>}
+            <MoveHint hidden={touched} />
+          </div>
+          <div className="p-7 md:p-10 flex flex-col justify-center min-w-0">
             <p className="label" style={{ color: theme.primary }}>{domain.name} research</p>
-            <h2 className="wordmark text-[clamp(2.8rem,6vw,5.5rem)] mt-3" style={wordmarkStyle(theme)}>{displayName(c)}</h2>
-            <p className="display-md text-2xl mt-5">{PRICE_PLACEHOLDER}</p>
+            <h2 ref={nameRef} className="wordmark text-[clamp(2.4rem,6vw,5.5rem)] mt-3 whitespace-nowrap" style={wordmarkStyle(theme)}>{displayName(c)}</h2>
+            <div className="quick-price-row mt-5">
+              <p className="display-md text-2xl">{PRICE_PLACEHOLDER}</p>
+              <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setQuickView(null)} className="research-beacon">View full research <span aria-hidden>→</span></Link>
+            </div>
             <p className="text-sm font-semibold text-bone/82 leading-relaxed mt-5">{descriptionFor(c)}</p>
             <dl className="mini-specs mt-6">
               <div><dt>Length</dt><dd>{c.sequence ? `${c.sequence.length} aa` : 'Pending'}</dd></div>
@@ -104,7 +136,6 @@ function QuickView() {
             </dl>
             <div className="mt-7 flex flex-wrap gap-2">
               <button className="btn commerce-btn" onClick={() => { add(c.slug); setQuickView(null) }} data-cursor="add">Add to cart</button>
-              <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setQuickView(null)} className="btn">View full research</Link>
             </div>
           </div>
         </div>

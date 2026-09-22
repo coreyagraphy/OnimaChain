@@ -774,3 +774,53 @@ p.cr-list { padding-left:0; }
   .pulse-home { padding-bottom:36px; }
   .difference-stage { padding-top:48px; }
 }
+
+/* ── Shop: products first ── */
+.shop-hero-compact { padding-top:18px !important; padding-bottom:10px !important; }
+.shop-hero-compact::after { display:none; }
+.shop-bar { position:sticky; top:68px; z-index:40; margin-top:6px; padding:10px 0; background:linear-gradient(180deg,rgba(9,10,15,.92),rgba(9,10,15,.78)); backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4); border-block:1px solid rgba(242,238,230,.08); }
+.shop-bar-inner { display:grid; grid-template-columns:minmax(0,1fr) auto auto auto; gap:8px; align-items:center; }
+.shop-search { display:flex; align-items:center; gap:8px; min-height:44px; padding:0 12px; border-radius:14px; border:1px solid rgba(242,238,230,.16); background:rgba(6,7,11,.75); min-width:0; }
+.shop-search:focus-within { border-color:#5FE3FF; box-shadow:0 0 0 3px rgba(95,227,255,.18); }
+.shop-search svg { width:17px; height:17px; flex:none; fill:none; stroke:rgba(242,238,230,.55); stroke-width:2; }
+.shop-search input { flex:1; min-width:0; border:0; background:none; outline:none; font-size:16px; color:var(--color-bone); padding:0; }
+.shop-select select { appearance:none; -webkit-appearance:none; min-height:44px; padding:0 34px 0 14px; border-radius:14px; font-size:14px; color:var(--color-bone); border:1px solid rgba(242,238,230,.16); background:rgba(6,7,11,.75) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235FE3FF' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 11px center/15px; max-width:100%; }
+.shop-select select:focus { outline:none; border-color:#5FE3FF; }
+.shop-view { display:flex; border-radius:14px; border:1px solid rgba(242,238,230,.16); overflow:hidden; }
+.shop-view button { min-height:42px; padding:0 12px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:rgba(242,238,230,.65); }
+.shop-view button[aria-pressed="true"] { color:#061018; background:#5FE3FF; font-weight:700; }
+@media (max-width:767px) {
+  .shop-bar { top:60px; }
+  .shop-bar-inner { grid-template-columns:1fr 1fr; }
+  .shop-search { grid-column:1 / -1; }
+  .shop-view { display:none; }
+  .shop-select select { width:100%; }
+}
+/* the grid pushes in, then each card flies in from depth */
+.shop-grid { animation:shopZoom .9s cubic-bezier(.16,1,.3,1) both; transform-origin:50% 0; }
+@keyframes shopZoom { from { opacity:0; transform:scale(1.14); filter:blur(8px); } to { opacity:1; transform:none; filter:none; } }
+.shop-card { opacity:0; transform:perspective(1200px) translate3d(0,60px,-260px) rotateX(18deg) scale(.9); transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); transition-delay:calc(var(--i,0) * 70ms); }
+.shop-card[data-in] { opacity:1; transform:none; }
+@media (prefers-reduced-motion: reduce) { .shop-grid { animation:none; } .shop-card { opacity:1; transform:none; transition:none; } }
+
+/* ── "You can move me" hint ── */
+.move-hint { position:absolute; left:50%; bottom:18px; z-index:12; translate:-50% 0; display:inline-flex; align-items:center; gap:10px; min-height:44px; padding:0 16px 0 10px; border-radius:99px; font-size:13px; font-weight:600; color:#F4FEFF; white-space:nowrap;
+  background:radial-gradient(120% 140% at 50% 120%,rgba(95,227,255,.35),transparent 60%),rgba(10,12,18,.62); border:1px solid rgba(220,250,255,.45); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 26px rgba(95,227,255,.35),0 12px 26px -12px #000; transition:opacity .5s, transform .5s; animation:hintIn .6s 1.2s cubic-bezier(.16,1,.3,1) both; }
+button.move-hint { cursor:pointer; }
+.move-hint[data-hidden] { opacity:0; transform:translateY(12px); pointer-events:none; }
+@keyframes hintIn { from { opacity:0; transform:translateY(14px) scale(.96); } }
+.move-hint-hand { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:rgba(95,227,255,.18); }
+.move-hint-hand svg { width:19px; height:19px; fill:none; stroke:#5FE3FF; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; animation:handSwipe 2.2s ease-in-out infinite; }
+@keyframes handSwipe { 0%,100% { transform:translateX(-4px) rotate(-8deg); } 50% { transform:translateX(5px) rotate(8deg); } }
+.move-hint-text { animation:hintText .4s ease both; }
+@keyframes hintText { from { opacity:0; transform:translateY(4px); } }
+@media (prefers-reduced-motion: reduce) { .move-hint, .move-hint-hand svg, .move-hint-text { animation:none; } }
+
+/* ── Quick view: price with a pulsing way into the research ── */
+.quick-price-row { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; }
+.research-beacon { position:relative; display:inline-flex; align-items:center; gap:8px; min-height:44px; padding:0 18px; border-radius:99px; font-size:13px; font-weight:700; letter-spacing:.04em; color:#061018; background:linear-gradient(90deg,var(--product,#5FE3FF),color-mix(in srgb,var(--product,#5FE3FF) 60%,#fff)); box-shadow:0 0 0 0 color-mix(in srgb,var(--product,#5FE3FF) 60%,transparent),0 0 24px color-mix(in srgb,var(--product,#5FE3FF) 55%,transparent); animation:beacon 1.6s ease-in-out infinite; }
+.research-beacon span { transition:transform .2s; }
+.research-beacon:hover span { transform:translateX(3px); }
+@keyframes beacon { 0%,100% { box-shadow:0 0 0 0 color-mix(in srgb,var(--product,#5FE3FF) 55%,transparent),0 0 18px color-mix(in srgb,var(--product,#5FE3FF) 45%,transparent); filter:brightness(1); } 50% { box-shadow:0 0 0 9px color-mix(in srgb,var(--product,#5FE3FF) 0%,transparent),0 0 34px color-mix(in srgb,var(--product,#5FE3FF) 80%,transparent); filter:brightness(1.18); } }
+@media (prefers-reduced-motion: reduce) { .research-beacon { animation:none; } }

@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { MoveHint } from './MoveHint'
 import type { Compound } from '~/data/compounds'
 import { buildChain } from '~/scenes/chain/geometry'
 import { Lod0Canvas } from '~/scenes/Canvas'
@@ -33,6 +34,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const [turning, setTurning] = useState(false)
   const [feature, setFeature] = useState<number | null>(null)
   const [light, setLight] = useState(30)
+  const [handled, setHandled] = useState(false)
   const explore = useRef<ExploreState>({ close: false, feature: null, light: 0.3, turning: false, resetTick: 0 })
   const dim = useRef(0)
   const opener = useRef<HTMLButtonElement | null>(null)
@@ -67,7 +69,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const hs = geometry.hotspots
 
   return (
-    <div ref={stage} className="relative w-full h-full min-h-[460px]">
+    <div ref={stage} className="relative w-full h-full min-h-[460px]" onPointerDown={() => { if (!touch || turning) setHandled(true) }}>
       {live ? (
         <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={13}>
           <Suspense fallback={null}>
@@ -78,6 +80,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
         <SequenceSVG geometry={geometry} tint={tint} className="absolute inset-0 w-full h-full p-8" label />
       )}
       {live && <Suspense fallback={<SceneLoader />}><span /></Suspense>}
+      {live && <MoveHint touch={touch} hidden={handled || turning || close} onActivate={() => { setTurning(true); setHandled(true) }} />}
 
       <div className="absolute right-3 top-3 z-10 text-right max-w-[60%]">
         <ProvenanceLabel compound={compound} />

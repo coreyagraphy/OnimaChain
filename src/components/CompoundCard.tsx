@@ -11,9 +11,9 @@ import { useCommerceStore } from '~/stores/commerce'
 const DomainRig = lazy(() => import('~/scenes/rigs').then((m) => ({ default: m.DomainRig })))
 export type CardLayout = 'portrait' | 'wide' | 'square'
 const SIZE: Record<CardLayout, string> = { portrait: 'w-[300px] h-[440px]', wide: 'w-[430px] h-[350px]', square: 'w-[340px] h-[390px]' }
-interface Props { compound: Compound; index: number; layout?: CardLayout; fluid?: boolean }
+interface Props { compound: Compound; index: number; layout?: CardLayout; fluid?: boolean; /** Faster, brighter molecule (shop grid). */ lively?: boolean }
 
-export function CompoundCard({ compound, index, layout, fluid = false }: Props) {
+export function CompoundCard({ compound, index, layout, fluid = false, lively = false }: Props) {
   const lay = layout ?? (['portrait', 'wide', 'square'] as const)[index % 3]
   const domain = DOMAIN_BY_ID[compound.domain]
   const theme = themeFor(compound)
@@ -33,7 +33,7 @@ export function CompoundCard({ compound, index, layout, fluid = false }: Props) 
       <Link to="/compound/$slug" params={{ slug: compound.slug }} className="absolute inset-0 z-[1]" aria-label={`Open ${displayName(compound)}`} data-cursor="product" />
       <div className="product-molecule absolute inset-x-0 top-0 h-[60%] pointer-events-none">
         <SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />
-        <SceneView className="absolute inset-0" fallback={null}><Suspense fallback={null}><DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.5 : 1.5} /></Suspense></SceneView>
+        <SceneView className="absolute inset-0" fallback={null}><Suspense fallback={null}><DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.8 : lively ? 2.1 : 1.5} speed={lively ? (hover ? 2.6 : 1.9) : 1} /></Suspense></SceneView>
       </div>
       <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span><span className="mono text-[10px] text-bone/45">{geometry.placeholder ? 'STRUCTURE PENDING' : `${geometry.length} AA`}</span></div>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">

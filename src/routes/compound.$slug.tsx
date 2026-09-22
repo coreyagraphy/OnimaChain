@@ -23,6 +23,7 @@ import { BRAND } from '~/brand'
 import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
 import { useCommerceStore } from '~/stores/commerce'
 import { officialSourcesFor } from '~/data/official-sources'
+import { useFitText } from '~/motion/useFitText'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
@@ -64,6 +65,7 @@ function Dossier() {
   const [quantity, setQuantity] = useState(1)
   const addToCart = useCommerceStore((s) => s.add)
   const header = useRef<HTMLElement>(null)
+  const nameRef = useFitText<HTMLHeadingElement>([slug])
   const scroll = useRef(0)
   useEffect(() => {
     if (!header.current) return
@@ -76,10 +78,10 @@ function Dossier() {
   return (
     <article className="pt-[72px] compound-world" style={{ '--product': productTheme.primary, '--product-2': productTheme.secondary, '--product-3': productTheme.tertiary } as CSSProperties}>
       {/* A — immersive header */}
-      <header ref={header} className="relative min-h-[92vh] grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-stretch overflow-hidden product-hero" style={{ background: `radial-gradient(70% 60% at 75% 40%, ${productTheme.primary}2E, transparent 60%), radial-gradient(120% 90% at 30% 110%, ${productTheme.secondary}14, transparent 60%), linear-gradient(180deg, ${productTheme.deepBackground} 0%, #0A0B0E 100%)` }}>
-        <div className="wrap !mr-0 py-12 lg:py-16 flex flex-col justify-center relative z-10">
+      <header ref={header} className="relative min-h-[92vh] grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] items-stretch overflow-hidden product-hero" style={{ background: `radial-gradient(70% 60% at 75% 40%, ${productTheme.primary}2E, transparent 60%), radial-gradient(120% 90% at 30% 110%, ${productTheme.secondary}14, transparent 60%), linear-gradient(180deg, ${productTheme.deepBackground} 0%, #0A0B0E 100%)` }}>
+        <div className="wrap lg:!mr-0 py-12 lg:py-16 flex flex-col justify-center relative z-10 min-w-0">
           <p className="label" style={{ color: domain.palette.base }}>{domain.name} · commonly explored around {shopTopicFor(c)}</p>
-          <h1 className="wordmark text-[clamp(3.4rem,7.5vw,7.2rem)] mt-4" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>
+          <h1 ref={nameRef} className="wordmark text-[clamp(3rem,7.5vw,7.2rem)] mt-4 whitespace-nowrap" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>
           <p className="mt-5 text-base font-semibold text-bone/84 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
           <div className="mt-7 flex items-end gap-6"><div><p className="label">Temporary price</p><p className="display-md text-3xl mt-1">{PRICE_PLACEHOLDER}</p></div><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
           {c.displayName && <p className="mono text-[12px] text-bone/55 mt-2">Compound: {c.name.toLowerCase()}</p>}
