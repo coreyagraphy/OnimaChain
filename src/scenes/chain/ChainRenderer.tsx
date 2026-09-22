@@ -28,6 +28,8 @@ export interface ChainRendererProps {
   labels?: boolean
   /** Lower segment counts and drop decorative lines. */
   reducedEffects?: boolean
+  /** Card-only material contrast; the hero keeps its original surface and choreography. */
+  surface?: 'default' | 'sculpted'
   /** Static tilt of the whole chain (radians). */
   tilt?: [number, number, number]
   /** Draw hotspot ring markers (off in the cinematic hero). */
@@ -81,6 +83,7 @@ export function ChainRenderer({
   tempo = 1,
   labels = false,
   reducedEffects = false,
+  surface = 'default',
   tilt = [0.25, 0.35, 0],
   markers: showMarkers = true,
   highlight,
@@ -169,13 +172,13 @@ export function ChainRenderer({
     () =>
       new THREE.MeshPhysicalMaterial({
         normalMap: bondTex?.normal ?? null,
-        normalScale: new THREE.Vector2(1.2, 1.2),
+        normalScale: new THREE.Vector2(surface === 'sculpted' ? 1.75 : 1.2, surface === 'sculpted' ? 1.75 : 1.2),
         roughnessMap: bondTex?.roughness ?? null,
         color: new THREE.Color(tint).multiplyScalar(0.42),
         emissive: new THREE.Color(tint),
         emissiveIntensity: 0.22 * intensity,
-        roughness: 0.44,
-        metalness: 0.2,
+        roughness: surface === 'sculpted' ? 0.56 : 0.44,
+        metalness: surface === 'sculpted' ? 0.26 : 0.2,
         clearcoat: 0.3,
         clearcoatRoughness: 0.35,
         sheen: 0.35,
@@ -185,17 +188,17 @@ export function ChainRenderer({
         transparent: g.placeholder,
         opacity: g.placeholder ? 0.25 : 1,
       }),
-    [tint, intensity, g.placeholder, bondTex],
+    [tint, intensity, g.placeholder, bondTex, surface],
   )
 
   const sphereMat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
         normalMap: atomTex?.normal ?? null,
-        normalScale: new THREE.Vector2(1.05, 1.05),
+        normalScale: new THREE.Vector2(surface === 'sculpted' ? 1.55 : 1.05, surface === 'sculpted' ? 1.55 : 1.05),
         roughnessMap: atomTex?.roughness ?? null,
-        roughness: 0.46,
-        metalness: 0.05,
+        roughness: surface === 'sculpted' ? 0.58 : 0.46,
+        metalness: surface === 'sculpted' ? 0.12 : 0.05,
         clearcoat: 0.5,
         clearcoatRoughness: 0.32,
         sheen: 0.5,
@@ -207,7 +210,7 @@ export function ChainRenderer({
         emissiveIntensity: 0.06 * intensity,
         vertexColors: false,
       }),
-    [intensity, atomTex],
+    [intensity, atomTex, surface],
   )
 
   const bridgeGeos = useMemo(

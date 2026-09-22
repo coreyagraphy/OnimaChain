@@ -16,11 +16,19 @@ export function useFitText<T extends HTMLElement>(deps: unknown[] = [], min = 22
       const ps = parent ? getComputedStyle(parent) : null
       const box = parent && ps ? parent.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : el.clientWidth
       if (box <= 0) return
-      const textRange = document.createRange()
-      textRange.selectNodeContents(el)
       let size = parseFloat(getComputedStyle(el).fontSize)
+      const naturalWidth = () => {
+        // A heading can wrap while scrollWidth still equals its box. Measure its
+        // unbroken text directly, including the active font and letter spacing.
+        const range = document.createRange()
+        range.selectNodeContents(el)
+        return Math.max(el.scrollWidth, range.getBoundingClientRect().width)
+      }
       let guard = 0
-      while ((el.scrollWidth > box + 1 || textRange.getBoundingClientRect().width > box + 1) && size > min && guard++ < 40) { size = Math.max(min, size * 0.94); el.style.fontSize = `${size}px` }
+      while (naturalWidth() > box - 2 && size > min && guard++ < 40) {
+        size = Math.max(min, size * 0.94)
+        el.style.fontSize = `${size}px`
+      }
     }
     fit()
     const ro = new ResizeObserver(fit)
