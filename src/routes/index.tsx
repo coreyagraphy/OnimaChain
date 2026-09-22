@@ -19,7 +19,14 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><FinalShop /><MobileShopBar /></>
+  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><WaitlistTeaser /><FinalShop /><MobileShopBar /></>
+}
+
+function WaitlistTeaser() {
+  return <section className="waitlist-teaser wrap" aria-labelledby="waitlist-teaser-heading">
+    <div><p className="label label-cyan">First access</p><h2 id="waitlist-teaser-heading" className="display-md">A place in line.<br /><span>20% off your first order.</span></h2><p>Opening date to be announced. See the waitlist preview while we prepare independent email signup.</p></div>
+    <Link to="/waitlist" className="btn btn-primary">View the waitlist <span aria-hidden>↗</span></Link>
+  </section>
 }
 
 function FeaturedCollection() {
