@@ -22,7 +22,8 @@ export default async (req: Request) => {
   if (req.method === 'POST') {
     const body = (await req.json().catch(() => ({}))) as { id?: string; action?: string; note?: string }
     if (body.action === 'run') {
-      const key = process.env.PULSE_SECRET || process.env.SITE_ID || ''
+      const key = process.env.PULSE_SECRET || ''
+      if (!key || !process.env.URL) return json({ started: false, reason: 'Collector trigger is not configured.' }, 503)
       const r = await fetch(`${process.env.URL}/.netlify/functions/pulse-run-background`, { method: 'POST', headers: { 'x-pulse-key': key } }).catch(() => null)
       return json({ started: r?.status === 202 })
     }

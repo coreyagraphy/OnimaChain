@@ -6,7 +6,7 @@ import { runAndStore } from './lib/pulse-run.mts'
  * Only the scheduler (or someone holding the key) can start it.
  */
 export default async (req: Request) => {
-  const key = process.env.PULSE_SECRET || process.env.SITE_ID || ''
+  const key = process.env.PULSE_SECRET || ''
   if (!key || req.headers.get('x-pulse-key') !== key) return new Response('forbidden', { status: 403 })
   await runAndStore(getStore('pulse'))
 }
