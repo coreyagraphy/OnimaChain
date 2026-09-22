@@ -47,12 +47,19 @@ export function SequenceSVG({ geometry, tint = "#5FE3FF", className, progress = 
   const order = pts.map((p, i) => i).sort((a, b) => pts[a][2] - pts[b][2]) // back-to-front
   const path = pts.slice(0, shown).map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join(' ')
   const ph = geometry.placeholder
+  if (ph) return (
+    <svg viewBox="-50 -22 100 44" className={className} role="img" aria-label="No verified single-molecule structure available" preserveAspectRatio="xMidYMid meet">
+      <rect x="-49" y="-21" width="98" height="42" rx="3" fill="#0A0B0E" fillOpacity="0.35" stroke={tint} strokeOpacity="0.35" />
+      <text x="0" y="-2" fontSize="5" textAnchor="middle" fill={tint} fontFamily="Inter, sans-serif" letterSpacing="0.09em">NO SINGLE MOLECULAR MODEL</text>
+      <text x="0" y="7" fontSize="3" textAnchor="middle" fill="#F2EEE6" fillOpacity="0.7" fontFamily="Inter, sans-serif">Sequence or formulation not verified</text>
+    </svg>
+  )
   return (
     <svg
       viewBox={`${minX} ${minY} ${w} ${h}`}
       className={className}
       role="img"
-      aria-label={ph ? 'Sequence pending verification' : `Static backbone diagram of ${geometry.slug}, ${geometry.length} residues`}
+      aria-label={`Sequence-derived backbone illustration of ${geometry.slug}, ${geometry.length} residues`}
       preserveAspectRatio="xMidYMid meet"
     >
       <defs>

@@ -932,3 +932,20 @@ button.move-hint { cursor:pointer; }
 @media(max-width:640px){.brand-home{width:clamp(135px,43vw,170px)}}
 @media(max-width:480px){.about-sequence span{font-size:clamp(2.15rem,13vw,4rem)}}
 @media(prefers-reduced-motion:reduce){.about-brand-object::before{animation:none}.brand-wordmark{transition:none}}
+
+/* Molecular identity is encoded in the data, not in decorative rings or a generic placeholder helix. */
+.composite-structure{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(8px,2vw,22px);padding:clamp(22px,4vw,48px);padding-bottom:80px}
+.composite-member{position:relative;min-width:0;height:min(62%,360px);border:1px solid color-mix(in srgb,var(--member) 35%,transparent);border-radius:24px;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--member) 16%,transparent),transparent 68%),#06101b77;box-shadow:inset 0 1px #ffffff24,0 14px 32px #0007}
+.composite-member-view{position:absolute;inset:0 0 27px;overflow:hidden}
+.composite-member-label{position:absolute;inset:auto 5px 10px;display:block;text-align:center;color:#f2eee6;font:600 clamp(10px,1.2vw,14px)/1.2 var(--font-mono);text-shadow:0 1px 4px #000}
+.composite-disclaimer{position:absolute;bottom:35px;left:5%;right:5%;text-align:center;font-size:12px;line-height:1.4;color:#f2eee6ab}
+.composite-structure-compact{padding:24px 16px 18px;gap:8px}
+.composite-structure-compact .composite-member{height:80%;border-radius:14px}
+.composite-structure-compact .composite-member-view{bottom:21px}
+.composite-structure-compact .composite-member-label{bottom:7px;font-size:9px}
+.structure-unavailable{position:absolute;inset:10% 8%;display:grid;align-content:center;justify-items:center;gap:10px;text-align:center;border:1px dashed color-mix(in srgb,var(--product) 38%,transparent);border-radius:28px;background:radial-gradient(circle,color-mix(in srgb,var(--product) 9%,transparent),transparent 70%)}
+.structure-unavailable strong{font-family:var(--font-display);font-size:clamp(15px,2vw,24px);text-transform:uppercase;line-height:1}
+.structure-unavailable p{max-width:28ch;color:#f2eee6a8;font-size:clamp(11px,1.2vw,14px);line-height:1.4}
+.product-structure-kind{position:absolute;right:16px;top:18px;z-index:2;max-width:45%;padding:4px 7px;border:1px solid #ffffff2b;border-radius:5px;background:#04101bbd;color:#e4faffb8;font:600 8px/1.2 var(--font-mono);letter-spacing:.04em;text-align:right;text-transform:uppercase}
+.product-structure-detail{min-height:1.2em}
+@media(max-width:640px){.composite-structure{padding:12px 10px 60px}.composite-member{height:65%}.composite-member-label{font-size:10px}.composite-disclaimer{bottom:16px;font-size:11px}}

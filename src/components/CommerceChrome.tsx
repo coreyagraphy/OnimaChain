@@ -12,6 +12,8 @@ import { useFitText } from '~/motion/useFitText'
 import { MoveHint } from './MoveHint'
 import type { Drag } from '~/scenes/quick/QuickScene'
 import { brand } from '~/brand'
+import { structurePresentation } from '~/data/structure-presentation'
+import { CompositeStructure } from './CompositeStructure'
 
 export function CommerceChrome() {
   const hydrate = useCommerceStore((s) => s.hydrate)
@@ -47,10 +49,11 @@ function CartDrawer() {
               {items.map((line) => {
                 const c = COMPOUND_BY_SLUG[line.slug]
                 if (!c) return null
-                const theme = themeFor(c), geometry = buildChain(c)
+                const theme = themeFor(c), geometry = c.sequence ? buildChain(c) : null
+                const presentation = structurePresentation(c)
                 return (
                   <div key={line.slug} className="cart-line" style={{ '--product': theme.primary } as CSSProperties}>
-                    <SequenceSVG geometry={geometry} tint={theme.primary} className="w-20 h-20 p-2" />
+                    {presentation.kind === 'blend' ? <div className="w-20 h-20 flex shrink-0">{(['bpc-157', 'tb-500'] as const).map((slug) => <SequenceSVG key={slug} geometry={buildChain(COMPOUND_BY_SLUG[slug])} tint={themeFor(COMPOUND_BY_SLUG[slug]).primary} className="w-10 h-20 p-1" />)}</div> : geometry ? <SequenceSVG geometry={geometry} tint={theme.primary} className="w-20 h-20 p-2" /> : <div className="w-20 h-20 grid place-items-center text-[10px] text-bone/60 text-center">No model</div>}
                     <div className="min-w-0 grow">
                       <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setCartOpen(false)} className="display-md text-lg hover:text-cyan">{displayName(c)}</Link>
                       <p className="mono text-[12px] mt-1" style={{ color: theme.primary }}>{PRICE_PLACEHOLDER}</p>
@@ -85,6 +88,7 @@ function QuickView() {
   const add = useCommerceStore((s) => s.add)
   const canvasOk = useCanvasAllowed()
   const c = slug ? COMPOUND_BY_SLUG[slug] : undefined
+  const presentation = c ? structurePresentation(c) : null
   const geometry = useMemo(() => c ? buildChain(c) : null, [c])
   const drag = useRef<Drag>({ active: false, vx: 0, vy: 0, dx: 0, dy: 0 })
   const last = useRef({ x: 0, y: 0, t: 0 })
@@ -115,12 +119,12 @@ function QuickView() {
         <button className="btn btn-sm absolute right-4 top-4 z-20" onClick={() => setQuickView(null)}>Close</button>
         <div className="grid md:grid-cols-[1.1fr_.9fr] min-h-[560px]">
           <div className="relative min-h-[320px] quick-view-scene" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} style={{ touchAction: 'none', cursor: 'grab' }}>
-            {canvasOk ? (
+            {presentation?.kind === 'blend' ? <CompositeStructure dedicated /> : !c.sequence ? <div className="structure-unavailable" role="img" aria-label={presentation?.detail}><strong>{presentation?.label}</strong><p>{presentation?.detail}</p></div> : canvasOk ? (
               <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={6}>
                 <Suspense fallback={null}><QuickScene slug={c.slug} tint={theme.primary} accent={theme.secondary} drag={drag} reduced={reduced} /></Suspense>
               </Lod0Canvas>
             ) : <div className="quick-molecule absolute inset-0"><SequenceSVG geometry={geometry} tint={theme.primary} className="w-full h-full p-12 md:p-16" /></div>}
-            <MoveHint hidden={touched} />
+            {c.sequence && <MoveHint hidden={touched} />}
           </div>
           <div className="p-7 md:p-10 flex flex-col justify-center min-w-0">
             <p className="label" style={{ color: theme.primary }}>{domain.name}</p>
@@ -132,7 +136,7 @@ function QuickView() {
             <p className="text-sm font-semibold text-bone/82 leading-relaxed mt-5">{descriptionFor(c)}</p>
             <dl className="mini-specs mt-6">
               <div><dt>Explore by topic</dt><dd>{domain.name}</dd></div>
-              <div><dt>Building blocks</dt><dd>{c.sequence ? `${c.sequence.length} in this peptide` : 'Details coming soon'}</dd></div>
+              <div><dt>Structure</dt><dd>{presentation?.detail}</dd></div>
               <div><dt>Want to know more?</dt><dd>Open the product page for studies and safety details.</dd></div>
             </dl>
             <div className="mt-7 flex flex-wrap gap-2">

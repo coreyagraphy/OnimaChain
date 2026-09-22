@@ -122,13 +122,13 @@ export const COMPOUNDS: Compound[] = [
       { pos: 1, kind: 'Nle' },
       { pos: 1, kind: 'acetyl' },
       { pos: 4, kind: 'D' },
-      { pos: 7, kind: 'amide' },
     ],
     cyclic: { from: 2, to: 7, type: 'lactam' },
     structureSource: 'computed',
     pdbIds: [],
     pmids: [],
     archetype: 'The closed ring. A lactam bridge pulls the chain into a loop; one mirrored residue inside.',
+    note: 'Bremelanotide has a free-acid C terminus; Melanotan II has an amide there. Source: FDA Vyleesi chemistry review (NDA 210557).',
   },
   {
     slug: 'melanotan-ii',
@@ -148,6 +148,7 @@ export const COMPOUNDS: Compound[] = [
     pdbIds: [],
     pmids: [],
     archetype: 'The ring, again. Same backbone as PT-141; the same loop, a different history.',
+    note: 'Melanotan II has an amidated C terminus, unlike bremelanotide (PT-141).',
   },
   // ---- Somatotropic (pulse)
   {
@@ -530,7 +531,7 @@ export const COMPOUNDS: Compound[] = [
     structureSource: 'computed',
     pdbIds: [],
     pmids: [],
-    archetype: 'The fragment 176–191. Sixteen residues from the C-terminus of growth hormone, two cysteines.',
+    archetype: 'The modified growth-hormone fragment. Sixteen residues, with a Cys7–Cys14 disulfide-constrained loop.',
     note: 'The two cysteines at positions 7 and 14 are joined by an intramolecular disulfide bond.',
   },
   {

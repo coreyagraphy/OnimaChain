@@ -24,6 +24,7 @@ import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyl
 import { useCommerceStore } from '~/stores/commerce'
 import { officialSourcesFor } from '~/data/official-sources'
 import { useFitText } from '~/motion/useFitText'
+import { structurePresentation } from '~/data/structure-presentation'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
@@ -74,6 +75,9 @@ function Dossier() {
   }, [])
   const events = claims.flatMap((cl) => cl.changeHistory.map((e) => ({ ...e, claim: cl.id })))
   const official = officialSourcesFor(slug)
+  const structure = structurePresentation(c)
+  const bpc = COMPOUND_BY_SLUG['bpc-157']
+  const tb = COMPOUND_BY_SLUG['tb-500']
 
   return (
     <article className="pt-[72px] compound-world" style={{ '--product': productTheme.primary, '--product-2': productTheme.secondary, '--product-3': productTheme.tertiary } as CSSProperties}>
@@ -89,13 +93,13 @@ function Dossier() {
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-w-lg">
             <div className="col-span-2">
               <dt className="label">Sequence</dt>
-              <dd className="mono text-[13px] md:text-sm mt-1 break-all text-bone/90">{c.sequence ?? <span className="text-bone/50">Sequence pending verification</span>}</dd>
+              <dd className="mono text-[13px] md:text-sm mt-1 break-all text-bone/90">{c.slug === 'wolverine-blend' ? <><span>BPC-157: {bpc.sequence}</span><br /><span>TB-500: {tb.sequence}</span></> : c.sequence ?? <span className="text-bone/50">{structure.label}</span>}</dd>
             </div>
-            <div><dt className="label">Length</dt><dd className="mono mt-1">{c.sequence ? `${c.sequence.length} residues` : '—'}</dd></div>
+            <div><dt className="label">Length</dt><dd className="mono mt-1">{c.slug === 'wolverine-blend' ? '15 + 43 residues, separate' : c.sequence ? `${c.sequence.length} residues` : '—'}</dd></div>
             <div><dt className="label">MW</dt><dd className="mono mt-1">{mw ? `${mw} Da` : '—'}{mw && !c.mw && <span className="text-bone/45 text-[11px]"> computed</span>}</dd></div>
             <div><dt className="label">Product tags</dt><dd className="mt-1 text-sm capitalize">{c.tags.slice(0, 3).map((x) => x.replaceAll('-', ' ')).join(' · ')}</dd></div>
             <div><dt className="label">Checked sources</dt><dd className="mt-1 text-sm">{studies.length ? `${studies.length} source${studies.length === 1 ? '' : 's'} in our record` : 'No checked source added yet'}</dd></div>
-            <div className="col-span-2"><dt className="label">Where the molecule came from</dt><dd className="mt-1"><ProvenanceLabel compound={c} /></dd></div>
+            <div className="col-span-2"><dt className="label">Structure provenance</dt><dd className="mt-1"><ProvenanceLabel compound={c} /></dd></div>
           </dl>
           {c.note && <p className="mt-4 text-[12px] muted max-w-lg">{c.note}</p>}
           <div className="mt-8 flex flex-wrap gap-2 items-center">

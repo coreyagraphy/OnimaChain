@@ -11,6 +11,8 @@ import { buildChain } from '~/scenes/chain/geometry'
 import { Lod0Canvas } from '~/scenes/Canvas'
 import { useCanvasAllowed } from '~/motion/useReducedMotion'
 import { SequenceSVG } from '~/components/SequenceSVG'
+import { CompositeStructure } from '~/components/CompositeStructure'
+import { structurePresentation } from '~/data/structure-presentation'
 
 const BondStage = lazy(() => import('~/scenes/bond/BondStage').then((m) => ({ default: m.BondStage })))
 
@@ -209,7 +211,7 @@ function BondTheory() {
             </Lod0Canvas>
           ) : (
             <div className="absolute inset-0 grid gap-3 p-4" style={{ gridTemplateColumns: `repeat(${Math.max(1, visible.length)}, minmax(0,1fr))` }}>
-              {visible.map((s) => <div key={s} className="panel-flat relative"><SequenceSVG geometry={buildChain(COMPOUND_BY_SLUG[s])} tint={environmentFor(s).neon} className="absolute inset-0 w-full h-full p-4" label /></div>)}
+              {visible.map((s) => <div key={s} className="panel-flat relative">{s === 'wolverine-blend' ? <CompositeStructure compact /> : COMPOUND_BY_SLUG[s].sequence ? <SequenceSVG geometry={buildChain(COMPOUND_BY_SLUG[s])} tint={environmentFor(s).neon} className="absolute inset-0 w-full h-full p-4" label /> : <div className="structure-unavailable" style={{ '--product': environmentFor(s).neon } as CSSProperties}><strong>{structurePresentation(COMPOUND_BY_SLUG[s]).label}</strong></div>}</div>)}
             </div>
           )}
           {picks.length > 0 && (

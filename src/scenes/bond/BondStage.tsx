@@ -30,7 +30,8 @@ interface Props {
 function Station({ slug, x, activeRef, index }: { slug: string; x: number; activeRef: RefObject<number>; index: number }) {
   const c = COMPOUND_BY_SLUG[slug]
   const env = environmentFor(slug)
-  const geometry = useMemo(() => buildChain(c), [c])
+  const geometry = useMemo(() => buildChain(c.slug === 'wolverine-blend' ? COMPOUND_BY_SLUG['bpc-157'] : c), [c])
+  const secondGeometry = useMemo(() => c.slug === 'wolverine-blend' ? buildChain(COMPOUND_BY_SLUG['tb-500']) : null, [c.slug])
   // one shared world scale so a 3-residue peptide is small and a 43-residue one is long — sizes stay honest; long chains are capped to fit
   const fit = Math.min(3.3, Math.max(1.2, geometry.bounds.radius * 0.27))
   const g = useRef<THREE.Group>(null)
@@ -67,7 +68,12 @@ function Station({ slug, x, activeRef, index }: { slug: string; x: number; activ
         </mesh>
       )}
       <group ref={g}>
-        <ChainRenderer geometry={geometry} progress={1} lod={0} fitMode="fixed" fit={fit} rotate={0} tint={env.neon} accent={env.support} intensity={1.05} tilt={[0.15, 0.3, 0]} markers={false} ownLights={false} dim={dim} />
+        {c.sequence || secondGeometry ? <group position={secondGeometry ? [-1.55, 0, 0] : [0, 0, 0]}>
+          <ChainRenderer geometry={geometry} progress={1} lod={0} fitMode="fixed" fit={secondGeometry ? fit * 0.65 : fit} rotate={0} tint={env.neon} accent={env.support} intensity={1.05} tilt={[0.15, 0.3, 0]} markers={false} ownLights={false} dim={dim} />
+        </group> : null}
+        {secondGeometry && <group position={[1.55, 0, 0]}>
+          <ChainRenderer geometry={secondGeometry} progress={1} lod={0} fitMode="fixed" fit={fit * 0.65} rotate={0} tint={env.support} accent={env.neon} intensity={1.05} tilt={[0.15, 0.3, 0]} markers={false} ownLights={false} dim={dim} />
+        </group>}
       </group>
     </group>
   )

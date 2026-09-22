@@ -8,6 +8,8 @@ import { SceneView } from '~/scenes/Canvas'
 import { SequenceSVG } from './SequenceSVG'
 import { useCommerceStore } from '~/stores/commerce'
 import { useFitText } from '~/motion/useFitText'
+import { structurePresentation } from '~/data/structure-presentation'
+import { CompositeStructure } from './CompositeStructure'
 
 const CardMoleculeScene = lazy(() => import('~/scenes/card/CardMoleculeScene').then((m) => ({ default: m.CardMoleculeScene })))
 export type CardLayout = 'portrait' | 'wide' | 'square'
@@ -18,6 +20,7 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
   const lay = layout ?? (['portrait', 'wide', 'square'] as const)[index % 3]
   const domain = DOMAIN_BY_ID[compound.domain]
   const theme = themeFor(compound)
+  const presentation = structurePresentation(compound)
   const geometry = useMemo(() => buildChain(compound), [compound])
   const add = useCommerceStore((s) => s.add)
   const setQuickView = useCommerceStore((s) => s.setQuickView)
@@ -28,20 +31,21 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
   const style = { '--product': theme.primary, '--product-2': theme.secondary, '--product-3': theme.tertiary, transform: hover ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-7px)` : undefined } as CSSProperties
   const quickAdd = () => { add(compound.slug); setAdded(true); window.setTimeout(() => setAdded(false), 1200) }
   return (
-    <article className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[440px]' : SIZE[lay]}`} data-title-style={theme.titleStyle} style={style} onPointerEnter={() => setHover(true)} onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }} onPointerMove={(e) => { const r=e.currentTarget.getBoundingClientRect(); setTilt({ x:-((e.clientY-r.top)/r.height-.5)*5, y:((e.clientX-r.left)/r.width-.5)*5 }) }}>
+    <article className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[440px]' : SIZE[lay]}`} data-title-style={theme.titleStyle} data-structure-kind={presentation.kind} style={style} onPointerEnter={() => setHover(true)} onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }} onPointerMove={(e) => { const r=e.currentTarget.getBoundingClientRect(); setTilt({ x:-((e.clientY-r.top)/r.height-.5)*5, y:((e.clientX-r.left)/r.width-.5)*5 }) }}>
       <div className="product-card-atmosphere" aria-hidden />
       <div className="product-neon-lens" aria-hidden><i /><i /><i /></div>
       <Link to="/compound/$slug" params={{ slug: compound.slug }} className="absolute inset-0 z-[1]" aria-label={`Open ${displayName(compound)}`} data-cursor="product" />
       <div className="product-molecule absolute inset-x-0 top-0 h-[60%] pointer-events-none">
-        {compound.sequence ? <>
+        {presentation.kind === 'blend' ? <CompositeStructure compact /> : compound.sequence ? <>
           <SceneView className="absolute inset-0" fallback={<SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />}><Suspense fallback={null}><CardMoleculeScene geometry={geometry} tint={theme.primary} accent={theme.secondary} active={hover || lively} /></Suspense></SceneView>
-        </> : <div className="product-no-single-structure" role="img" aria-label={`${displayName(compound)} has no single verified molecular structure`}><i /><i /><span>No single<br />molecule</span><small>{compound.note?.startsWith('Blend') ? 'This is a blend' : 'Details are still being verified'}</small></div>}
+        </> : <div className="structure-unavailable" role="img" aria-label={`${displayName(compound)}: ${presentation.detail}`}><strong>{presentation.label}</strong><p>{presentation.detail}</p></div>}
       </div>
       <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span></div>
+      <span className="product-structure-kind" aria-label={`Structure provenance: ${presentation.label}`}>{presentation.label}</span>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
         <div className="min-w-0 overflow-hidden"><h3 ref={nameRef} className="wordmark product-card-title w-full min-w-0" style={wordmarkStyle(theme)}>{displayName(compound)}</h3><strong className="mono text-sm block mt-2">{PRICE_PLACEHOLDER}</strong></div>
         <p className="mt-2 text-[12px] font-semibold leading-relaxed text-bone/78 line-clamp-3">{descriptionFor(compound)}</p>
-        <div className="mt-3 text-[11px] text-bone/65">{compound.sequence ? `${compound.sequence.length} building blocks in this ${compound.sequence.length > 100 ? 'protein' : 'peptide'}` : 'No single molecular structure applies'}</div>
+        <div className="product-structure-detail mt-3 text-[11px] text-bone/65 line-clamp-2">{presentation.detail}</div>
         <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Quick view</button><button className="btn btn-sm commerce-btn justify-center" onClick={quickAdd} data-cursor="add">{added ? 'Added' : 'Add to cart'}</button></div>
       </div>
       <div className="product-card-edge" aria-hidden />

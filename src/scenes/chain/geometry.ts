@@ -2,13 +2,11 @@ import type { Compound, Mod, ModKind } from '~/data/compounds'
 import { decodeConformer } from '~/data/conformers'
 
 /*
- * Procedural, sequence-driven backbone geometry.
- * Cα positions are built from alpha-helix parameters (rise 1.5 Å, 100°/residue, radius 2.3 Å)
- * and perturbed by residue rules (proline kink, glycine wobble, lactam ring closure).
+ * Procedural, sequence-driven backbone illustration. Without deposited coordinates,
+ * residue positions are a deterministic open-chain schematic, not a predicted fold.
  * Units are Ångström; the renderer normalises with `bounds`.
  *
- * This is a COMPUTED CONFORMER (procedural, not measured). It is labelled as such on the
- * EVIDENCE tab and must never be described as "the structure".
+ * It must never be described as a measured structure.
  */
 
 export type ResidueClass = 'hydrophobic' | 'polar' | 'positive' | 'negative' | 'special'
@@ -268,7 +266,7 @@ function scatterFor(seed: number, n: number, bounds: { center: V3; radius: numbe
   return out
 }
 
-/** Build a chain geometry for a compound. Pending sequences produce a placeholder dashed helix. */
+/** Build a sequence-derived illustration. Callers must not display placeholders as molecules. */
 export function buildChain(c: Compound): ChainGeometry {
   const seed = hashString(c.slug)
   if (!c.sequence) return buildPlaceholder(c.slug, 18)
@@ -284,14 +282,19 @@ export function buildChain(c: Compound): ChainGeometry {
   const ringTo = ring ? ring.to - 1 : -1
 
   if (ring && ringTo > ringFrom) {
-    // Lactam-closed loop: residues from..to on a ring; ends trail off tangentially.
+    // A closure is a chemical bond, not a perfect planar backbone hoop. Keep an
+    // irregular three-dimensional loop so the bridge and both tails remain legible.
     const m = ringTo - ringFrom + 1
     const R = (m * 3.8) / (2 * Math.PI)
     const pts: V3[] = []
-    // Ring in the (y, z) plane so it faces the camera after the renderer's axis swap; undulation along x.
     for (let k = 0; k < m; k++) {
       const t = (k / m) * Math.PI * 2
-      pts.push([(k % 2 === 0 ? 0.7 : -0.7) + 0.3 * Math.sin(t * 2), R * Math.cos(t), R * Math.sin(t)])
+      const radial = R * (1 + 0.17 * Math.sin(t * 3 + 0.4) + 0.09 * Math.cos(t * 2.4))
+      pts.push([
+        1.8 * Math.sin(t * 1.6) + 0.55 * Math.cos(t * 3.1),
+        radial * Math.cos(t) + 0.6 * Math.sin(t * 2),
+        radial * Math.sin(t) * (ring.type === 'disulfide' ? 0.72 : 0.92),
+      ])
     }
     for (let k = 0; k < m; k++) {
       const i = ringFrom + k
@@ -310,33 +313,22 @@ export function buildChain(c: Compound): ChainGeometry {
       ca.set(p, i * 3)
     }
   } else {
-    // Helix walk with a moving frame.
+    // Open-chain schematic: preserve Cα spacing and residue order, but do not
+    // impose one alpha helix on unrelated peptides or a disordered sequence.
     let center: V3 = [0, 0, 0]
-    let d: V3 = [0, 0, 1]
-    let u: V3 = [1, 0, 0]
-    let v: V3 = [0, 1, 0]
+    const heading = rnd() * Math.PI * 2
+    let d: V3 = norm([Math.cos(heading) * 0.65, Math.sin(heading) * 0.65, 0.76])
+    let u: V3 = norm(cross([0, 1, 0], d))
+    let v: V3 = norm(cross(d, u))
     for (let i = 0; i < n; i++) {
       const r = residues[i]
-      let theta = i * ANGLE
-      let radius = RADIUS
-      if (r.code === 'G') {
-        // glycine: flexible — seeded wobble
-        theta += (rnd() - 0.5) * 0.5
-        radius += (rnd() - 0.5) * 0.9
-      }
-      const radial = add(scale(u, Math.cos(theta)), scale(v, Math.sin(theta)))
-      const p = add(center, scale(radial, radius))
-      ca.set(p, i * 3)
-      center = add(center, scale(d, RISE))
-      if (r.code === 'P' && i > 0) {
-        // proline: kink the helix axis 30–40° away from the proline's radial direction
-        const kink = ((30 + rnd() * 10) * Math.PI) / 180
-        const axis = norm(cross(d, radial))
-        d = norm(rotate(d, axis, kink))
-        u = norm(rotate(u, axis, kink))
-        v = norm(rotate(v, axis, kink))
-        if (i >= 4) brokenHBonds.push(i)
-      }
+      ca.set(center, i * 3)
+      const axis = norm(add(scale(u, Math.cos(rnd() * Math.PI * 2)), scale(v, Math.sin(rnd() * Math.PI * 2))))
+      const turn = r.code === 'P' ? 0.6 + rnd() * 0.6 : r.code === 'G' ? 0.2 + rnd() * 1.0 : 0.35 + rnd() * 0.6
+      d = norm(rotate(d, axis, turn))
+      u = norm(rotate(u, axis, turn))
+      v = norm(cross(d, u))
+      center = add(center, scale(d, 3.8))
     }
   }
 

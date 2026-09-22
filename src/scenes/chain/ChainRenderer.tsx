@@ -30,6 +30,8 @@ export interface ChainRendererProps {
   reducedEffects?: boolean
   /** Card-only material contrast; the hero keeps its original surface and choreography. */
   surface?: 'default' | 'sculpted'
+  /** Card-only legibility multiplier; does not change backbone coordinates. */
+  atomScale?: number
   /** Static tilt of the whole chain (radians). */
   tilt?: [number, number, number]
   /** Draw hotspot ring markers (off in the cinematic hero). */
@@ -84,6 +86,7 @@ export function ChainRenderer({
   labels = false,
   reducedEffects = false,
   surface = 'default',
+  atomScale = 1,
   tilt = [0.25, 0.35, 0],
   markers: showMarkers = true,
   highlight,
@@ -126,10 +129,10 @@ export function ChainRenderer({
 
   const tubularSegments = Math.max(8, n * (reducedEffects ? 4 : 10))
   const tubeGeo = useMemo(() => {
-    const geo = new THREE.TubeGeometry(curve, tubularSegments, g.placeholder ? 0.35 : 0.5, TUBE_RADIAL, false)
+    const geo = new THREE.TubeGeometry(curve, tubularSegments, (g.placeholder ? 0.35 : 0.5) * atomScale, TUBE_RADIAL, false)
     geo.setDrawRange(0, 0)
     return geo
-  }, [curve, tubularSegments, g.placeholder])
+  }, [curve, tubularSegments, g.placeholder, atomScale])
 
   // Dashed line: the placeholder helix, or (LOD 0) a ghost of the target backbone that fades as the chain assembles.
   const dashLine = useMemo(() => {
@@ -143,18 +146,6 @@ export function ChainRenderer({
   }, [g.placeholder, curve, n, tint, lod])
 
   // H-bond visual (i → i-4) at LOD 0 for helical stretches; broken at prolines.
-  const hbond = useRef<THREE.LineSegments>(null)
-  const hbondGeo = useMemo(() => {
-    if (lod !== 0 || g.placeholder || n < 5 || g.bridges.length) return null
-    const pos: number[] = []
-    for (let i = 4; i < n; i++) {
-      if (g.brokenHBonds.includes(i)) continue
-      pos.push(g.ca[i * 3], g.ca[i * 3 + 1], g.ca[i * 3 + 2], g.ca[(i - 4) * 3], g.ca[(i - 4) * 3 + 1], g.ca[(i - 4) * 3 + 2])
-    }
-    const geo = new THREE.BufferGeometry()
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3))
-    return geo
-  }, [g, lod, n])
 
   const colors = useMemo(() => {
     const arr = new Float32Array(n * 3)
@@ -273,11 +264,6 @@ export function ChainRenderer({
       signalOrb.current.visible = p > 0.82
       if (signalLight.current) signalLight.current.intensity = (2.4 + 1.2 * Math.sin(tRef.current * 4.2)) * intensity
     }
-    if (hbond.current) {
-      const m = hbond.current.material as THREE.LineBasicMaterial
-      m.opacity = 0.2 * Math.max(0, (p - 0.92) / 0.08)
-      hbond.current.visible = p > 0.92
-    }
     // Tube reveal
     if (tube.current) {
       const assembled = Math.floor(Math.max(0, p * (n + STAGGER) - STAGGER))
@@ -308,7 +294,7 @@ export function ChainRenderer({
           sz + Math.sin(tRef.current * 0.6 + i * 0.7) * drift + (tz - sz) * t,
         )
         const base = lod === 0 ? sizeRadius(r.size) * 0.72 : lod === 1 ? 0.7 : 0.55
-        const s = g.placeholder ? 0.45 : base * (0.6 + 0.4 * t)
+        const s = (g.placeholder ? 0.45 : base * (0.6 + 0.4 * t)) * atomScale
         S.setScalar(s)
         M.compose(V, spins[i] ?? Q, S)
         inst.current.setMatrixAt(i, M)
@@ -365,11 +351,6 @@ export function ChainRenderer({
             {lod <= 1 && <pointLight ref={signalLight} color={tint} distance={9} decay={1.8} />}
           </mesh>
           {dashLine && <primitive ref={dash} object={dashLine} />}
-          {hbondGeo && (
-            <lineSegments ref={hbond} geometry={hbondGeo} visible={false}>
-              <lineBasicMaterial color={tint} transparent opacity={0.18} />
-            </lineSegments>
-          )}
           {/* residues */}
           <instancedMesh
             ref={inst}

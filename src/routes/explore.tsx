@@ -6,6 +6,7 @@ import { PRICE_PLACEHOLDER, themeFor } from '~/data/commerce'
 import { CompoundCard } from '~/components/CompoundCard'
 import { useCommerceStore } from '~/stores/commerce'
 import { BRAND } from '~/brand'
+import { structurePresentation } from '~/data/structure-presentation'
 
 const TOPIC_NAME = Object.fromEntries(DOMAINS.map((d) => [d.id, d.name])) as Record<DomainId, string>
 
@@ -39,7 +40,7 @@ function Explore(){
 
   return (
     <div className="pt-24 pb-20">
-      <header className="wrap shop-hero shop-hero-compact"><p className="label label-cyan">Shop · {COMPOUNDS.length} peptides</p><h1 className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-2 leading-[0.95]">Explore the <span className="outline-word">collection.</span></h1></header>
+      <header className="wrap shop-hero shop-hero-compact"><p className="label label-cyan">Shop · {COMPOUNDS.length} compounds and formulations</p><h1 className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-2 leading-[0.95]">Explore the <span className="outline-word">collection.</span></h1></header>
       <div className="shop-bar" role="search">
         <div className="wrap shop-bar-inner">
           <label className="shop-search"><svg viewBox="0 0 24 24" aria-hidden><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span className="sr-only">Search the collection</span><input type="search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Search peptides…" enterKeyHint="search"/></label>
@@ -51,7 +52,7 @@ function Explore(){
       <section className="wrap">
         <p className="mt-4 mono text-[11px] text-bone/50" role="status">{rows.length} of {COMPOUNDS.length} products{domain!=='all'&&` · ${TOPIC_NAME[domain]}`}</p>
         {view==='grid'?<div ref={grid} key={scene} className="shop-grid mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><div key={c.slug} className="shop-card" style={{'--i':Math.min(i,11)} as React.CSSProperties}><CompoundCard compound={c} index={i} fluid lively/></div>)}</div>:
-        <div className="mt-6 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Product</th><th>Topic</th><th>Length</th><th>Price</th><th/></tr></thead><tbody>{rows.map(c=>{const t=themeFor(c);return <tr key={c.slug}><td><Link to="/compound/$slug" params={{slug:c.slug}} className="font-semibold text-lg hover:text-cyan" style={{color:t.primary}}>{displayName(c)}</Link><span className="block text-[11px] muted capitalize">{c.tags.slice(0,2).map(x=>x.replaceAll('-', ' ')).join(' · ')}</span></td><td>{TOPIC_NAME[c.domain]}</td><td className="mono">{c.sequence?`${c.sequence.length} amino acids`:'Pending'}</td><td className="mono">{PRICE_PLACEHOLDER}</td><td><div className="flex gap-2 justify-end"><button className="btn btn-sm" onClick={()=>quick(c.slug)}>Quick view</button><button className="btn btn-sm commerce-btn" onClick={()=>add(c.slug)}>Add to cart</button></div></td></tr>})}</tbody></table></div>}
+        <div className="mt-6 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Product</th><th>Topic</th><th>Structure</th><th>Price</th><th/></tr></thead><tbody>{rows.map(c=>{const t=themeFor(c), structure=structurePresentation(c);return <tr key={c.slug}><td><Link to="/compound/$slug" params={{slug:c.slug}} className="font-semibold text-lg hover:text-cyan" style={{color:t.primary}}>{displayName(c)}</Link><span className="block text-[11px] muted capitalize">{c.tags.slice(0,2).map(x=>x.replaceAll('-', ' ')).join(' · ')}</span></td><td>{TOPIC_NAME[c.domain]}</td><td className="mono">{structure.detail}</td><td className="mono">{PRICE_PLACEHOLDER}</td><td><div className="flex gap-2 justify-end"><button className="btn btn-sm" onClick={()=>quick(c.slug)}>Quick view</button><button className="btn btn-sm commerce-btn" onClick={()=>add(c.slug)}>Add to cart</button></div></td></tr>})}</tbody></table></div>}
         {rows.length===0&&<div className="panel p-10 mt-8 text-center"><h2 className="display-md text-2xl">No match yet.</h2><p className="muted text-sm mt-2">Try a different product name, alternate name, or topic.</p></div>}
         <p className="text-[12px] muted mt-10">Prices are temporary placeholders. Checkout is disabled while commercial requirements are finalized.</p>
       </section>

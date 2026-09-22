@@ -11,6 +11,8 @@ import { HOTSPOT_RULES } from '~/scenes/chain/hotspots'
 import { environmentFor } from '~/data/environments'
 import type { ExploreState } from '~/scenes/chain/ViewerScene'
 import { DEPOSITED_CONFORMERS } from '~/data/conformers'
+import { structurePresentation } from '~/data/structure-presentation'
+import { CompositeStructure } from './CompositeStructure'
 
 const Viewer = lazy(() => import('~/scenes/chain/ViewerScene').then((m) => ({ default: m.ViewerScene })))
 
@@ -29,6 +31,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const env = environmentFor(compound.slug)
   const prov = provenanceText(compound)
   const deposited = DEPOSITED_CONFORMERS[compound.slug]
+  const presentation = structurePresentation(compound)
   const [ready, setReady] = useState(false)
   const [touch, setTouch] = useState(false)
   const [panel, setPanel] = useState<Panel>(null)
@@ -70,8 +73,13 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const live = ready && allowed
   const hs = geometry.hotspots
 
+  if (!compound.sequence) return <div className="relative w-full h-full min-h-[460px]" data-structure-kind={presentation.kind} style={{ '--product': tint } as React.CSSProperties}>
+    {presentation.kind === 'blend' ? <CompositeStructure dedicated /> : <div className="structure-unavailable" role="img" aria-label={presentation.detail}><strong>{presentation.label}</strong><p>{presentation.detail}</p></div>}
+    <div className="absolute right-3 top-3 z-10 text-right max-w-[65%]"><ProvenanceLabel compound={compound} /></div>
+  </div>
+
   return (
-    <div ref={stage} className="relative w-full h-full min-h-[460px]" onPointerDown={() => { if (!touch || turning) setHandled(true) }}>
+    <div ref={stage} className="relative w-full h-full min-h-[460px]" data-structure-kind={presentation.kind} onPointerDown={() => { if (!touch || turning) setHandled(true) }}>
       {live ? (
         <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={13}>
           <Suspense fallback={null}>
@@ -137,7 +145,8 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
           <p className="relative label" style={{ color: env.neon }}>Where this 3D shape comes from</p>
           <p className="relative mt-2 text-[13px] text-bone/85">{prov.primary}.</p>
           {prov.secondary && <p className="relative mt-1 text-[13px] muted">{prov.secondary}.</p>}
-          <p className="relative mt-2 text-[12px] muted">{deposited ? `This view follows the C-alpha backbone from ${deposited.source}. Flexible residues missing from a deposited experiment are modeled from the verified sequence. The surface texture and lighting are artistic.` : 'This view is computed from the verified amino-acid sequence. Proline bends the chain, glycine adds flexibility, and verified bridges close loops. It is a structural illustration, not a measured pose; the surface texture and lighting are artistic.'}</p>
+          <p className="relative mt-2 text-[12px] muted">{deposited ? `This view follows the C-alpha backbone from ${deposited.source}. Flexible residues missing from a deposited experiment are modeled from the recorded sequence. The surface texture and lighting are artistic.` : 'This is an open-chain schematic based on the recorded residue order and documented modifications. Its 3D pose and surface texture are illustrative, not experimentally measured or a fold prediction.'}</p>
+          {presentation.sourceUrl && <a className="relative inline-block mt-2 text-[12px] underline text-cyan" href={presentation.sourceUrl} target="_blank" rel="noreferrer">Open structural source ↗</a>}
           <div className="relative flex gap-2 mt-3"><button className="btn btn-sm stage-btn" onClick={closePanel}>Close</button></div>
         </div>
       )}

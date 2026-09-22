@@ -25,7 +25,7 @@ export function CardMoleculeScene({ geometry, tint, accent, active = false }: Pr
         accent={accent}
         lod={1}
         intensity={active ? 1.22 : 1}
-        fit={geometry.length > 120 ? 1.35 : 1.85}
+        fit={geometry.length > 120 ? 1.35 : 2.2}
         rotate={active ? 0.09 : 0.045}
         tempo={0.28}
         markers={false}
@@ -33,6 +33,7 @@ export function CardMoleculeScene({ geometry, tint, accent, active = false }: Pr
         ownLights={false}
         reducedEffects
         surface="sculpted"
+        atomScale={geometry.length > 25 ? 1.85 : 1.45}
       />
     </>
   )

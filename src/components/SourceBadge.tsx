@@ -22,21 +22,25 @@ export function SourceBadge({ pmid, verified, link = true }: Props) {
 
 import type { Compound } from '~/data/compounds'
 import { DEPOSITED_CONFORMERS } from '~/data/conformers'
+import { structurePresentation } from '~/data/structure-presentation'
 
 /**
  * Structure provenance mirrors what the renderer receives: bundled deposited coordinates when available,
  * otherwise a sequence-derived conformer or an explicitly conceptual placeholder.
  */
-export function provenanceText(c: Pick<Compound, 'slug' | 'sequence' | 'structureSource' | 'pdbIds'>): { primary: string; secondary: string | null; kind: 'pdb' | 'sequence' | 'conceptual' } {
+export function provenanceText(c: Compound): { primary: string; secondary: string | null; kind: 'pdb' | 'sequence' | 'conceptual' } {
+  const presentation = structurePresentation(c)
+  if (presentation.kind === 'blend' || presentation.kind === 'mixture' || presentation.kind === 'non-peptide' || presentation.kind === 'unresolved') return {
+    primary: presentation.label, secondary: presentation.detail, kind: 'conceptual',
+  }
   const deposited = DEPOSITED_CONFORMERS[c.slug]
   if (deposited?.source.startsWith('RCSB')) return { primary: 'Rendered from deposited C-alpha coordinates', secondary: `${deposited.source}; any unresolved tail is modeled`, kind: 'pdb' }
   if (deposited?.source.startsWith('AlphaFold')) return { primary: 'Rendered from an AlphaFold model', secondary: deposited.source, kind: 'sequence' }
   const pdb = c.pdbIds.length ? `Experimentally resolved (PDB ${c.pdbIds.join(', ')}) — deposited, not rendered here` : null
-  if (!c.sequence) return { primary: 'Artist’s illustration', secondary: pdb ?? 'Sequence still being confirmed', kind: 'conceptual' }
-  return { primary: 'Drawn from the sequence (not a measured structure)', secondary: pdb, kind: c.pdbIds.length ? 'pdb' : 'sequence' }
+  return { primary: 'Sequence-derived illustration (not a measured structure)', secondary: pdb, kind: 'sequence' }
 }
 
-export function ProvenanceLabel({ compound, className = '' }: { compound: Pick<Compound, 'slug' | 'sequence' | 'structureSource' | 'pdbIds'>; className?: string }) {
+export function ProvenanceLabel({ compound, className = '' }: { compound: Compound; className?: string }) {
   const p = provenanceText(compound)
   return (
     <span className={`mono text-[11px] text-bone/65 ${className}`}>
