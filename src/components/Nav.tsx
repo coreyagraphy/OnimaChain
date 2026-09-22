@@ -36,6 +36,7 @@ export function Nav() {
             {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2">
+            <Link to="/waitlist" className="nav-waitlist hidden sm:inline-flex lg:hidden xl:inline-flex">Waitlist <span aria-hidden>↗</span></Link>
             <button className="nav-icon hidden sm:grid" onClick={() => setOpen(true)} aria-label="Search (Cmd/Ctrl K)"><SearchIcon /></button>
             <span className="nav-icon hidden lg:grid opacity-45" aria-label="Account coming soon" title="Account coming soon"><AccountIcon /></span>
             <button className="cart-trigger" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${count} items`} data-cursor="cart"><BagIcon /><span>Cart</span><b key={count}>{count}</b></button>
@@ -45,6 +46,7 @@ export function Nav() {
         <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan/15 to-transparent" />
         {menu && (
           <nav id="mobile-nav" className="lg:hidden bg-obsidian/95 border-b hairline px-5 py-5 grid grid-cols-2 gap-2 fade-up" aria-label="Mobile">
+            <Link to="/waitlist" className="label !text-cyan py-3" onClick={() => setMenu(false)}>Join the waitlist</Link>
             {links.map((l) => <Link key={l.to} to={l.to} className="label !text-bone py-3" onClick={() => setMenu(false)}>{l.label}</Link>)}
             <button className="label !text-bone py-3 text-left" onClick={() => { setOpen(true); setMenu(false) }}>Search</button>
             <Link to="/methodology" className="label !text-bone py-3" onClick={() => setMenu(false)}>Our method</Link>

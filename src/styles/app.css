@@ -968,3 +968,52 @@ button.move-hint { cursor:pointer; }
 .strength-price-compact .strength-field select{min-height:34px;padding:5px 6px;font-size:10px}
 .strength-price-compact .strength-caption{font-size:8px;letter-spacing:.05em}
 @media(max-width:640px){.product-card{height:500px!important}.strength-price-compact .strength-field select{min-height:36px}}
+
+/* Waitlist: a single chrome offer plate, not a countdown or a false launch date. */
+.nav-waitlist{align-items:center;gap:6px;min-height:37px;padding:0 13px;border:1px solid #5fe3ff6b;border-radius:999px;background:linear-gradient(115deg,#5fe3ff1a,#8a63ff13);color:#d6f9ff;font:700 10px/1 var(--font-mono);letter-spacing:.09em;text-transform:uppercase;box-shadow:0 0 18px #5fe3ff1f;white-space:nowrap}
+.nav-waitlist:hover,.nav-waitlist:focus-visible{border-color:#5fe3ff;color:#fff;box-shadow:0 0 22px #5fe3ff4d}
+.waitlist-world{min-height:100vh;background:radial-gradient(55rem 42rem at 74% 31%,#2247d61c,transparent 70%),radial-gradient(35rem 30rem at 7% 80%,#8a63ff12,transparent 74%),#090b10}
+.waitlist-stage{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,.9fr);align-items:center;gap:clamp(20px,4vw,70px);min-height:min(850px,calc(100svh - 72px));padding-block:80px 65px;overflow:hidden}
+.waitlist-copy{position:relative;z-index:2;max-width:680px}
+.waitlist-heading{margin:19px 0 0;font:900 clamp(3.5rem,7.2vw,7.5rem)/.95 var(--font-display);letter-spacing:-.065em;text-transform:uppercase;text-wrap:balance}
+.waitlist-heading span{display:inline-block;background:linear-gradient(172deg,#fff 2%,#e4ebf1 34%,#93a6ba 57%,#fff 74%,#83e9ff 93%);background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 2px 0 #1b364c) drop-shadow(0 0 16px #5fe3ff4a)}
+.waitlist-lede{max-width:38rem;margin-top:25px;color:#e5e9efbf;font:500 clamp(17px,1.45vw,21px)/1.55 var(--font-sans)}
+.waitlist-lede strong{color:#fff;font-weight:750}
+.waitlist-date{display:flex;align-items:center;gap:10px;margin-top:20px;color:#d6e6f5a8;font:600 11px/1.4 var(--font-mono);letter-spacing:.04em;text-transform:uppercase}
+.waitlist-live-dot{width:7px;height:7px;border-radius:50%;background:#5fe3ff;box-shadow:0 0 0 4px #5fe3ff1b,0 0 14px #5fe3ff}
+.waitlist-form-shell{margin-top:42px;max-width:630px;padding:17px;border:1px solid #b4d7ff40;border-radius:19px;background:linear-gradient(145deg,#171f2bdf,#0c1019f2);box-shadow:0 22px 60px #0009,inset 0 1px #ffffff1e,0 0 42px #5fe3ff0e}
+.waitlist-form-head{display:flex;justify-content:space-between;gap:15px;padding:2px 2px 16px;border-bottom:1px solid #e5f4ff20;color:#b8d8eea8;font:700 10px/1.3 var(--font-mono);letter-spacing:.09em;text-transform:uppercase}
+.waitlist-email-label{display:block;margin:18px 0 8px;color:#ecf8ff;font:700 11px/1.3 var(--font-mono);letter-spacing:.07em;text-transform:uppercase}
+.waitlist-form-row{display:flex;gap:9px}
+.waitlist-form-row input{flex:1;min-width:0;height:52px;border:1px solid #d4eaff38;border-radius:10px;background:#080d16;color:#f2eee6;padding:0 16px;font-size:15px}
+.waitlist-form-row input:disabled{opacity:.72;cursor:not-allowed}
+.waitlist-form-row button{flex:none;min-height:52px;padding:0 17px;border:1px solid #93b5c159;border-radius:10px;background:linear-gradient(120deg,#8f9da987,#5c748e8c);color:#f5fbffb0;font:800 10px/1.2 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;cursor:not-allowed}
+.waitlist-status{margin:13px 2px 0;color:#d4e2ef9c;font-size:12px;line-height:1.55}
+.waitlist-footnote{margin-top:18px;color:#d4e2ef82;font-size:12px;line-height:1.55}
+.waitlist-art{position:relative;z-index:1;display:grid;place-items:center;min-height:530px;isolation:isolate}
+.waitlist-art::before{content:"";position:absolute;inset:13% 8%;border-radius:50%;background:radial-gradient(circle,#47a3ff2f,transparent 61%);filter:blur(25px);z-index:-1}
+.waitlist-halo{position:absolute;width:min(80%,430px);aspect-ratio:1;border:1px solid #84beff3d;border-radius:50%;transform:rotateX(62deg) rotateZ(-23deg);box-shadow:0 0 18px #5fe3ff1b,inset 0 0 28px #5fe3ff0c}
+.waitlist-halo-two{width:min(97%,530px);border-color:#b69dff26;transform:rotateX(64deg) rotateZ(37deg)}
+.waitlist-chain{position:absolute;width:28%;height:8px;border-radius:20px;background:linear-gradient(90deg,#6b7e8f,#f7ffff,#496b89);box-shadow:0 0 18px #5fe3ff70,inset 0 1px #fff;transform:rotate(-41deg);z-index:0}
+.waitlist-chain::before,.waitlist-chain::after{content:"";position:absolute;top:50%;width:28px;height:28px;border:5px solid #d7ebfb;border-radius:50%;transform:translateY(-50%);box-shadow:0 0 16px #5fe3ff88,inset 0 0 9px #5fe3ff}
+.waitlist-chain::before{left:-10px}.waitlist-chain::after{right:-10px}
+.waitlist-chain-one{left:0;top:35%}.waitlist-chain-two{right:-2%;bottom:32%;transform:rotate(-41deg)}
+.waitlist-offer{position:relative;display:flex;flex-direction:column;justify-content:center;width:min(82%,440px);aspect-ratio:.92;padding:38px;border:1px solid #d6eeff7a;border-radius:31px;background:linear-gradient(125deg,#ffffff2a,#42596c30 16%,#0a0d16f0 35%,#252a43ec 76%,#c6d5e124),repeating-linear-gradient(115deg,#ffffff0a 0 1px,transparent 1px 4px);box-shadow:20px 28px 70px #000b,inset 1px 1px #f5ffff93,inset -2px -2px #5fe3ff35,0 0 65px #5fe3ff2c;transform:rotate(-5deg);overflow:hidden}
+.waitlist-offer::after{content:"";position:absolute;inset:-30%;background:linear-gradient(105deg,transparent 43%,#ffffff29 49%,transparent 55%);transform:translateX(-120%);animation:waitlistSheen 9s ease-in-out infinite}
+.waitlist-offer-kicker,.waitlist-offer-bottom{position:relative;z-index:1;color:#d4f5ffb8;font:800 clamp(10px,1vw,12px)/1.3 var(--font-mono);letter-spacing:.2em;text-transform:uppercase}
+.waitlist-offer-number{position:relative;z-index:1;display:block;margin:18px 0 10px;font:900 clamp(7rem,15vw,13.8rem)/.83 var(--font-display);letter-spacing:-.12em;background:linear-gradient(170deg,#fff 7%,#dae5ee 35%,#94abbf 55%,#fff 67%,#59c5f8 92%);background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 3px 0 #153249) drop-shadow(0 0 18px #5fe3ff66);white-space:nowrap}
+.waitlist-offer-number span{font-size:.32em;letter-spacing:-.08em;vertical-align:top;margin-left:.15em}
+.waitlist-offer-rule{width:100%;height:1px;margin:12px 0 18px;background:linear-gradient(90deg,#5fe3ff,#b9d8ff78,transparent);box-shadow:0 0 12px #5fe3ff}
+.waitlist-after{padding-block:80px 110px;border-top:1px solid #e8f6ff18}
+.waitlist-after h2{max-width:700px;margin-top:13px;font-size:clamp(30px,4.2vw,58px)}
+.waitlist-after p:not(.label){max-width:630px;margin-top:15px;color:#e4eaf1ab;line-height:1.6}
+.waitlist-after-links{display:flex;flex-wrap:wrap;gap:11px;margin-top:27px}
+.waitlist-teaser{position:relative;display:flex;align-items:end;justify-content:space-between;gap:35px;padding-block:54px;margin-block:48px;border-top:1px solid #5fe3ff42;border-bottom:1px solid #8a63ff42;background:radial-gradient(28rem 18rem at 76% 50%,#5fe3ff0e,transparent)}
+.waitlist-teaser h2{margin-top:13px;font-size:clamp(31px,4vw,57px)}
+.waitlist-teaser h2 span{color:#b7dff0}
+.waitlist-teaser p:not(.label){max-width:600px;margin-top:14px;color:#e2e8eea9;font-size:14px;line-height:1.55}
+.waitlist-teaser>.btn{flex:none}
+@keyframes waitlistSheen{0%,52%,100%{transform:translateX(-120%)}68%,78%{transform:translateX(120%)}}
+@media(max-width:950px){.waitlist-stage{grid-template-columns:1fr;min-height:0;padding-block:70px}.waitlist-art{min-height:420px;grid-row:2}.waitlist-offer{width:min(70%,390px)}.waitlist-offer-number{font-size:clamp(7rem,22vw,12rem)}}
+@media(max-width:640px){.waitlist-stage{padding-block:56px 45px}.waitlist-heading{font-size:clamp(3.15rem,13vw,5.8rem)}.waitlist-form-shell{margin-top:32px}.waitlist-form-row{flex-direction:column}.waitlist-form-row button{width:100%}.waitlist-art{min-height:350px}.waitlist-offer{width:min(78%,320px);padding:26px;border-radius:24px}.waitlist-offer-number{font-size:clamp(6.5rem,28vw,10rem)}.waitlist-chain{width:24%}.waitlist-teaser{align-items:start;flex-direction:column;padding-block:42px;margin-block:24px}.waitlist-after{padding-block:65px 90px}}
+@media(prefers-reduced-motion:reduce){.waitlist-offer::after{animation:none}}

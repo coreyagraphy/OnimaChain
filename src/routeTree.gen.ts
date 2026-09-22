@@ -26,6 +26,7 @@ import { Route as SavedRouteImport } from './routes/saved'
 import { Route as SignalRouteImport } from './routes/signal'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimelineRouteImport } from './routes/timeline'
+import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as ClaimIdRouteImport } from './routes/claim.$id'
 import { Route as CompoundSlugRouteImport } from './routes/compound.$slug'
 import { Route as LearnSlugRouteImport } from './routes/learn.$slug'
@@ -118,6 +119,11 @@ const TimelineRoute = TimelineRouteImport.update({
   path: '/timeline',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WaitlistRoute = WaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClaimIdRoute = ClaimIdRouteImport.update({
   id: '/claim/$id',
   path: '/claim/$id',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/signal': typeof SignalRoute
   '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
+  '/waitlist': typeof WaitlistRoute
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/signal': typeof SignalRoute
   '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
+  '/waitlist': typeof WaitlistRoute
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/signal': typeof SignalRoute
   '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
+  '/waitlist': typeof WaitlistRoute
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/signal'
     | '/terms'
     | '/timeline'
+    | '/waitlist'
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/signal'
     | '/terms'
     | '/timeline'
+    | '/waitlist'
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
@@ -295,6 +306,7 @@ export interface FileRouteTypes {
     | '/signal'
     | '/terms'
     | '/timeline'
+    | '/waitlist'
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
@@ -321,6 +333,7 @@ export interface RootRouteChildren {
   SignalRoute: typeof SignalRoute
   TermsRoute: typeof TermsRoute
   TimelineRoute: typeof TimelineRoute
+  WaitlistRoute: typeof WaitlistRoute
   ClaimIdRoute: typeof ClaimIdRoute
   CompoundSlugRoute: typeof CompoundSlugRoute
   PulseReviewRoute: typeof PulseReviewRoute
@@ -449,6 +462,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TimelineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/waitlist': {
+      id: '/waitlist'
+      path: '/waitlist'
+      fullPath: '/waitlist'
+      preLoaderRoute: typeof WaitlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/claim/$id': {
       id: '/claim/$id'
       path: '/claim/$id'
@@ -522,6 +542,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignalRoute: SignalRoute,
   TermsRoute: TermsRoute,
   TimelineRoute: TimelineRoute,
+  WaitlistRoute: WaitlistRoute,
   ClaimIdRoute: ClaimIdRoute,
   CompoundSlugRoute: CompoundSlugRoute,
   PulseReviewRoute: PulseReviewRoute,
