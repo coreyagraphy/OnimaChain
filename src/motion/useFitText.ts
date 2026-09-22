@@ -15,9 +15,12 @@ export function useFitText<T extends HTMLElement>(deps: unknown[] = [], min = 22
       const parent = el.parentElement
       const ps = parent ? getComputedStyle(parent) : null
       const box = parent && ps ? parent.clientWidth - parseFloat(ps.paddingLeft) - parseFloat(ps.paddingRight) : el.clientWidth
+      if (box <= 0) return
+      const textRange = document.createRange()
+      textRange.selectNodeContents(el)
       let size = parseFloat(getComputedStyle(el).fontSize)
       let guard = 0
-      while (el.scrollWidth > box + 1 || el.getBoundingClientRect().width > box + 1 && size > min && guard++ < 40) { size *= 0.94; el.style.fontSize = `${size}px` }
+      while ((el.scrollWidth > box + 1 || textRange.getBoundingClientRect().width > box + 1) && size > min && guard++ < 40) { size = Math.max(min, size * 0.94); el.style.fontSize = `${size}px` }
     }
     fit()
     const ro = new ResizeObserver(fit)

@@ -169,7 +169,7 @@ export function ChainRenderer({
     () =>
       new THREE.MeshPhysicalMaterial({
         normalMap: bondTex?.normal ?? null,
-        normalScale: new THREE.Vector2(0.95, 0.95),
+        normalScale: new THREE.Vector2(1.2, 1.2),
         roughnessMap: bondTex?.roughness ?? null,
         color: new THREE.Color(tint).multiplyScalar(0.42),
         emissive: new THREE.Color(tint),
@@ -192,7 +192,7 @@ export function ChainRenderer({
     () =>
       new THREE.MeshPhysicalMaterial({
         normalMap: atomTex?.normal ?? null,
-        normalScale: new THREE.Vector2(0.65, 0.65),
+        normalScale: new THREE.Vector2(1.05, 1.05),
         roughnessMap: atomTex?.roughness ?? null,
         roughness: 0.46,
         metalness: 0.05,

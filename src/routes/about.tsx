@@ -1,19 +1,48 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { BRAND } from '~/brand'
+import { BRAND, brand } from '~/brand'
+import { BrandMark, BrandWordmark } from '~/components/BrandWordmark'
 
 export const Route = createFileRoute('/about')({
-  head: () => ({ meta: [{ title: `About — ${BRAND}` }, { name: 'description', content: 'What this site is, who it is for, and the rules we hold ourselves to.' }] }),
-  component: () => (
-    <div className="pt-28 wrap min-h-[60vh]">
-      <p className="label label-cyan">About</p>
-      <h1 className="display text-[clamp(2.4rem,6vw,5.4rem)] mt-3">Peptides, without the jargon.</h1>
-      <p className="lede mt-5 max-w-2xl">{BRAND} shows you the peptides people actually talk about, explains what each one is in plain English, and puts the real studies one click away. No hype, no secret handshake.</p>
-      <div className="mt-10 grid md:grid-cols-2 gap-4 max-w-4xl">
-        <div className="panel glass relative p-6"><p className="relative label label-cyan">Who this is for</p><p className="relative mt-3 text-sm text-bone/85">Adults, 21 and older, who are curious about peptides and want straight answers instead of a sales pitch or a wall of science words.</p></div>
-        <div className="panel glass relative p-6"><p className="relative label label-cyan">What we promise</p><p className="relative mt-3 text-sm text-bone/85">Every study we show was checked against PubMed. Every claim shows where it started. If we haven&rsquo;t checked something, we say so.</p></div>
-        <div className="panel glass relative p-6"><p className="relative label label-amber">What we don&rsquo;t do</p><p className="relative mt-3 text-sm text-bone/85">We don&rsquo;t give medical advice. We don&rsquo;t tell you how much of anything to take. We don&rsquo;t make up customer stories or results.</p></div>
-        <div className="panel glass relative p-6"><p className="relative label label-violet">Where things stand</p><p className="relative mt-3 text-sm text-bone/85">{BRAND} is a working name. Prices, checkout and shipping are still being finalized. Read our <Link to="/methodology" className="underline">method</Link> to see how the site works underneath.</p></div>
-      </div>
-    </div>
-  ),
+  head: () => ({ meta: [
+    { title: `About ${BRAND} — ${brand.primaryTagline}` },
+    { name: 'description', content: `Why ${BRAND} exists, what the name means, and how we make peptide information easier to follow.` },
+  ] }),
+  component: About,
 })
+
+function About() {
+  return (
+    <div className="pt-28 min-h-[60vh] overflow-hidden">
+      <header className="wrap about-brand-hero">
+        <div>
+          <p className="label label-cyan">About {BRAND}</p>
+          <h1 className="display text-[clamp(2.7rem,7vw,7rem)] mt-4 max-w-5xl">Peptides,<br /><span className="outline-word">made easier to see.</span></h1>
+          <p className="lede mt-6 max-w-2xl">{brand.description}</p>
+        </div>
+        <div className="about-brand-object" aria-label={`${BRAND} wordmark and origin`}>
+          <BrandMark size={54} />
+          <BrandWordmark />
+          <p>{brand.primaryTagline}</p>
+        </div>
+      </header>
+
+      <section className="wrap about-origin" aria-labelledby="origin-title">
+        <div className="about-sequence" aria-hidden>
+          <span>AMINO</span><i /><b>read backward</b><i /><span>ONIMA</span>
+        </div>
+        <div className="about-origin-copy">
+          <p className="label label-violet">The name</p>
+          <h2 id="origin-title" className="display text-[clamp(2rem,5vw,4.7rem)] mt-3">Amino, turned around.<br />Evidence, linked forward.</h2>
+          <p className="lede mt-5 max-w-2xl">{brand.meaning}</p>
+        </div>
+      </section>
+
+      <section className="wrap mt-10 grid md:grid-cols-2 gap-4 max-w-5xl">
+        <div className="panel glass relative p-6"><p className="relative label label-cyan">Who this is for</p><p className="relative mt-3 text-sm text-bone/85">Adults, 21 and older, who are curious about commonly discussed peptides and want straight answers instead of a sales pitch or a wall of science words.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-cyan">What we promise</p><p className="relative mt-3 text-sm text-bone/85">Every study we show was checked against PubMed. Every claim shows where it started. If we have not checked something, we say so.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-amber">What we do not do</p><p className="relative mt-3 text-sm text-bone/85">We do not give medical advice, tell you how much to take, or make up customer stories and results.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-violet">How to use it</p><p className="relative mt-3 text-sm text-bone/85">Start with the collection, see the molecule, then open the evidence when you want the full story. Read our <Link to="/methodology" className="underline">method</Link> to see how each source is checked.</p></div>
+      </section>
+    </div>
+  )
+}

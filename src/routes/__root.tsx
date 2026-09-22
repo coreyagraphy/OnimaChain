@@ -10,7 +10,7 @@ import { NotFoundFragment } from '~/components/NotFoundFragment'
 import { AgeGate } from '~/components/AgeGate'
 import { DepthBackdrop } from '~/components/DepthBackdrop'
 import { startTilt } from '~/motion/tilt'
-import { BRAND } from '~/brand'
+import { BRAND, brand } from '~/brand'
 import { CommerceChrome } from '~/components/CommerceChrome'
 
 export const Route = createRootRoute({
@@ -18,17 +18,36 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: `${BRAND} — The Molecular Evidence & Signal Atlas` },
-      { name: 'description', content: 'Trace the signal. Follow the evidence. See what research found, what people report, and how the story changed between them.' },
+      { title: `${BRAND} — ${brand.primaryTagline}` },
+      { name: 'description', content: brand.description },
       { name: 'theme-color', content: '#0A0B0E' },
-      { property: 'og:title', content: `${BRAND} — Trace the signal. Follow the evidence.` },
-      { property: 'og:description', content: 'Explore how molecular research, human reports, and internet claims connect — and where they don’t.' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: BRAND },
+      { property: 'og:title', content: `${BRAND} — ${brand.primaryTagline}` },
+      { property: 'og:description', content: brand.description },
+      { property: 'og:image', content: brand.socialImage },
+      { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: `${BRAND} — ${brand.primaryTagline}` },
+      { name: 'twitter:description', content: brand.description },
+      { name: 'twitter:image', content: brand.socialImage },
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
       { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
+      { rel: 'manifest', href: '/site.webmanifest' },
+      { rel: 'apple-touch-icon', href: '/favicon.svg' },
       { rel: 'preload', as: 'image', href: '/posters/hero.jpg' },
     ],
+    scripts: [{
+      type: 'application/ld+json',
+      children: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: BRAND,
+        description: brand.description,
+        publisher: { '@type': 'Organization', name: BRAND },
+      }),
+    }],
   }),
   component: RootComponent,
   notFoundComponent: NotFound,
@@ -41,10 +60,10 @@ function NotFound() {
       <div className="wrap relative z-10">
         <p className="label label-cyan mb-4">404 · pathway not found</p>
         <h1 className="display text-[clamp(2.6rem,7vw,6rem)]">This pathway ends here.</h1>
-        <p className="lede mt-6 max-w-xl"><b className="text-bone">The page may have moved, changed state, or never entered the atlas.</b></p>
+        <p className="lede mt-6 max-w-xl"><b className="text-bone">This page may have moved, or the link may be wrong. You can return to {BRAND} and keep exploring.</b></p>
         <div className="mt-8 flex gap-3">
-          <Link to="/explore" className="btn btn-primary">Search the atlas</Link>
-          <Link to="/" className="btn">Home</Link>
+          <Link to="/explore" className="btn btn-primary">Shop peptides</Link>
+          <Link to="/" className="btn">Back to {BRAND}</Link>
         </div>
       </div>
     </div>

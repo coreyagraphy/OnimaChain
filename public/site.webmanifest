@@ -1,0 +1,17 @@
+{
+  "name": "OnimaChain",
+  "short_name": "OnimaChain",
+  "description": "From amino chains to molecular insight.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08090d",
+  "theme_color": "#0a0b0e",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ import { PeptideVideo } from '~/components/PeptideVideo'
 import { FollowButton, PulseStream } from '~/components/Pulse'
 import { ProvenanceLabel } from '~/components/SourceBadge'
 import { ScrollTrigger } from '~/motion/timeline'
-import { BRAND } from '~/brand'
+import { BRAND, brand } from '~/brand'
 import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
 import { useCommerceStore } from '~/stores/commerce'
 import { officialSourcesFor } from '~/data/official-sources'
@@ -40,7 +40,7 @@ export const Route = createFileRoute('/compound/$slug')({
         { name: 'description', content: `${name}: what it is, what has been studied, what people say, and how far testing has gone. Studies and stories kept separate.` },
       ],
       scripts: c
-        ? [{ type: 'application/ld+json', children: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Dataset', name: `${name} evidence record`, description: 'Structured evidence and signal record. Research and educational information.', creator: { '@type': 'Organization', name: `${BRAND}` }, dateModified: '2026-09-20' }) }]
+        ? [{ type: 'application/ld+json', children: JSON.stringify({ '@context': 'https://schema.org', '@type': 'Dataset', name: `${name} evidence record`, description: brand.description, creator: { '@type': 'Organization', name: BRAND }, publisher: { '@type': 'Organization', name: BRAND }, dateModified: '2026-09-20' }) }]
         : [],
     }
   },

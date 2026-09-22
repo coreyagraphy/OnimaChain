@@ -43,6 +43,13 @@ export const HOTSPOT_RULES: Record<HotspotKind, HotspotRule> = {
     marker: 'bridge',
     explain: 'A side-chain-to-side-chain amide (Asp–Lys) closes the chain into a ring.',
   },
+  disulfide: {
+    kind: 'disulfide',
+    title: 'Disulfide bridge',
+    color: '#F0C45A',
+    marker: 'bridge',
+    explain: 'A sulfur-to-sulfur bond joins these two cysteines and closes the chain into a loop.',
+  },
   acyl: {
     kind: 'acyl',
     title: 'Acyl tether',

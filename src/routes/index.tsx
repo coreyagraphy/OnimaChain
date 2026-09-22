@@ -8,9 +8,15 @@ import { timeAgo, usePulse } from '~/pulse/usePulse'
 import { PulseDeck, PulseLine, PulseTicker, usePulseEvents } from '~/components/PulseDeck'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
-import { BRAND } from '~/brand'
+import { BRAND, brand } from '~/brand'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  head: () => ({ meta: [
+    { title: `${BRAND} — ${brand.primaryTagline}` },
+    { name: 'description', content: brand.description },
+  ] }),
+  component: Home,
+})
 
 function Home() {
   return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><FinalShop /><MobileShopBar /></>
@@ -147,6 +153,6 @@ function MethodPreview() {
 
 function FinalShop() {
   return (
-    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">The collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See it up close.<br/>Then decide.</h2><p className="lede mt-6 mx-auto max-w-xl">Shop the collection first. Follow every source when you want to go deeper.</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">{BRAND} is a working brand. Final pricing and checkout remain pending commercial review.</p></div></section>
+    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">{BRAND} collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See the molecule.<br/>Then decide.</h2><p className="lede mt-6 mx-auto max-w-xl">{brand.secondaryTagline}</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">Checkout will open after pricing, shipping, and product eligibility are confirmed.</p></div></section>
   )
 }

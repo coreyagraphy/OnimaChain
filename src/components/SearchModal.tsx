@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { COMPOUNDS, displayName } from '~/data/compounds'
 import { CLAIMS } from '~/data/claims'
 import { verifiedStudies } from '~/data/studies'
+import { brand } from '~/brand'
 
 interface Hit { group: 'Compounds' | 'Aliases' | 'Claims' | 'Studies'; label: string; sub: string; href: string }
 
@@ -44,12 +45,12 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   if (!open) return null
   let lastGroup = ''
   return (
-    <div className="fixed inset-0 z-[90] flex items-start justify-center pt-[12vh] px-4" role="dialog" aria-modal="true" aria-label="Search the atlas">
+    <div className="fixed inset-0 z-[90] flex items-start justify-center pt-[12vh] px-4" role="dialog" aria-modal="true" aria-label={`Search ${brand.name}`}>
       <button className="absolute inset-0 bg-obsidian/75" onClick={onClose} aria-label="Close search" />
       <div className="relative w-full max-w-2xl panel overflow-hidden fade-up" data-lenis-prevent>
         <input ref={input} type="search" value={q} onChange={(e) => { setQ(e.target.value); setCursor(0) }} placeholder="Search compounds, aliases, claims, studies…" className="w-full !rounded-none !border-0 !border-b hairline !bg-transparent !px-5 !py-4 text-base" aria-label="Search" />
         <ul className="max-h-[50vh] overflow-y-auto py-2" role="listbox">
-          {hits.length === 0 && <li className="px-5 py-4 text-sm muted">No entity matches. Absence from the index is not evidence of absence.</li>}
+          {hits.length === 0 && <li className="px-5 py-4 text-sm muted">We could not find that here yet. Try a peptide name or a shorter search.</li>}
           {hits.map((h, i) => {
             const head = h.group !== lastGroup
             lastGroup = h.group

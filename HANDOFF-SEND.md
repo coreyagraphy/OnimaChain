@@ -1,23 +1,23 @@
-# CYRAVON — CURRENT PROJECT HANDOFF
+﻿# ONIMACHAIN — CURRENT PROJECT HANDOFF
 
-Updated: 2026-09-21
+Updated: 2026-09-22
 Owner: Corey
 Status: Live, private repository, commerce-first interface in active development
 
-This document is the send-ready handoff for the current Cyravon build. Read it before changing the application.
+This document is the send-ready handoff for the current OnimaChain build. Read it before changing the application.
 
 ## 1. Current links and locations
 
 | Item | Location |
 |---|---|
 | Canonical repository | `C:\Users\corey\Projects\cyravon\cyravon-app` |
-| Private GitHub remote | https://github.com/coreyagraphy/cyravon |
+| Private GitHub remote | https://github.com/coreyagraphy/OnimaChain |
 | Branch | `main` |
-| Current feature baseline | `ff31717` — `Transform finder into Portal of Tides` |
+| Current source checkpoint | See `git log -1` on `main` and `WORKING_LEDGER.md` for the latest saved work |
 | Production site | https://cyravon.netlify.app |
 | Netlify site | `cyravon` |
 | Netlify site ID | `a9d4e072-46d2-447d-b491-58f6882bf167` |
-| Current production deploy | `6ab119f219af0331cf865e09` |
+| Current production deploy at checkpoint | `6ab1e8c80f88f750d0b95551` (2026-09-21; verify in Netlify before deployment) |
 | Sendable handoff copy | `C:\Users\corey\Downloads\cyravon-HANDOFF-SEND.md` |
 | Product brief | `CYRAVON_BRIEF.md` |
 | Build specifications | `BUILD_SPEC_CYRAVON.md` and `BUILD_SPEC.md` |
@@ -27,9 +27,13 @@ This document is the send-ready handoff for the current Cyravon build. Read it b
 
 The GitHub repository is private. Anyone receiving this handoff also needs collaborator access.
 
+The GitHub repository was renamed to `coreyagraphy/OnimaChain` on 2026-09-22. The local repository path, Netlify site/URL, and older filenames retain the former working name as technical identifiers. The current Netlify site is deployed through the CLI; this source checkpoint does not publish the newer work.
+
 ## 2. Product direction now in force
 
-Cyravon is now explicitly a **commerce site** for commonly discussed peptides, with a layered research and education experience around the catalog.
+OnimaChain is explicitly a **commerce site** for commonly discussed peptides, with a layered research and education experience around the catalog.
+
+The public brand is locked: **OnimaChain** / **ONIMACHAIN**. “Onima” is “Amino” read backward; “Chain” connects molecular chains, biological signals, and evidence trails. The primary tagline is “From amino chains to molecular insight.” The secondary tagline is “See the molecule. Follow the signal. Trace the evidence.” Public-facing copy must use the centralized configuration in `src/brand.ts`.
 
 The user wants:
 
@@ -65,7 +69,7 @@ npm run build
 The mandatory build gate is:
 
 ```text
-verify-pmids -> tsc --noEmit -> vite client build -> vite SSR build
+verify-pmids -> pulse:seed -> tsc --noEmit -> vite client build -> vite SSR build
 ```
 
 Production deploy:
@@ -345,7 +349,7 @@ The catalog is broader than the verified research corpus.
 2. **Hero direction:** the current camera-flight hero is live. The older scatter-to-coil concept was not built because its generic long helix would not correspond to an indexed compound.
 3. **Portal structure:** `/signal` is Portal of Tides; `/learn` is its learning area but remains a separate route.
 4. **Checkout:** cart UI exists, but real checkout, payment processing, inventory, shipping, and eligibility logic do not.
-5. **Brand:** Cyravon remains a working name pending final domain and trademark clearance.
+5. **Brand:** OnimaChain is the locked public brand. The former name may remain only in legacy repository, host, credential, and historical-source identifiers until a planned infrastructure migration.
 
 ## 11. Exact next work, in recommended order
 

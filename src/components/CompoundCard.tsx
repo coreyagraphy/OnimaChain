@@ -1,14 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { lazy, Suspense, useMemo, useState, type CSSProperties } from 'react'
-import { computedMW, displayName, type Compound } from '~/data/compounds'
+import { displayName, type Compound } from '~/data/compounds'
 import { descriptionFor, PRICE_PLACEHOLDER, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { buildChain } from '~/scenes/chain/geometry'
 import { SceneView } from '~/scenes/Canvas'
 import { SequenceSVG } from './SequenceSVG'
 import { useCommerceStore } from '~/stores/commerce'
+import { useFitText } from '~/motion/useFitText'
 
-const DomainRig = lazy(() => import('~/scenes/rigs').then((m) => ({ default: m.DomainRig })))
+const CardMoleculeScene = lazy(() => import('~/scenes/card/CardMoleculeScene').then((m) => ({ default: m.CardMoleculeScene })))
 export type CardLayout = 'portrait' | 'wide' | 'square'
 const SIZE: Record<CardLayout, string> = { portrait: 'w-[300px] h-[440px]', wide: 'w-[430px] h-[350px]', square: 'w-[340px] h-[390px]' }
 interface Props { compound: Compound; index: number; layout?: CardLayout; fluid?: boolean; /** Faster, brighter molecule (shop grid). */ lively?: boolean }
@@ -23,7 +24,7 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
   const [hover, setHover] = useState(false)
   const [added, setAdded] = useState(false)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
-  const mw = compound.mw ?? computedMW(compound)
+  const nameRef = useFitText<HTMLHeadingElement>([compound.slug, lay, fluid], 12)
   const style = { '--product': theme.primary, '--product-2': theme.secondary, '--product-3': theme.tertiary, transform: hover ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-7px)` : undefined } as CSSProperties
   const quickAdd = () => { add(compound.slug); setAdded(true); window.setTimeout(() => setAdded(false), 1200) }
   return (
@@ -32,14 +33,15 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
       <div className="product-neon-lens" aria-hidden><i /><i /><i /></div>
       <Link to="/compound/$slug" params={{ slug: compound.slug }} className="absolute inset-0 z-[1]" aria-label={`Open ${displayName(compound)}`} data-cursor="product" />
       <div className="product-molecule absolute inset-x-0 top-0 h-[60%] pointer-events-none">
-        <SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />
-        <SceneView className="absolute inset-0" fallback={null}><Suspense fallback={null}><DomainRig domain={compound.domain} compound={compound} lod={2} intensity={hover ? 2.8 : lively ? 2.1 : 1.5} speed={lively ? (hover ? 2.6 : 1.9) : 1} /></Suspense></SceneView>
+        {compound.sequence ? <>
+          <SceneView className="absolute inset-0" fallback={<SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />}><Suspense fallback={null}><CardMoleculeScene geometry={geometry} tint={theme.primary} accent={theme.secondary} active={hover || lively} /></Suspense></SceneView>
+        </> : <div className="product-no-single-structure" role="img" aria-label={`${displayName(compound)} has no single verified molecular structure`}><i /><i /><span>No single<br />molecule</span><small>{compound.note?.startsWith('Blend') ? 'This is a blend' : 'Details are still being verified'}</small></div>}
       </div>
-      <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span><span className="mono text-[10px] text-bone/45">{geometry.placeholder ? 'STRUCTURE PENDING' : `${geometry.length} AA`}</span></div>
+      <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span></div>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
-        <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1 min-w-0"><h3 className="wordmark text-[clamp(1.8rem,3vw,2.6rem)] min-w-0 max-w-full [overflow-wrap:anywhere]" style={wordmarkStyle(theme)}>{displayName(compound)}</h3><strong className="mono text-sm whitespace-nowrap">{PRICE_PLACEHOLDER}</strong></div>
+        <div className="min-w-0 overflow-hidden"><h3 ref={nameRef} className="wordmark product-card-title w-full min-w-0" style={wordmarkStyle(theme)}>{displayName(compound)}</h3><strong className="mono text-sm block mt-2">{PRICE_PLACEHOLDER}</strong></div>
         <p className="mt-2 text-[12px] font-semibold leading-relaxed text-bone/78 line-clamp-3">{descriptionFor(compound)}</p>
-        <div className="mt-3 flex gap-3 mono text-[10px] text-bone/50"><span>{compound.sequence ? `${compound.sequence.length} residues` : 'length pending'}</span><span>{mw ? `${mw} Da` : 'MW pending'}</span></div>
+        <div className="mt-3 text-[11px] text-bone/65">{compound.sequence ? `${compound.sequence.length} building blocks in this ${compound.sequence.length > 100 ? 'protein' : 'peptide'}` : 'No single molecular structure applies'}</div>
         <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Quick view</button><button className="btn btn-sm commerce-btn justify-center" onClick={quickAdd} data-cursor="add">{added ? 'Added' : 'Add to cart'}</button></div>
       </div>
       <div className="product-card-edge" aria-hidden />

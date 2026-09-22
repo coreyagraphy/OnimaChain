@@ -1,4 +1,4 @@
-# Fingerprints
+﻿# Fingerprints
 
 Every site you build with **scroll-craft** gets one row here, appended after it
 ships. The registry exists so your next build can prove it is a different page
@@ -28,7 +28,7 @@ changes only grammar and world will fail it.
 
 | Build | Grammar | Nav treatment | Hero device | Act-sequence shape | Close pattern | Signature move | World | Port |
 |---|---|---|---|---|---|---|---|---|
-| Cyravon hero | Molecular threshold | Fixed commerce nav | Live WebGL molecular fly-through | Rotate → enter → pass through → plain-language bridge → commerce reveal | Existing collection continues below | Molecular threshold fly-through resolves into the shop message | Neon molecular nocturne | Netlify production |
+| OnimaChain hero | Molecular threshold | Fixed commerce nav | Live WebGL molecular fly-through | Rotate → enter → pass through → plain-language bridge → commerce reveal | Existing collection continues below | Molecular threshold fly-through resolves into the shop message | Neon molecular nocturne | Netlify production |
 
 ---
 

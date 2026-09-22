@@ -1,5 +1,5 @@
 {
-  "name": "cyravon-app",
+  "name": "onimachain-app",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,9 @@
     "start": "node .output/server/index.mjs",
     "typecheck": "tsc --noEmit",
     "pulse:seed": "node --experimental-strip-types tools/pulse-seed.ts",
-    "test:pulse": "node --experimental-strip-types tools/pulse-test.ts"
+    "test:pulse": "node --experimental-strip-types tools/pulse-test.ts",
+    "test:payments": "node --experimental-strip-types --test tools/payments.test.ts",
+    "test:payments:db": "node --experimental-strip-types tools/payments-db-test.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",
@@ -27,9 +29,11 @@
     "gsap": "^3.15.0",
     "html-to-image": "^1.11.13",
     "lenis": "^1.3.26",
+    "pg": "^8.23.0",
     "postprocessing": "^6.39.5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "stripe": "^22.6.2",
     "three": "^0.186.0",
     "zustand": "^5.0.15"
   },
@@ -38,6 +42,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@types/d3-force": "^3.0.10",
     "@types/node": "^26.6.2",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",

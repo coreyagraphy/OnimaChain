@@ -1,6 +1,6 @@
-# Cyravon homepage hero brief
+﻿# OnimaChain homepage hero brief
 
-Reused from the user's supplied direction and the existing Cyravon build. This is a focused revision of the production homepage hero, not a new standalone site.
+Reused from the user's supplied direction and the existing OnimaChain build. This is a focused revision of the production homepage hero, not a new standalone site.
 
 ## Creative direction
 
@@ -11,14 +11,14 @@ Reused from the user's supplied direction and the existing Cyravon build. This i
 5. **Signature move:** the molecular threshold. Scroll changes the visitor from outside observer to moving through the chain, then the molecule becomes the frame around the final message.
 6. **Aesthetic range:** maximal neon depth with controlled typography. The hero gets the spectacle; the final message stays quiet enough to read.
 7. **World structure:** one continuous 3D microjourney inside the hero, resolving into the existing commerce page below.
-8. **Existing assets:** the sequence-derived BPC-157 model, current WebGL renderer, particle fields, lighting rig, poster fallbacks, and Cyravon palette.
+8. **Existing assets:** the sequence-derived BPC-157 model, current WebGL renderer, particle fields, lighting rig, poster fallbacks, and OnimaChain palette.
 
 ## Subject, audience, and job
 
 - **Subject:** a commerce collection of commonly discussed peptides with checked sources attached.
 - **Audience:** a first-time shopper who may know a peptide name but not the science vocabulary.
 - **Single job:** make the collection feel desirable and help the visitor shop without making them decode laboratory language.
-- **Belief by the end:** Cyravon makes peptide products easier to explore and keeps the source material available when I want it.
+- **Belief by the end:** OnimaChain makes peptide products easier to explore and keeps the source material available when I want it.
 - **Next action:** Shop the collection.
 
 ## Grammar
@@ -49,4 +49,3 @@ Reused from the user's supplied direction and the existing Cyravon build. This i
 - Reduced motion shows the final message immediately and removes the pinned travel.
 - No visible technical phrases such as "no corpus" or "source access."
 - No horizontal overflow, console errors, or unreachable controls.
-

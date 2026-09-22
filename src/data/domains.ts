@@ -42,7 +42,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'metabolic',
     name: 'Weight & Metabolism',
-    tagline: 'The GLP names everyone is talking about.',
+    tagline: 'Get to know the names in weight management.',
     image: '/topics/metabolic.webp',
     researchLabel: 'Peptides people look into for weight and metabolism',
     rig: 'dock',

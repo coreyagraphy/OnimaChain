@@ -1,4 +1,5 @@
 import type { Compound, Mod, ModKind } from '~/data/compounds'
+import { decodeConformer } from '~/data/conformers'
 
 /*
  * Procedural, sequence-driven backbone geometry.
@@ -24,6 +25,7 @@ export type HotspotKind =
   | 'd-residue'
   | 'nonstandard'
   | 'gamma'
+  | 'disulfide'
 
 export interface ResidueMeta {
   index: number // 0-based
@@ -33,7 +35,7 @@ export interface ResidueMeta {
   cls: ResidueClass
   size: ResidueSize
   chirality: 'L' | 'D'
-  nonStandard?: 'Aib' | 'Nle' | 'Dmt' | 'Nal'
+  nonStandard?: 'Aib' | 'Nle' | 'Dmt' | 'Nal' | 'MeLeu'
   mods: ModKind[]
   hotspots: HotspotKind[]
 }
@@ -48,7 +50,7 @@ export interface Hotspot {
 export interface Bridge {
   from: number
   to: number
-  type: 'lactam'
+  type: 'lactam' | 'disulfide'
   points: [number, number, number][]
 }
 
@@ -85,10 +87,11 @@ const NONSTD_NAMES: Record<string, string> = {
   Nle: 'Norleucine',
   Dmt: "2',6'-Dimethyltyrosine",
   Nal: '2-Naphthylalanine',
+  MeLeu: 'α-Methyl-leucine',
 }
 
 export function residueClass(code: string, nonStandard?: string): ResidueClass {
-  if (nonStandard === 'Nle' || nonStandard === 'Aib' || nonStandard === 'Nal') return 'hydrophobic'
+  if (nonStandard === 'Nle' || nonStandard === 'Aib' || nonStandard === 'Nal' || nonStandard === 'MeLeu') return 'hydrophobic'
   if (nonStandard === 'Dmt') return 'polar'
   if ('AVLIMFW'.includes(code)) return 'hydrophobic'
   if ('STNQYC'.includes(code)) return 'polar'
@@ -98,7 +101,7 @@ export function residueClass(code: string, nonStandard?: string): ResidueClass {
 }
 
 export function residueSize(code: string, nonStandard?: string): ResidueSize {
-  if (nonStandard === 'Nal' || nonStandard === 'Dmt') return 'L'
+  if (nonStandard === 'Nal' || nonStandard === 'Dmt' || nonStandard === 'MeLeu') return 'L'
   if (nonStandard === 'Aib') return 'S'
   if (nonStandard === 'Nle') return 'M'
   if ('GASC'.includes(code)) return 'S'
@@ -187,7 +190,7 @@ export function buildResidues(c: Pick<Compound, 'sequence' | 'mods'>): ResidueMe
     const code = seq[i]
     const pos = i + 1
     const mods = modsAt(c.mods, pos)
-    const nonStandard = (['Aib', 'Nle', 'Dmt', 'Nal'] as const).find((k) => mods.includes(k))
+    const nonStandard = (['Aib', 'Nle', 'Dmt', 'Nal', 'MeLeu'] as const).find((k) => mods.includes(k))
     const hotspots: HotspotKind[] = []
     if (code === 'P') hotspots.push('proline')
     if (code === 'G') hotspots.push('glycine')
@@ -337,6 +340,43 @@ export function buildChain(c: Compound): ChainGeometry {
     }
   }
 
+  // Use deposited C-alpha coordinates when available. Some receptor-bound PDBs omit a
+  // flexible tail; keep the resolved core and extend only the missing end as a model.
+  const deposited = decodeConformer(c.slug)
+  if (deposited) {
+    const known = Math.min(n, deposited.length / 3)
+    let rendered = deposited
+    // Deposited peptide chains use arbitrary file axes. Align their end-to-end axis to +z so
+    // the card fitter frames the molecule consistently without changing internal distances.
+    if (known > 2 && n < 80) {
+      const first: V3 = [deposited[0], deposited[1], deposited[2]]
+      const last: V3 = [deposited[(known - 1) * 3], deposited[(known - 1) * 3 + 1], deposited[(known - 1) * 3 + 2]]
+      const direction = norm(sub(last, first))
+      const target: V3 = [0, 0, 1]
+      const axis = cross(direction, target)
+      const axisLength = len(axis)
+      if (axisLength > 0.0001) {
+        const angle = Math.acos(Math.max(-1, Math.min(1, dot(direction, target))))
+        rendered = new Float32Array(deposited.length)
+        for (let index = 0; index < known; index++) {
+          const point = sub([deposited[index * 3], deposited[index * 3 + 1], deposited[index * 3 + 2]], first)
+          rendered.set(rotate(point, scale(axis, 1 / axisLength), angle), index * 3)
+        }
+      }
+    }
+    ca.set(rendered.subarray(0, known * 3), 0)
+    if (known < n && known >= 2) {
+      let previous: V3 = [ca[(known - 1) * 3], ca[(known - 1) * 3 + 1], ca[(known - 1) * 3 + 2]]
+      let direction = norm(sub(previous, [ca[(known - 2) * 3], ca[(known - 2) * 3 + 1], ca[(known - 2) * 3 + 2]]))
+      const side = norm(cross(direction, Math.abs(direction[2]) < 0.9 ? [0, 0, 1] : [0, 1, 0]))
+      for (let index = known; index < n; index++) {
+        direction = norm(add(direction, scale(side, Math.sin((index - known + 1) * 0.72) * 0.13)))
+        previous = add(previous, scale(direction, 3.8))
+        ca.set(previous, index * 3)
+      }
+    }
+  }
+
   const bounds = computeBounds(ca, n)
   const scatter = scatterFor(seed, n, bounds)
   const at = (i: number): V3 => [ca[i * 3], ca[i * 3 + 1], ca[i * 3 + 2]]
@@ -349,7 +389,7 @@ export function buildChain(c: Compound): ChainGeometry {
     const mid = scale(add(a, b), 0.5)
     const out = norm(sub(mid, bounds.center))
     const bulge = add(mid, scale(out, 2.6))
-    bridges.push({ from: ringFrom, to: ringTo, type: 'lactam', points: [a, bulge, b] })
+    bridges.push({ from: ringFrom, to: ringTo, type: ring.type, points: [a, bulge, b] })
   }
 
   // Metal
@@ -432,9 +472,11 @@ export function buildChain(c: Compound): ChainGeometry {
   }
   for (const b of bridges) {
     hotspots.push({
-      kind: 'lactam',
+      kind: b.type === 'disulfide' ? 'disulfide' : 'lactam',
       residues: [b.from, b.to],
-      label: `Lactam bridge ${residues[b.from].code}${residues[b.from].pos}–${residues[b.to].code}${residues[b.to].pos} — side-chain ring closure`,
+      label: b.type === 'disulfide'
+        ? `Disulfide bridge Cys${residues[b.from].pos}–Cys${residues[b.to].pos}`
+        : `Lactam bridge ${residues[b.from].code}${residues[b.from].pos}–${residues[b.to].code}${residues[b.to].pos} — side-chain ring closure`,
       position: b.points[1],
     })
   }

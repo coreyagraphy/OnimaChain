@@ -10,6 +10,7 @@ import { ProvenanceLabel, provenanceText } from './SourceBadge'
 import { HOTSPOT_RULES } from '~/scenes/chain/hotspots'
 import { environmentFor } from '~/data/environments'
 import type { ExploreState } from '~/scenes/chain/ViewerScene'
+import { DEPOSITED_CONFORMERS } from '~/data/conformers'
 
 const Viewer = lazy(() => import('~/scenes/chain/ViewerScene').then((m) => ({ default: m.ViewerScene })))
 
@@ -27,6 +28,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const geometry = useMemo(() => buildChain(compound), [compound])
   const env = environmentFor(compound.slug)
   const prov = provenanceText(compound)
+  const deposited = DEPOSITED_CONFORMERS[compound.slug]
   const [ready, setReady] = useState(false)
   const [touch, setTouch] = useState(false)
   const [panel, setPanel] = useState<Panel>(null)
@@ -135,7 +137,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
           <p className="relative label" style={{ color: env.neon }}>Where this 3D shape comes from</p>
           <p className="relative mt-2 text-[13px] text-bone/85">{prov.primary}.</p>
           {prov.secondary && <p className="relative mt-1 text-[13px] muted">{prov.secondary}.</p>}
-          <p className="relative mt-2 text-[12px] muted">We draw the shape from the amino-acid sequence using standard helix geometry (rise 1.5 Å, 100°/residue, radius 2.3 Å). Proline bends the chain 30–40°, glycine adds a small wobble, lactam bridges close the ring. The surface texture is an artistic finish, not how atoms look. This is a drawing based on the sequence, not a measured structure.</p>
+          <p className="relative mt-2 text-[12px] muted">{deposited ? `This view follows the C-alpha backbone from ${deposited.source}. Flexible residues missing from a deposited experiment are modeled from the verified sequence. The surface texture and lighting are artistic.` : 'This view is computed from the verified amino-acid sequence. Proline bends the chain, glycine adds flexibility, and verified bridges close loops. It is a structural illustration, not a measured pose; the surface texture and lighting are artistic.'}</p>
           <div className="relative flex gap-2 mt-3"><button className="btn btn-sm stage-btn" onClick={closePanel}>Close</button></div>
         </div>
       )}

@@ -5,6 +5,7 @@ import { useCanvasAllowed, useVisualStore } from '~/motion/useReducedMotion'
 import { createScrub } from '~/motion/timeline'
 import { getLenis } from '~/motion/lenis'
 import { tilt } from '~/motion/tilt'
+import { brand } from '~/brand'
 
 const HeroScene = lazy(() => import('~/scenes/hero/HeroScene').then((m) => ({ default: m.HeroScene })))
 
@@ -129,7 +130,7 @@ export function Hero() {
         style={{ opacity: isStatic ? 1 : 0 }}
         onFocusCapture={() => { if (!isStatic && progress.current < HEAD_IN[1]) skip() }}
       >
-        <p className="label label-cyan mb-5">Peptides, made easier</p>
+        <p className="label label-cyan mb-5">{brand.primaryTagline}</p>
         <h1 className="display hero-title text-bone">See the molecule.<br/><span>Understand the story.</span></h1>
         <p className="lede mt-7 max-w-xl hidden md:block">Shop common peptides, learn what each one is, and check the original sources without needing a science degree.</p>
         <div className="mt-9 flex flex-wrap gap-3"><Link ref={primaryCta} to="/explore" className="btn btn-primary">Shop the collection</Link><Link to="/signal" className="btn">Find a peptide</Link></div>

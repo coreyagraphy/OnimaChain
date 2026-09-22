@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import { COMPOUND_BY_SLUG, computedMW, displayName } from '~/data/compounds'
+import { COMPOUND_BY_SLUG, displayName } from '~/data/compounds'
 import { descriptionFor, PRICE_PLACEHOLDER, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { buildChain } from '~/scenes/chain/geometry'
@@ -11,6 +11,7 @@ import { useCanvasAllowed } from '~/motion/useReducedMotion'
 import { useFitText } from '~/motion/useFitText'
 import { MoveHint } from './MoveHint'
 import type { Drag } from '~/scenes/quick/QuickScene'
+import { brand } from '~/brand'
 
 export function CommerceChrome() {
   const hydrate = useCommerceStore((s) => s.hydrate)
@@ -29,7 +30,7 @@ function CartDrawer() {
   }, [cartOpen, setCartOpen])
   if (!cartOpen) return null
   return (
-    <div className="commerce-modal fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-label="Shopping cart">
+    <div className="commerce-modal fixed inset-0 z-[80]" role="dialog" aria-modal="true" aria-label={brand.cartLabel}>
       <button className="absolute inset-0 veil w-full" aria-label="Close cart" onClick={() => setCartOpen(false)} />
       <aside className="cart-drawer drawer-in absolute right-0 top-0 h-full w-full max-w-[480px] p-5 md:p-7 flex flex-col" data-lenis-prevent>
         <header className="flex items-center justify-between border-b hairline pb-5">
@@ -66,8 +67,8 @@ function CartDrawer() {
             </div>
             <footer className="border-t hairline pt-5">
               <div className="flex justify-between items-end"><span className="label">Subtotal</span><strong className="display-md text-2xl">Pricing pending</strong></div>
-              <p className="text-[12px] muted mt-2">Final pricing, payment, shipping, and product eligibility require commercial and regulatory review.</p>
-              <button className="btn btn-primary w-full justify-center mt-5 opacity-65" aria-disabled="true" title="Checkout integration is not enabled">Checkout unavailable</button>
+              <p className="text-[12px] muted mt-2">Online ordering is not open yet. Prices and shipping details will appear here before you can pay.</p>
+              <button className="btn btn-primary w-full justify-center mt-5 opacity-65" disabled title="Online ordering is not open yet">Checkout unavailable</button>
             </footer>
           </>
         )}
@@ -98,7 +99,7 @@ function QuickView() {
     return () => window.removeEventListener('keydown', onKey)
   }, [c, setQuickView])
   if (!c || !geometry) return null
-  const theme = themeFor(c), domain = DOMAIN_BY_ID[c.domain], mw = c.mw ?? computedMW(c)
+  const theme = themeFor(c), domain = DOMAIN_BY_ID[c.domain]
   const down = (e: React.PointerEvent) => { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); drag.current.active = true; last.current = { x: e.clientX, y: e.clientY, t: e.timeStamp }; setTouched(true) }
   const move = (e: React.PointerEvent) => {
     if (!drag.current.active) return
@@ -122,17 +123,17 @@ function QuickView() {
             <MoveHint hidden={touched} />
           </div>
           <div className="p-7 md:p-10 flex flex-col justify-center min-w-0">
-            <p className="label" style={{ color: theme.primary }}>{domain.name} research</p>
+            <p className="label" style={{ color: theme.primary }}>{domain.name}</p>
             <h2 ref={nameRef} className="wordmark text-[clamp(2.4rem,6vw,5.5rem)] mt-3 whitespace-nowrap" style={wordmarkStyle(theme)}>{displayName(c)}</h2>
             <div className="quick-price-row mt-5">
               <p className="display-md text-2xl">{PRICE_PLACEHOLDER}</p>
-              <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setQuickView(null)} className="research-beacon">View full research <span aria-hidden>→</span></Link>
+              <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setQuickView(null)} className="research-beacon">Explore this peptide <span aria-hidden>→</span></Link>
             </div>
             <p className="text-sm font-semibold text-bone/82 leading-relaxed mt-5">{descriptionFor(c)}</p>
             <dl className="mini-specs mt-6">
-              <div><dt>Length</dt><dd>{c.sequence ? `${c.sequence.length} aa` : 'Pending'}</dd></div>
-              <div><dt>MW</dt><dd>{mw ? `${mw} Da` : 'Pending'}</dd></div>
-              <div><dt>Class</dt><dd>{c.tags[0]}</dd></div>
+              <div><dt>Explore by topic</dt><dd>{domain.name}</dd></div>
+              <div><dt>Building blocks</dt><dd>{c.sequence ? `${c.sequence.length} in this peptide` : 'Details coming soon'}</dd></div>
+              <div><dt>Want to know more?</dt><dd>Open the product page for studies and safety details.</dd></div>
             </dl>
             <div className="mt-7 flex flex-wrap gap-2">
               <button className="btn commerce-btn" onClick={() => { add(c.slug); setQuickView(null) }} data-cursor="add">Add to cart</button>

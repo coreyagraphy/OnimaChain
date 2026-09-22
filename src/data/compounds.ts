@@ -9,6 +9,7 @@ export type ModKind =
   | 'Nle'
   | 'Dmt'
   | 'Nal'
+  | 'MeLeu'
   | 'PEG'
   | 'gamma'
 
@@ -20,7 +21,7 @@ export interface Mod {
 export interface Cyclic {
   from: number
   to: number
-  type: 'lactam'
+  type: 'lactam' | 'disulfide'
 }
 
 export interface Metal {
@@ -243,12 +244,19 @@ export const COMPOUNDS: Compound[] = [
     name: 'GHRP-2',
     domain: 'somatotropic',
     tags: ['ghs-r', 'hexapeptide'],
-    sequence: null,
-    mods: [],
-    structureSource: 'pending',
+    sequence: 'AXAWFK',
+    mods: [
+      { pos: 1, kind: 'D' },
+      { pos: 2, kind: 'Nal' },
+      { pos: 2, kind: 'D' },
+      { pos: 5, kind: 'D' },
+      { pos: 6, kind: 'amide' },
+    ],
+    structureSource: 'computed',
     pdbIds: [],
     pmids: [],
-    archetype: 'The second hexapeptide. Sequence pending verification.',
+    archetype: 'A compact six-residue chain with three mirrored residues, a bulky naphthyl group and an amidated end.',
+    note: 'Sequence and modifications are represented; the 3D pose is a computed illustration, not a measured structure.',
   },
   {
     slug: 'ghrp-6',
@@ -282,13 +290,13 @@ export const COMPOUNDS: Compound[] = [
     name: 'Follistatin 344',
     domain: 'somatotropic',
     tags: ['protein', 'myostatin-binding', 'activin-binding'],
-    sequence: null,
+    sequence: 'MVRARHQPGGLCLLLLLLCQFMEDRSAQAGNCWLRQAKNGRCQVLYKTELSKEECCSTGRLSTSWTEEDVNDNTLFKWMIFNGGAPNCIPCKETCENVDCGPGKKCRMNKKNKPRCVCAPDCSNITWKGPVCGLDGKTYRNECALLKARCKEQPELEVQYQGRCKKTCRDVFCPGSSTCVVDQTNNAYCVTCNRICPEPASSEQYLCGNDGVTYSSACHLRKATCLLGRSIGLAYEGKCIKAKSCEDIQCTGGKKCLWDFKVGRGRCSLCDELCPDSKSDEPVCASDNATYASECAMKEAACSSGVLLEVKHSGSCNSISEDTEEEEEDEDQDYSFPISSILEW',
     mods: [],
-    structureSource: 'pending',
+    structureSource: 'computed',
     pdbIds: [],
     pmids: [],
-    archetype: 'The binding protein. A large precursor form rather than a short peptide chain; sequence verification is pending.',
-    note: 'Protein isoform. The exact product form and full sequence require verification before a molecular model can be shown.',
+    archetype: 'A 344-residue precursor protein with many cysteines and several compact binding domains — nothing like a six-residue GHRP.',
+    note: 'Full 344-residue human precursor sequence (UniProt P19883) with the AlphaFold P19883 model. A specific commercial vial may contain a different mature form.',
   },
   // ---- Cognitive & Neural (propagate)
   {
@@ -518,11 +526,12 @@ export const COMPOUNDS: Compound[] = [
     tags: ['gh-fragment', 'hgh-176-191'],
     sequence: 'YLRIVQCRSVEGSCGF',
     mods: [],
+    cyclic: { from: 7, to: 14, type: 'disulfide' },
     structureSource: 'computed',
     pdbIds: [],
     pmids: [],
     archetype: 'The fragment 176–191. Sixteen residues from the C-terminus of growth hormone, two cysteines.',
-    note: 'Two cysteines present (positions 7 and 14). Disulfide status not asserted here — shown as free thiols pending verification.',
+    note: 'The two cysteines at positions 7 and 14 are joined by an intramolecular disulfide bond.',
   },
   {
     slug: 'semaglutide',
@@ -530,13 +539,16 @@ export const COMPOUNDS: Compound[] = [
     name: 'Semaglutide',
     domain: 'metabolic',
     tags: ['glp-1r', 'incretin-analogue', 'lipidated', 'aib'],
-    sequence: null,
-    mods: [],
+    sequence: 'HXEGTFTSDVSSYLEGQAAKEFIAWLVRGRG',
+    mods: [
+      { pos: 2, kind: 'Aib' },
+      { pos: 20, kind: 'acyl' },
+    ],
     structureSource: 'pdb',
     pdbIds: ['4ZGM', '7KI0'],
     pmids: [],
     archetype: 'The tethered helix. A thirty-one-residue GLP-1 analogue with a C18 diacid trailing off lysine-26.',
-    note: '31-mer with Aib at position 8 and a C18 diacid acyl chain on Lys26. Residue letters pending verification; deposited structures exist.',
+    note: '31 residues with Aib at residue 2 and a C18 fatty-diacid tether on Lys20 (GLP-1 positions 8 and 26). Deposited receptor-bound structures resolve the helical core.',
   },
   {
     slug: 'tirzepatide',
@@ -544,13 +556,18 @@ export const COMPOUNDS: Compound[] = [
     name: 'Tirzepatide',
     domain: 'metabolic',
     tags: ['glp-1r', 'gip-r', 'incretin-analogue', 'lipidated', 'aib'],
-    sequence: null,
-    mods: [],
+    sequence: 'YXEGTFTSDYSIXLDKIAQKAFVQWLIAGGPSSGAPPPS',
+    mods: [
+      { pos: 2, kind: 'Aib' },
+      { pos: 13, kind: 'Aib' },
+      { pos: 20, kind: 'acyl' },
+      { pos: 39, kind: 'amide' },
+    ],
     structureSource: 'pdb',
     pdbIds: ['7FIM', '7RGP', '7FIY'],
     pmids: [],
-    archetype: 'The two-key. A thirty-nine-residue dual-receptor analogue; sequence pending verification.',
-    note: 'Deposited receptor-complex structures exist. Residue letters pending verification.',
+    archetype: 'A 39-residue dual-receptor analogue with two Aib residues, a long C20 lipid tether and an amidated tail.',
+    note: 'Full sequence and key modifications are represented. Deposited receptor-bound structures resolve the helical core; the flexible tail is modeled.',
   },
   {
     slug: 'retatrutide',
@@ -559,13 +576,19 @@ export const COMPOUNDS: Compound[] = [
     displayName: 'GLP3',
     domain: 'metabolic',
     tags: ['glp-1r', 'gip-r', 'glucagon-r', 'incretin-analogue', 'lipidated'],
-    sequence: null,
-    mods: [],
+    sequence: 'YXQGTFTSDYSIXLDKKAQXAFIEYLLEGGPSSGAPPPS',
+    mods: [
+      { pos: 2, kind: 'Aib' },
+      { pos: 13, kind: 'MeLeu' },
+      { pos: 17, kind: 'acyl' },
+      { pos: 20, kind: 'Aib' },
+      { pos: 39, kind: 'amide' },
+    ],
     structureSource: 'pdb',
     pdbIds: ['8YW5'],
     pmids: [],
     archetype: 'The three-key negotiator. One chain, three receptor pockets.',
-    note: 'Displayed as GLP3. Compound: retatrutide.',
+    note: 'Displayed as GLP3. Compound: retatrutide. The sequence includes Aib at residues 2 and 20, α-methyl-leucine at 13, a lipid tether at Lys17 and a C-terminal amide.',
   },
 ]
 
@@ -623,5 +646,6 @@ export function computedMW(c: Compound): number | undefined {
     }
   }
   if (c.cyclic?.type === 'lactam') total -= 18.0153
+  if (c.cyclic?.type === 'disulfide') total -= 2.01565
   return Math.round(total * 100) / 100
 }
