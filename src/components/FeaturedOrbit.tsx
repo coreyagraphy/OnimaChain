@@ -134,7 +134,7 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
             onFocus={() => center(j)}
             aria-hidden={j >= compounds.length ? true : undefined}
           >
-            <CompoundCard compound={c} index={j} fluid />
+            <CompoundCard compound={c} index={j} fluid lively />
           </div>
         ))}
       </div>

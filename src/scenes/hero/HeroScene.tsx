@@ -145,6 +145,8 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
   const size = useThree((s) => s.size)
   const root = useRef<THREE.Group>(null)
   const chain = useRef<THREE.Group>(null)
+  const heroProgress = useRef(1)
+  const heroLoose = useRef(0)
   const cTerm = useRef<THREE.Object3D>(null)
   const far = useRef<THREE.Points>(null)
   const mid = useRef<THREE.Points>(null)
@@ -238,13 +240,22 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
     }
     if (chain.current) {
       // The opening is the object itself: a slow weighted turn before scroll becomes a camera move.
-      chain.current.position.y = Math.sin(t.current * 0.35) * 0.18
-      chain.current.rotation.x = Math.sin(t.current * 0.12) * 0.08 + p * 0.9
-      chain.current.rotation.y = t.current * 0.16 * (1 - smooth01(0.08, 0.32, p)) + p * 0.5
-      chain.current.rotation.z = Math.sin(t.current * 0.09) * 0.03
+      // before scroll it's alive: a quicker turn, a real tumble and float. Everything eases out by 30% so the fly-through path is exact.
+      const rest = 1 - smooth01(0.05, 0.3, p)
+      // the turn angle is wrapped to ±π, so unwinding for the fly-through is never more than half a turn (and the wrap itself is invisible)
+      const turn = Math.atan2(Math.sin(t.current * 0.42), Math.cos(t.current * 0.42))
+      chain.current.position.y = Math.sin(t.current * 0.55) * (0.18 + 0.2 * rest)
+      chain.current.rotation.x = Math.sin(t.current * 0.23) * (0.08 + 0.16 * rest) + p * 0.9
+      chain.current.rotation.y = turn * (1 - smooth01(0.08, 0.32, p)) + p * 0.5
+      chain.current.rotation.z = Math.sin(t.current * 0.17) * (0.03 + 0.07 * rest)
+      // every 9 s at rest, the chain loosens apart and pulls itself back together
+      const k9 = t.current % 9
+      const loosen = p < 0.04 && t.current > 4 && k9 > 6 ? (k9 < 7 ? smooth01(6, 7, k9) : 1 - smooth01(7.3, 8.8, k9)) : 0
+      heroLoose.current += (loosen - heroLoose.current) * Math.min(1, dt * 6)
+      heroProgress.current = 1 - 0.38 * heroLoose.current
     }
-    if (farG.current) { farG.current.position.set(-p * 5 + s.px * 0.5, -s.py * 0.3, 0); farG.current.rotation.z = t.current * 0.004 }
-    if (midG.current) { midG.current.position.set(-p * 2 + s.px * 1.4, -s.py * 0.8, 0); midG.current.rotation.z = -t.current * 0.008 }
+    if (farG.current) { farG.current.position.set(-p * 5 + s.px * 0.5, -s.py * 0.3, 0); farG.current.rotation.z = t.current * 0.02 }
+    if (midG.current) { midG.current.position.set(-p * 2 + s.px * 1.4, -s.py * 0.8, 0); midG.current.rotation.z = -t.current * 0.03 }
     if (nearG.current) nearG.current.position.set(p * 6 + s.px * 3.2, -s.py * 1.8, p * 7)
     if (near.current) near.current.position.x = p * 5 + s.px * 1.6
 
@@ -316,7 +327,7 @@ export function HeroScene({ progress, pointer, onPhase }: Props) {
       </group>
 
       <group ref={chain}>
-        <ChainRenderer geometry={geometry} progress={1} lod={0} fitMode="fixed" fit={FIT} rotate={0} tint="#5FE3FF" accent="#8A63FF" intensity={1.15} tilt={TILT} markers={false} highlight={highlight} />
+        <ChainRenderer geometry={geometry} progress={heroProgress} lod={0} fitMode="fixed" fit={FIT} rotate={0} tint="#5FE3FF" accent="#8A63FF" intensity={1.15} tilt={TILT} markers={false} highlight={highlight} />
         {/* invisible tracker that mirrors ChainRenderer's transforms so we know where the C-terminus is in world space */}
         <group rotation={TILT} scale={fixedScale}>
           <group rotation={[0, Math.PI / 2, 0]} position={centerOffsetRotated}>
