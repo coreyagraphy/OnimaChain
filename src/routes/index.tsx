@@ -24,7 +24,7 @@ function Home() {
 
 function WaitlistTeaser() {
   return <section className="waitlist-teaser wrap" aria-labelledby="waitlist-teaser-heading">
-    <div><p className="label label-cyan">First access</p><h2 id="waitlist-teaser-heading" className="display-md">A place in line.<br /><span>20% off your first order.</span></h2><p>Opening date to be announced. See the waitlist preview while we prepare independent email signup.</p></div>
+    <div><p className="label label-cyan">First access</p><h2 id="waitlist-teaser-heading" className="display-md">A place in line.<br /><span>20% off your first order.</span></h2><p>Opening date to be announced. See the waitlist preview; signups begin after our site move.</p></div>
     <Link to="/waitlist" className="btn btn-primary">View the waitlist <span aria-hidden>↗</span></Link>
   </section>
 }

@@ -18,6 +18,7 @@ for (const width of [390, 1440]) {
   assert.equal(await page.getByRole('heading', { name: 'Join the waitlist.' }).count(), 1)
   assert.equal(await page.getByRole('textbox', { name: 'Email address' }).isDisabled(), true)
   assert.equal(await page.getByRole('button', { name: 'Signups paused' }).isDisabled(), true)
+  assert.match(await page.locator('#waitlist-status').innerText(), /site move is complete/)
   assert.match(await page.locator('#waitlist-status').innerText(), /does not collect or store email addresses/)
   assert.equal(await page.locator('form').count(), 0)
   assert.deepEqual(signupRequests, [])

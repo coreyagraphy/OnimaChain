@@ -2,8 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { BRAND } from '~/brand'
 
 /**
- * Presentation-only until an owner-approved, account-independent email backend
- * and consent/privacy copy are ready. No action, fetch, Netlify Form, or storage.
+ * Presentation-only until the site moves to the new Netlify account/domain and
+ * the owner approves email storage and privacy copy. No action, fetch, Netlify Form, or storage.
  */
 export const Route = createFileRoute('/waitlist')({
   head: () => ({ meta: [
@@ -28,7 +28,7 @@ function Waitlist() {
             <input id="waitlist-email" type="email" inputMode="email" autoComplete="email" placeholder="you@example.com" disabled aria-describedby="waitlist-status" />
             <button type="button" disabled>Signups paused</button>
           </div>
-          <p id="waitlist-status" className="waitlist-status">Signups will open when the independent waitlist backend is ready. This preview does not collect or store email addresses.</p>
+          <p id="waitlist-status" className="waitlist-status">Signups are paused until our site move is complete. This preview does not collect or store email addresses.</p>
         </div>
         <p className="waitlist-footnote">No purchase is possible yet. We’ll announce the opening date and offer details before orders begin.</p>
       </div>
