@@ -1,5 +1,15 @@
 # OnimaChain working ledger
 
+## Peptide visual and Portal accuracy checkpoint — 2026-09-22
+
+The owner required the original textured, scroll-pinned peptide fly-through and parallax zoom to remain. Its hero component and scene choreography were not replaced. The supplied OnimaChain logo remains in the top navigation. Card-only lighting, material normals/roughness, shadows, and contained framing were refined; the hero retains its prior renderer settings. Long collection titles now measure and fit as one line, including Cerebrolysin at phone width. Portal of Tides lettering now has a layered chrome gradient, grain, embossed edges, and restrained illumination while retaining its sequence motif.
+
+The Portal's Constellation and Connections no longer manufacture lines from a shared broad shopping domain or tags. A curated typed relationship list contains only the Wolverine Blend's catalog-listed components (BPC-157, TB-500) and documented GLP-1/GIP receptor overlap among semaglutide, tirzepatide, and retatrutide (displayed as GLP3; source: https://pubmed.ncbi.nlm.nih.gov/39019866/). Uncurated names show no direct link. The Timeline stays specific to the selected product, and the blend points to its components' separate records rather than borrowing their studies. The Topic map remains a browsing taxonomy and marks only explicit links.
+
+Functional source commit: `a3c8c6794f496f2b5296425794d32f1c688d24ee` on `main`, pushed to `coreyagraphy/OnimaChain`. Production deploy: `6ab2d269c7441a69f5cc14e4` on the existing `cyravon` Netlify site (`a9d4e072-46d2-447d-b491-58f6882bf167`), live at https://cyravon.netlify.app. CLI deploy metadata does not itself pin a Git SHA; this ledger records the source revision. The deploy build refreshed `public/pulse.json` and `src/data/verified.json`; those generated snapshots are also saved in Git.
+
+Verification: full `npm run build` passed (9/9 PMID checks, pulse seed, TypeScript, client and SSR bundles); `git diff --check` passed; `tools/portal-visual-check.mjs` passed at 390 and 1440px; `tools/portal-accuracy-test.mjs` passed locally and against production (Wolverine/GLP link sets, selected-only timeline, 36 title fits at 320/390/768px, preserved phone and desktop hero scroll progress, no page errors). Live `/`, `/signal`, `/explore`, and `/claims` returned 200. Screenshots are in ignored `shots/portal-refresh/`. Checkout remains disabled; this visual release does not approve products or payments.
+
 ## Supplied logo integration — 2026-09-22
 
 The owner supplied `ChatGPT Image Sep 22, 2026, 02_45_23 PM.png` as the OnimaChain logo and confirmed that spelling. Its unchanged master is tracked at `public/brand/onimachain-master.png`; lossless crops from that same file serve the header wordmark and the full logo on About and in the footer. The browser and touch icons use its mark. The existing page copy was left alone. Earlier plain-language/humanized copy work is in commits `0230833` and `1b6a307`; the logo task did not restore older wording or apply the handoff document's alternate spelling.

@@ -13,11 +13,11 @@ This document is the send-ready handoff for the current OnimaChain build. Read i
 | Canonical repository | `C:\Users\corey\Projects\cyravon\cyravon-app` |
 | Private GitHub remote | https://github.com/coreyagraphy/OnimaChain |
 | Branch | `main` |
-| Live functional source | `b6659c6bf272266c8f164b382aeb608f812474f0` (logo integration); see `git log -1` for later notes |
+| Live functional source | `a3c8c6794f496f2b5296425794d32f1c688d24ee` (peptide visual and Portal accuracy checkpoint); see `git log -1` for later notes |
 | Production site | https://cyravon.netlify.app |
 | Netlify site | `cyravon` |
 | Netlify site ID | `a9d4e072-46d2-447d-b491-58f6882bf167` |
-| Current production deploy | `6ab2cf868db9da420ae397d1` (2026-09-22; verify in Netlify before further deployment) |
+| Current production deploy | `6ab2d269c7441a69f5cc14e4` (2026-09-22; verify in Netlify before further deployment) |
 | Supplied logo master | `public/brand/onimachain-master.png` (optimized variants beside it) |
 | Older handoff export (superseded by this tracked file) | `C:\Users\corey\Downloads\cyravon-HANDOFF-SEND.md` |
 | Product brief | `CYRAVON_BRIEF.md` |
