@@ -8,6 +8,8 @@
     "build": "npm run verify-pmids && npm run pulse:seed && tsc --noEmit && vite build",
     "start": "node .output/server/index.mjs",
     "typecheck": "tsc --noEmit",
+    "test:calculator": "node --experimental-strip-types --test tools/preclinical-calculator.test.mjs",
+    "test:calculator:ui": "node --experimental-strip-types --test tools/preclinical-calculator-ui.test.mjs",
     "pulse:seed": "node --experimental-strip-types tools/pulse-seed.ts",
     "test:pulse": "node --experimental-strip-types tools/pulse-test.ts",
     "test:payments": "node --experimental-strip-types --test tools/payments.test.ts",
