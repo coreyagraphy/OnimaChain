@@ -54,7 +54,7 @@ export interface Compound {
   note?: string
 }
 
-export const COMPOUNDS: Compound[] = [
+const CATALOG_ENTRIES: Compound[] = [
   // ---- Repair (branch)
   {
     slug: 'bpc-157',
@@ -593,9 +593,10 @@ export const COMPOUNDS: Compound[] = [
   },
 ]
 
-export const COMPOUND_BY_SLUG: Record<string, Compound> = Object.fromEntries(
-  COMPOUNDS.map((c) => [c.slug, c]),
-)
+// Preserve the old Wolverine slug for incoming links and evidence IDs while
+// excluding this two-component stack from the canonical single-compound list.
+export const COMPOUNDS: Compound[] = CATALOG_ENTRIES.filter((c) => c.slug !== 'wolverine-blend')
+export const COMPOUND_BY_SLUG: Record<string, Compound> = Object.fromEntries(CATALOG_ENTRIES.map((c) => [c.slug, c]))
 
 export function compoundsInDomain(domain: DomainId): Compound[] {
   return COMPOUNDS.filter((c) => c.domain === domain)

@@ -2,7 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { BRAND } from '~/brand'
 
 const POINTS = [
-  ['What we collect right now', 'Almost nothing. This site has no accounts and no checkout yet. Your browser remembers two things on your own device: that you answered the age question, and what is in your cart.'],
+  ['What we collect right now', 'Almost nothing. This site has no accounts, active checkout, or connected waitlist form. Your browser remembers your age-gate answer and may retain an older local cart preview; unverified items cannot be added to an active cart.'],
   ['What we don’t do', 'We don’t sell your information. We don’t track you across other websites. We don’t use your searches here to build a health profile of you.'],
   ['When checkout opens', 'We will need a name, an address and a payment method to ship an order. We will say exactly who handles payment before you type anything.'],
   ['Your choices', 'Clear your browser storage and the age answer and cart are gone. When accounts exist, you will be able to see and delete what we hold.'],

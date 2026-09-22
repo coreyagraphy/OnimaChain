@@ -4,15 +4,16 @@ import { SearchModal } from './SearchModal'
 import { BRAND } from '~/brand'
 import { cartCount, useCommerceStore } from '~/stores/commerce'
 import { BrandWordmark } from './BrandWordmark'
+import { availableListingFor, PRODUCT_LISTINGS } from '~/data/research-entities'
 
 const links = [
-  { to: '/explore', label: 'Shop' },
-  { to: '/claims', label: 'Research' },
-  { to: '/pulse', label: 'Pulse' },
-  { to: '/signal', label: 'Portal of Tides' },
-  { to: '/bond-theory', label: 'Bond Theory' },
+  { to: '/shop', label: 'Shop' },
+  { to: '/explore', label: 'Explore' },
+  { to: '/watchlist', label: 'Watchlist' },
+  { to: '/combinations', label: 'Stacks' },
+  { to: '/targets', label: 'Targets' },
+  { to: '/coa', label: 'Lab Reports' },
   { to: '/learn', label: 'Learn' },
-  { to: '/about', label: 'About' },
 ] as const
 
 export function Nav() {
@@ -32,14 +33,14 @@ export function Nav() {
       <header className="fixed top-0 inset-x-0 z-40 nav-glass">
         <div className="wrap h-[72px] flex items-center justify-between">
           <Link to="/" className="brand-home group" aria-label={`${BRAND} home`}><BrandWordmark decorative /></Link>
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
+          <nav className="hidden lg:flex items-center gap-5" aria-label="Primary">
             {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2">
             <Link to="/waitlist" className="nav-waitlist hidden sm:inline-flex lg:hidden xl:inline-flex">Waitlist <span aria-hidden>↗</span></Link>
             <button className="nav-icon hidden sm:grid" onClick={() => setOpen(true)} aria-label="Search (Cmd/Ctrl K)"><SearchIcon /></button>
             <span className="nav-icon hidden lg:grid opacity-45" aria-label="Account coming soon" title="Account coming soon"><AccountIcon /></span>
-            <button className="cart-trigger" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${count} items`} data-cursor="cart"><BagIcon /><span>Cart</span><b key={count}>{count}</b></button>
+            {PRODUCT_LISTINGS.some((item) => availableListingFor(item.compoundId)) && <button className="cart-trigger" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${count} items`} data-cursor="cart"><BagIcon /><span>Cart</span><b key={count}>{count}</b></button>}
             <button className="nav-icon lg:hidden" onClick={() => setMenu((v) => !v)} aria-expanded={menu} aria-controls="mobile-nav"><MenuIcon /></button>
           </div>
         </div>

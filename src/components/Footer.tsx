@@ -4,8 +4,8 @@ import { brand } from '~/brand'
 import { BrandLogo } from './BrandWordmark'
 
 const cols = [
-  [['/waitlist', 'Waitlist'], ['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/learn', 'Learn']],
-  [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
+  [['/waitlist', 'Waitlist'], ['/shop', 'Shop'], ['/explore', 'Explore'], ['/watchlist', 'Watchlist'], ['/combinations', 'Stacks'], ['/targets', 'Targets'], ['/coa', 'Lab Reports']],
+  [['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/research-tools', 'Research Tools'], ['/learn', 'Learn'], ['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
   [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const
 
@@ -30,7 +30,7 @@ export function Footer() {
       <div className="border-t hairline">
         <div className="wrap py-6">
           <p className="text-[12px] text-bone/60 max-w-3xl">
-            <b className="text-bone/80">You must be 21 or older to use this site.</b> Everything here is for research and education. It is not medical advice, and we never tell you how much of anything to take. Talk to a doctor before you change anything about your health. Prices, checkout, shipping and product eligibility are still being finalized.
+            <b className="text-bone/80">You must be 21 or older to use this site.</b> OnimaChain provides research and educational information. Information about compounds, studies and public reports is not medical advice or a recommendation for diagnosis, treatment or personal use. Profiles do not imply stock or sale. Watchlist inclusion does not imply approval. Community reports do not establish cause and effect.
           </p>
         </div>
       </div>

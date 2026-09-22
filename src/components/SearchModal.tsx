@@ -4,15 +4,22 @@ import { COMPOUNDS, displayName } from '~/data/compounds'
 import { CLAIMS } from '~/data/claims'
 import { verifiedStudies } from '~/data/studies'
 import { brand } from '~/brand'
+import { COMBINATIONS, TARGETS, WATCHLIST } from '~/data/research-entities'
 
-interface Hit { group: 'Compounds' | 'Aliases' | 'Claims' | 'Studies'; label: string; sub: string; href: string }
+interface Hit { group: 'Compounds' | 'Aliases' | 'Targets' | 'Watchlist' | 'Combinations' | 'Claims' | 'Studies'; label: string; sub: string; href: string }
 
 function index(): Hit[] {
   const hits: Hit[] = []
   for (const c of COMPOUNDS) {
-    hits.push({ group: 'Compounds', label: displayName(c), sub: c.slug, href: `/compound/${c.slug}` })
+    hits.push({ group: 'Compounds', label: displayName(c), sub: c.slug === 'wolverine-blend' ? 'Community stack · Informational profile' : 'Compound · Informational profile', href: c.slug === 'wolverine-blend' ? '/combinations' : `/compound/${c.slug}` })
     for (const a of c.aliases) hits.push({ group: 'Aliases', label: a, sub: `→ ${displayName(c)}`, href: `/compound/${c.slug}` })
   }
+  for (const c of WATCHLIST) {
+    hits.push({ group: 'Watchlist', label: c.name, sub: 'Compound · Informational profile', href: `/watchlist/${c.id}` })
+    for (const alias of c.aliases) hits.push({ group: 'Aliases', label: alias, sub: `→ ${c.name} · Watchlist`, href: `/watchlist/${c.id}` })
+  }
+  for (const c of COMBINATIONS) hits.push({ group: 'Combinations', label: c.name, sub: c.type === 'COMMUNITY_STACK' ? 'Community stack' : 'Clinical combination', href: `/combinations#${c.id}` })
+  for (const t of TARGETS) hits.push({ group: 'Targets', label: t.label, sub: 'Receptor map', href: '/targets' })
   for (const cl of CLAIMS) hits.push({ group: 'Claims', label: cl.title, sub: cl.id, href: `/claim/${cl.id}` })
   for (const s of verifiedStudies()) hits.push({ group: 'Studies', label: s.title ?? '', sub: `PMID ${s.pmid} · ${s.journal} ${s.year ?? ''}`, href: `/compound/${s.compounds[0]}#sources` })
   return hits
@@ -48,7 +55,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     <div className="fixed inset-0 z-[90] flex items-start justify-center pt-[12vh] px-4" role="dialog" aria-modal="true" aria-label={`Search ${brand.name}`}>
       <button className="absolute inset-0 bg-obsidian/75" onClick={onClose} aria-label="Close search" />
       <div className="relative w-full max-w-2xl panel overflow-hidden fade-up" data-lenis-prevent>
-        <input ref={input} type="search" value={q} onChange={(e) => { setQ(e.target.value); setCursor(0) }} placeholder="Search compounds, aliases, claims, studies…" className="w-full !rounded-none !border-0 !border-b hairline !bg-transparent !px-5 !py-4 text-base" aria-label="Search" />
+        <input ref={input} type="search" value={q} onChange={(e) => { setQ(e.target.value); setCursor(0) }} placeholder="Search compounds, targets, stacks, studies…" className="w-full !rounded-none !border-0 !border-b hairline !bg-transparent !px-5 !py-4 text-base" aria-label="Search" />
         <ul className="max-h-[50vh] overflow-y-auto py-2" role="listbox">
           {hits.length === 0 && <li className="px-5 py-4 text-sm muted">We could not find that here yet. Try a peptide name or a shorter search.</li>}
           {hits.map((h, i) => {

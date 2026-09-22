@@ -17,11 +17,12 @@ import { structurePresentation } from '~/data/structure-presentation'
 import { CompositeStructure } from './CompositeStructure'
 import { getLenis } from '~/motion/lenis'
 import { StrengthPrice } from './StrengthPrice'
+import { availableListingFor, PRODUCT_LISTINGS } from '~/data/research-entities'
 
 export function CommerceChrome() {
   const hydrate = useCommerceStore((s) => s.hydrate)
   useEffect(() => hydrate(), [hydrate])
-  return <><CartDrawer /><QuickView /><MolecularCursor /></>
+  return <>{PRODUCT_LISTINGS.some((item) => availableListingFor(item.compoundId)) && <CartDrawer />}<QuickView /><MolecularCursor /></>
 }
 
 function CartDrawer() {
@@ -144,17 +145,17 @@ function QuickView() {
             <p className="label" style={{ color: theme.primary }}>{domain.name}</p>
             <h2 ref={nameRef} className="wordmark text-[clamp(2.4rem,6vw,5.5rem)] mt-3 whitespace-nowrap" style={wordmarkStyle(theme)}>{displayName(c)}</h2>
             <div className="quick-price-row mt-5">
-              <StrengthPrice compound={c} value={variantId} onChange={setVariantId} />
+              {availableListingFor(c.slug) ? <StrengthPrice compound={c} value={variantId} onChange={setVariantId} /> : <span className="label label-cyan">Informational profile</span>}
               <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setQuickView(null)} className="research-beacon">Explore this peptide <span aria-hidden>→</span></Link>
             </div>
             <p className="text-sm font-semibold text-bone/82 leading-relaxed mt-5">{descriptionFor(c)}</p>
             <dl className="mini-specs mt-6">
               <div><dt>Explore by topic</dt><dd>{domain.name}</dd></div>
               <div><dt>Structure</dt><dd>{presentation?.detail}</dd></div>
-              <div><dt>Want to know more?</dt><dd>Open the product page for studies and safety details.</dd></div>
+              <div><dt>Want to know more?</dt><dd>Open the research profile for studies and safety details.</dd></div>
             </dl>
             <div className="mt-7 flex flex-wrap gap-2">
-              <button className="btn commerce-btn" onClick={() => { add(c.slug, 1, variantId); setQuickView(null) }} data-cursor="add">Add to cart</button>
+              {availableListingFor(c.slug) && <button className="btn commerce-btn" onClick={() => { add(c.slug, 1, variantId); setQuickView(null) }} data-cursor="add">Add to cart</button>}
             </div>
           </div>
         </div>

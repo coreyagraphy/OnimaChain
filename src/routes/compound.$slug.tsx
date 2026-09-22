@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, Link, notFound, redirect } from '@tanstack/react-router'
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { COMPOUND_BY_SLUG, computedMW, displayName, type Compound } from '~/data/compounds'
 import { DOMAIN_BY_ID } from '~/data/domains'
@@ -27,9 +27,11 @@ import { useCommerceStore } from '~/stores/commerce'
 import { officialSourcesFor } from '~/data/official-sources'
 import { useFitText } from '~/motion/useFitText'
 import { structurePresentation } from '~/data/structure-presentation'
+import { availableListingFor, RESEARCH_BY_ID, TARGETS } from '~/data/research-entities'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
+    if (params.slug === 'wolverine-blend') throw redirect({ to: '/combinations', hash: 'wolverine-blend' })
     const c = COMPOUND_BY_SLUG[params.slug]
     if (!c) throw notFound()
     return { slug: c.slug }
@@ -80,6 +82,8 @@ function Dossier() {
   const events = claims.flatMap((cl) => cl.changeHistory.map((e) => ({ ...e, claim: cl.id })))
   const official = officialSourcesFor(slug)
   const structure = structurePresentation(c)
+  const listing = availableListingFor(slug)
+  const targets = RESEARCH_BY_ID[slug]?.targets ?? []
   const bpc = COMPOUND_BY_SLUG['bpc-157']
   const tb = COMPOUND_BY_SLUG['tb-500']
 
@@ -91,9 +95,10 @@ function Dossier() {
           <p className="label" style={{ color: domain.palette.base }}>{domain.name} · commonly explored around {shopTopicFor(c)}</p>
           <h1 ref={nameRef} className="wordmark text-[clamp(3rem,7.5vw,7.2rem)] mt-4 whitespace-nowrap" style={wordmarkStyle(productTheme)}>{displayName(c)}</h1>
           <p className="mt-5 text-base font-semibold text-bone/84 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
-          <div className="mt-7 flex flex-wrap items-end gap-6"><StrengthPrice compound={c} value={variantId} onChange={setVariantId} /><div><p className="label">Availability</p><p className="text-sm mt-2 text-bone/65">Pending review</p></div></div>
+          <div className="mt-7 flex flex-wrap items-end gap-6">{listing ? <StrengthPrice compound={c} value={variantId} onChange={setVariantId} /> : <div><p className="label label-cyan">Informational profile</p><p className="text-sm mt-2 text-bone/65">No verified OnimaChain inventory for this profile.</p></div>}</div>
           {c.displayName && <p className="mono text-[12px] text-bone/55 mt-2">Compound: {c.name.toLowerCase()}</p>}
           {c.aliases.length > 0 && <p className="mt-4 text-sm muted">Also known as {c.aliases.join(' · ')}</p>}
+          {targets.length > 0 && <div className="mt-5"><p className="label">Mapped targets</p><div className="flex flex-wrap gap-2 mt-2">{targets.map((id) => <Link key={id} to="/targets" className="chip chip-hollow">{TARGETS.find((target) => target.id === id)?.label}</Link>)}</div></div>}
           <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-w-lg">
             <div className="col-span-2">
               <dt className="label">Sequence</dt>
@@ -107,8 +112,7 @@ function Dossier() {
           </dl>
           {c.note && <p className="mt-4 text-[12px] muted max-w-lg">{c.note}</p>}
           <div className="mt-8 flex flex-wrap gap-2 items-center">
-            <div className="quantity-control" aria-label="Quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button onClick={() => setQuantity(quantity + 1)} aria-label="Increase quantity">+</button></div>
-            <button className="btn commerce-btn" onClick={() => addToCart(c.slug, quantity, variantId)} data-cursor="add">Add to cart</button>
+            {listing && <><div className="quantity-control" aria-label="Quantity"><button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Decrease quantity">−</button><span>{quantity}</span><button onClick={() => setQuantity(quantity + 1)} aria-label="Increase quantity">+</button></div><button className="btn commerce-btn" onClick={() => addToCart(c.slug, quantity, variantId)} data-cursor="add">Add to cart</button></>}
             <Link to="/compare" search={{ a: slug, b: slug === 'tb-500' ? 'bpc-157' : 'tb-500' }} className="btn">Compare</Link>
             <Link to="/saved" className="btn">Save</Link>
             <button className="btn" onClick={() => setDrawer('share')}>Share</button>

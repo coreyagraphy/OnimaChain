@@ -4,13 +4,14 @@ import { CompoundCard } from '~/components/CompoundCard'
 import { PortalTitle } from '~/components/PortalTitle'
 import { BRAND } from '~/brand'
 import { COMPOUNDS, displayName, type Compound } from '~/data/compounds'
-import { descriptionFor, PRICE_PLACEHOLDER, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
+import { descriptionFor, shopTopicFor, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAINS, type DomainId } from '~/data/domains'
 import { studiesForCompound } from '~/data/studies'
 import { useCommerceStore } from '~/stores/commerce'
 import { LiquidGlassLink } from '~/components/LiquidGlassLink'
 import { useFitText } from '~/motion/useFitText'
 import { relationshipsFor } from '~/data/portal-relationships'
+import { availableListingFor } from '~/data/research-entities'
 
 type View = 'constellation' | 'network' | 'timeline' | 'heatmap'
 
@@ -83,12 +84,12 @@ function SignalMap() {
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="signal-tag">Explore the benefits, limits, and studies</span>
             </div>
-            <div className="mt-6 flex items-center justify-between"><strong className="mono text-lg">{PRICE_PLACEHOLDER}</strong><span className="text-[11px] text-bone/46">Price pending</span></div>
+            <div className="mt-6 flex items-center justify-between"><strong className="label label-cyan">{availableListingFor(selected.slug) ? 'Available for research' : 'Informational profile'}</strong></div>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button className="btn btn-sm justify-center" onClick={() => setQuickView(selected.slug)}>Quick view</button>
-              <button className="btn btn-sm commerce-btn justify-center" onClick={() => add(selected.slug)}>Add to cart</button>
+              {availableListingFor(selected.slug) ? <button className="btn btn-sm commerce-btn justify-center" onClick={() => add(selected.slug)}>Add to cart</button> : <Link to="/compound/$slug" params={{ slug: selected.slug }} className="btn btn-sm justify-center">View research</Link>}
             </div>
-            <Link to="/compound/$slug" params={{ slug: selected.slug }} className="signal-detail-link mt-3">Open the full product page →</Link>
+            <Link to="/compound/$slug" params={{ slug: selected.slug }} className="signal-detail-link mt-3">Open the full research profile →</Link>
           </div>
         </aside>
 
@@ -107,7 +108,7 @@ function SignalMap() {
       <section className="wrap relative z-[2] py-20">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-7">
           <div><p className="label signal-kicker">Nearby in the collection</p><h2 className="display text-[clamp(2.2rem,5vw,4.8rem)] mt-3">More in {shopTopicFor(selected)}.</h2></div>
-          <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length}</LiquidGlassLink>
+          <LiquidGlassLink to="/explore">Explore all {COMPOUNDS.length}</LiquidGlassLink>
         </div>
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
           {nearby.length ? nearby.map((c, i) => <CompoundCard key={c.slug} compound={c} index={i} fluid />) : <p className="muted">No nearby products are in this topic yet.</p>}

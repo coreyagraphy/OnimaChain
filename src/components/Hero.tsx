@@ -132,8 +132,8 @@ export function Hero() {
       >
         <p className="label label-cyan mb-5">{brand.primaryTagline}</p>
         <h1 className="display hero-title text-bone">See the molecule.<br/><span>Understand the story.</span></h1>
-        <p className="lede mt-7 max-w-xl hidden md:block">Shop common peptides, learn what each one is, and check the original sources without needing a science degree.</p>
-        <div className="mt-9 flex flex-wrap gap-3"><Link ref={primaryCta} to="/explore" className="btn btn-primary">Shop the collection</Link><Link to="/signal" className="btn">Find a peptide</Link></div>
+        <p className="lede mt-7 max-w-xl hidden md:block">Explore peptide research, learn what each molecule is, and check the original sources without needing a science degree.</p>
+        <div className="mt-9 flex flex-wrap gap-3"><Link ref={primaryCta} to="/explore" className="btn btn-primary">Explore the library</Link><Link to="/signal" className="btn">Find a peptide</Link></div>
       </div>
 
       {/* 12–50%: captions */}

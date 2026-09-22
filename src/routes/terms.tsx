@@ -4,10 +4,10 @@ import { BRAND } from '~/brand'
 const RULES = [
   ['You must be 21 or older', 'Must be 21 and over to enter. By using this site you confirm you are.'],
   ['This is not medical advice', 'Everything here is for research and education. Nothing on this site is a diagnosis, a treatment plan or a promise of a result. Talk to a doctor before you change anything about your health.'],
-  ['We never tell you how to use anything', 'No doses, no schedules, no mixing instructions, no “stacks”. If you see that anywhere on this site, it is a mistake and we want to know.'],
+  ['We never tell you how to use anything personally', 'Community stack names are described as research context, not instructions. The mouse-study worksheet only calculates values supplied from an approved laboratory protocol.'],
   ['Studies are not guarantees', 'A result in a dish, in a rat, or even in a small group of people does not mean you will get the same result. We show how far each thing has been tested so you can see the gap.'],
   ['Stories are not proof', 'What people say online is worth reading and we keep it separate from studies. We never turn a story into a claim.'],
-  ['Prices and orders', 'Prices shown are placeholders. Checkout, shipping, returns and who can buy what are still being finalized. Nothing is for sale until that is done.'],
+  ['Prices and orders', 'No price or purchase control appears for an informational profile. Commerce requires verified product and lot inventory; checkout is not active.'],
   ['We fix our mistakes in public', 'If we got something wrong, the fix goes on the corrections page with the old and new version.'],
 ]
 

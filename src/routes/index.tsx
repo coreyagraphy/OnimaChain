@@ -9,6 +9,7 @@ import { PulseDeck, PulseLine, PulseTicker, usePulseEvents } from '~/components/
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
 import { BRAND, brand } from '~/brand'
+import { WATCHLIST } from '~/data/research-entities'
 
 export const Route = createFileRoute('/')({
   head: () => ({ meta: [
@@ -19,8 +20,10 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><WaitlistTeaser /><FinalShop /><MobileShopBar /></>
+  return <><Hero /><FeaturedCollection /><EmergingResearch /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><WaitlistTeaser /><FinalShop /><MobileShopBar /></>
 }
+
+function EmergingResearch() { return <section className="section wrap" aria-labelledby="emerging-research-title"><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="label label-cyan">Emerging research / not for sale</p><h2 id="emerging-research-title" className="display-md text-[clamp(2rem,4vw,3.8rem)] mt-3">On the horizon.</h2><p className="muted mt-3 max-w-xl">Molecules worth tracking, separated from the core library and from verified inventory.</p></div><Link to="/watchlist" className="btn">See everything we're watching →</Link></div><div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-7">{WATCHLIST.slice(0, 4).map((c) => <Link key={c.id} to="/watchlist/$slug" params={{ slug: c.id }} className="panel p-5 block hover:border-cyan/50"><span className="label label-cyan">Watchlist · Informational</span><strong className="display-md text-xl block mt-3">{c.name}</strong><span className="mono text-[10px] text-bone/50 block mt-2">{c.targets.join(' + ')}</span><span className="text-[12px] text-bone/60 block mt-4">{c.stage} · {c.statusAsOf}</span></Link>)}</div></section> }
 
 function WaitlistTeaser() {
   return <section className="waitlist-teaser wrap" aria-labelledby="waitlist-teaser-heading">
@@ -35,7 +38,7 @@ function FeaturedCollection() {
     <section className="section collection-stage" aria-label="Featured compounds">
       <div className="wrap flex flex-wrap items-end justify-between gap-6">
         <div><p className="label label-cyan">Featured compounds</p><h2 className="atmo-title mt-4"><span className="atmo-line">Every molecule has</span><span className="atmo-neon"><span className="atmo-glow" aria-hidden>its own atmosphere.</span><span className="atmo-glow atmo-glow-b" aria-hidden>its own atmosphere.</span><span className="atmo-foil">its own atmosphere.</span></span></h2></div>
-        <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length}</LiquidGlassLink>
+        <LiquidGlassLink to="/explore">Explore all {COMPOUNDS.length}</LiquidGlassLink>
       </div>
       <FeaturedOrbit compounds={featured} />
     </section>
@@ -57,7 +60,7 @@ function MobileShopBar() {
   }, [])
   return (
     <div className="mobile-shop-bar" data-show={show ? '1' : undefined} aria-hidden={!show}>
-      <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length} →</LiquidGlassLink>
+      <LiquidGlassLink to="/explore">Explore all {COMPOUNDS.length} →</LiquidGlassLink>
     </div>
   )
 }
@@ -111,8 +114,8 @@ function ResearchDomains() {
     return () => io.disconnect()
   }, [])
   return (
-    <section className="section wrap" aria-label="Shop by topic">
-      <p className="label label-cyan">Shop by what you’re after</p>
+    <section className="section wrap" aria-label="Explore by topic">
+      <p className="label label-cyan">Explore by topic</p>
       <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">What are you here for?</h2>
       <p className="lede mt-4 max-w-xl hidden md:block">Seven doors into the collection. Pick one.</p>
       <div ref={grid} className="topic-grid mt-10">
@@ -160,6 +163,6 @@ function MethodPreview() {
 
 function FinalShop() {
   return (
-    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">{BRAND} collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See the molecule.<br/>Then decide.</h2><p className="lede mt-6 mx-auto max-w-xl">{brand.secondaryTagline}</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">Checkout will open after pricing, shipping, and product eligibility are confirmed.</p></div></section>
+    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">{BRAND} collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See the molecule.<br/>Follow the evidence.</h2><p className="lede mt-6 mx-auto max-w-xl">{brand.secondaryTagline}</p><Link to="/explore" className="btn btn-primary mt-9">Explore the library</Link><p className="mt-6 text-[11px] faint">All profiles are informational until verified lot-specific inventory is added.</p></div></section>
   )
 }

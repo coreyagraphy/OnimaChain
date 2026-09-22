@@ -62,7 +62,7 @@ function NotFound() {
         <h1 className="display text-[clamp(2.6rem,7vw,6rem)]">This pathway ends here.</h1>
         <p className="lede mt-6 max-w-xl"><b className="text-bone">This page may have moved, or the link may be wrong. You can return to {BRAND} and keep exploring.</b></p>
         <div className="mt-8 flex gap-3">
-          <Link to="/explore" className="btn btn-primary">Shop peptides</Link>
+          <Link to="/explore" className="btn btn-primary">Explore research</Link>
           <Link to="/" className="btn">Back to {BRAND}</Link>
         </div>
       </div>

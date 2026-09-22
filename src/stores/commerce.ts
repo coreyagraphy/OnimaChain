@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { availableListingFor } from '~/data/research-entities'
 
 export interface CartLine { slug: string; quantity: number; variantId?: string | null }
 
@@ -33,7 +34,7 @@ export const useCommerceStore = create<CommerceState>((set, get) => ({
         : undefined
       const legacy = legacyEntry?.[1] ?? null
       const parsed = JSON.parse(current ?? legacy ?? '[]') as CartLine[]
-      const items = Array.isArray(parsed) ? parsed.filter((x) => x?.slug && x.quantity > 0) : []
+      const items = Array.isArray(parsed) ? parsed.filter((x) => x?.slug && x.quantity > 0 && availableListingFor(x.slug)) : []
       if (legacy !== null) {
         window.localStorage.setItem(KEY, JSON.stringify(items))
         for (const key of LEGACY_KEYS) window.localStorage.removeItem(key)
@@ -42,6 +43,7 @@ export const useCommerceStore = create<CommerceState>((set, get) => ({
     } catch { set({ hydrated: true }) }
   },
   add: (slug, quantity = 1, variantId = null) => set((state) => {
+    if (!availableListingFor(slug)) return state
     const found = state.items.find((line) => line.slug === slug && (line.variantId ?? null) === variantId)
     const items = found
       ? state.items.map((line) => line.slug === slug && (line.variantId ?? null) === variantId ? { ...line, quantity: line.quantity + quantity } : line)

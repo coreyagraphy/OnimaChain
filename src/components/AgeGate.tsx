@@ -42,7 +42,7 @@ export function AgeGate() {
             <ul className="relative mt-4 grid gap-1.5 text-[13px] text-bone/65">
               <li>Everything here is for research and education. It is not medical advice.</li>
               <li>We never tell you how much to take or how to use anything.</li>
-              <li>Prices and checkout are still being finalized.</li>
+              <li>Profiles are informational unless verified inventory is explicitly shown. There is no active checkout.</li>
             </ul>
             <div className="relative mt-7 flex flex-wrap gap-3">
               <button className="btn btn-primary" onClick={accept} autoFocus>Yes, I&rsquo;m 21 or older</button>

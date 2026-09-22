@@ -12,6 +12,7 @@ import { useFitText } from '~/motion/useFitText'
 import { structurePresentation } from '~/data/structure-presentation'
 import { CompositeStructure } from './CompositeStructure'
 import { StrengthPrice } from './StrengthPrice'
+import { availableListingFor } from '~/data/research-entities'
 import { useCanvasAllowed } from '~/motion/useReducedMotion'
 
 const CardMoleculeScene = lazy(() => import('~/scenes/card/CardMoleculeScene').then((m) => ({ default: m.CardMoleculeScene })))
@@ -24,6 +25,7 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
   const domain = DOMAIN_BY_ID[compound.domain]
   const theme = themeFor(compound)
   const presentation = structurePresentation(compound)
+  const listing = availableListingFor(compound.slug)
   const geometry = useMemo(() => buildChain(compound), [compound])
   const add = useCommerceStore((s) => s.add)
   const setQuickView = useCommerceStore((s) => s.setQuickView)
@@ -62,10 +64,10 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
       <span className="product-structure-kind" aria-label={`Structure provenance: ${presentation.label}`}>{presentation.label}</span>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
         <div className="min-w-0 overflow-hidden"><h3 ref={nameRef} className="wordmark product-card-title w-full min-w-0" style={titleStyle}>{displayName(compound)}</h3></div>
-        <div className="pointer-events-auto mt-3"><StrengthPrice compound={compound} value={variantId} onChange={setVariantId} compact /></div>
+        <div className="pointer-events-auto mt-3">{listing ? <StrengthPrice compound={compound} value={variantId} onChange={setVariantId} compact /> : <span className="label label-cyan">Informational profile</span>}</div>
         <p className="mt-2 text-[12px] font-semibold leading-relaxed text-bone/78 line-clamp-3">{descriptionFor(compound)}</p>
         <div className="product-structure-detail mt-3 text-[11px] text-bone/65 line-clamp-2">{presentation.detail}</div>
-        <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Quick view</button><button className="btn btn-sm commerce-btn justify-center" onClick={quickAdd} data-cursor="add">{added ? 'Added' : 'Add to cart'}</button></div>
+        <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Quick view</button>{listing ? <button className="btn btn-sm commerce-btn justify-center" onClick={quickAdd} data-cursor="add">{added ? 'Added' : 'Add to cart'}</button> : <Link to="/compound/$slug" params={{ slug: compound.slug }} className="btn btn-sm justify-center">View research</Link>}</div>
       </div>
       <div className="product-card-edge" aria-hidden />
     </article>
