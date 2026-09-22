@@ -8,13 +8,13 @@ interface Props {
   compact?: boolean
 }
 
-/** Explicitly provisional commerce UI; real strengths/prices must replace examples together. */
+/** Explicitly provisional commerce UI; real dosage/prices must replace placeholders together. */
 export function StrengthPrice({ compound, value, onChange, compact = false }: Props) {
   const variants = variantsFor(compound.slug)
   return <div className={`strength-price ${compact ? 'strength-price-compact' : ''}`}>
     <label className="strength-field">
-      <span className="strength-caption">Strength {variants.length ? '· example' : '· pending'}</span>
-      <select aria-label={`${displayName(compound)} strength`} value={value ?? ''} onChange={(event) => onChange(event.target.value || null)} disabled={!variants.length}>
+      <span className="strength-caption">Dosage · pending</span>
+      <select aria-label={`${displayName(compound)} dosage`} value={value ?? ''} onChange={(event) => onChange(event.target.value || null)} disabled={!variants.length}>
         {variants.length ? variants.map((variant) => <option key={variant.id} value={variant.id}>{variant.label}</option>) : <option value="">Options to be confirmed</option>}
       </select>
     </label>

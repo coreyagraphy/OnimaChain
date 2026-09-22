@@ -59,7 +59,7 @@ function CartDrawer() {
                     {presentation.kind === 'blend' ? <div className="w-20 h-20 flex shrink-0">{(['bpc-157', 'tb-500'] as const).map((slug) => <SequenceSVG key={slug} geometry={buildChain(COMPOUND_BY_SLUG[slug])} tint={themeFor(COMPOUND_BY_SLUG[slug]).primary} className="w-10 h-20 p-1" />)}</div> : geometry ? <SequenceSVG geometry={geometry} tint={theme.primary} className="w-20 h-20 p-2" /> : <div className="w-20 h-20 grid place-items-center text-[10px] text-bone/60 text-center">No model</div>}
                     <div className="min-w-0 grow">
                       <Link to="/compound/$slug" params={{ slug: c.slug }} onClick={() => setCartOpen(false)} className="display-md text-lg hover:text-cyan">{displayName(c)}</Link>
-                      <p className="mono text-[12px] mt-1" style={{ color: theme.primary }}>{variantFor(c.slug, line.variantId)?.label ?? 'Strength pending'} · {priceFor(c.slug, line.variantId)} <span className="text-bone/45">placeholder</span></p>
+                      <p className="mono text-[12px] mt-1" style={{ color: theme.primary }}>{variantFor(c.slug, line.variantId)?.label ?? 'Dosage pending'} · {priceFor(c.slug, line.variantId)} <span className="text-bone/45">placeholder</span></p>
                       <div className="mt-3 flex items-center gap-2">
                         <button className="quantity-btn" onClick={() => setQuantity(c.slug, line.quantity - 1, line.variantId)} aria-label={`Decrease ${displayName(c)} quantity`}>−</button>
                         <span className="mono text-sm w-6 text-center">{line.quantity}</span>

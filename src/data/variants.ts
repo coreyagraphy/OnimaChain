@@ -1,20 +1,21 @@
-/** Commercial data is illustrative until strengths, inventory, and prices are approved. */
+/** Draft choices only; no dosage or price has been supplied for sale. */
 export interface ProductVariant {
   id: string
   label: string
   pricePlaceholder: string
-  illustrative: true
+  status: 'placeholder'
 }
 
-// This is an interaction example, not a claim that either strength is stocked.
-const EXAMPLE_VARIANTS: Record<string, readonly ProductVariant[]> = {
-  epitalon: [
-    { id: 'example-5mg', label: 'Example 5 mg', pricePlaceholder: '$XX.XX', illustrative: true },
-    { id: 'example-10mg', label: 'Example 10 mg', pricePlaceholder: '$YY.YY', illustrative: true },
-  ],
-}
+// Add the owner-confirmed 20 slugs here. Epitalon stays only to replace the
+// previously published 5 mg / 10 mg demonstration with non-numeric placeholders.
+export const DOSAGE_PLACEHOLDER_SLUGS = ['epitalon'] as const
+const PLACEHOLDER_SLUGS = new Set<string>(DOSAGE_PLACEHOLDER_SLUGS)
+const PLACEHOLDER_VARIANTS: readonly ProductVariant[] = [
+  { id: 'dosage-a', label: 'Dosage A · TBD', pricePlaceholder: '$XX.XX', status: 'placeholder' },
+  { id: 'dosage-b', label: 'Dosage B · TBD', pricePlaceholder: '$YY.YY', status: 'placeholder' },
+]
 
-export const variantsFor = (slug: string): readonly ProductVariant[] => EXAMPLE_VARIANTS[slug] ?? []
+export const variantsFor = (slug: string): readonly ProductVariant[] => PLACEHOLDER_SLUGS.has(slug) ? PLACEHOLDER_VARIANTS : []
 export const defaultVariantId = (slug: string): string | null => variantsFor(slug)[0]?.id ?? null
 export const variantFor = (slug: string, id?: string | null): ProductVariant | undefined => variantsFor(slug).find((variant) => variant.id === id)
 export const priceFor = (slug: string, id?: string | null): string => variantFor(slug, id)?.pricePlaceholder ?? '$XX.XX'
