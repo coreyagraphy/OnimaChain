@@ -76,7 +76,7 @@ export function PulseStream({ compound, limit = 10 }: { compound?: string; limit
     return [...mine.slice(0, Math.ceil(limit / 2)), ...all.filter((e) => !mine.slice(0, Math.ceil(limit / 2)).includes(e))].slice(0, limit)
   }, [snap, compound, limit, follows])
   if (loading) return <div className="pulse-rail" aria-busy="true">{[0, 1, 2].map((i) => <div key={i} className="pulse-card pulse-skeleton" />)}</div>
-  if (!events.length) return <p className="wrap text-[14px] text-bone/60">Nothing new in the last few weeks. The feed checks every 4 hours.</p>
+  if (!events.length) return <p className="wrap text-[14px] text-bone/60">Nothing new in the last few weeks. The feed checks every 2 hours.</p>
   return <div className="pulse-rail" role="list">{events.map((e) => <div role="listitem" key={e.id} className="pulse-rail-item"><PulseCard e={e} compact isNew={isNewSince(e, last)} /></div>)}</div>
 }
 

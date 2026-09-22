@@ -74,7 +74,7 @@ function PulsePage() {
         <p className="label label-cyan">PulseChain</p>
         <h1 className="display text-[clamp(2.4rem,7vw,5.6rem)] mt-3 leading-[0.95]">What moved<br /><span className="bond-title-accent">in peptides.</span></h1>
         <p className="lede mt-5 max-w-2xl">Why it matters. Where it came from. We pull new papers, trial changes, regulatory news and the conversation around them, fold the copies into one story, and tie each one back to its compound.</p>
-        {snap && <p className="mt-4 mono text-[11px] text-bone/50">Updated {timeAgo(snap.generatedAt)} · checks every 4 hours</p>}
+        {snap && <p className="mt-4 mono text-[11px] text-bone/50">Updated {timeAgo(snap.generatedAt)} · checks every 2 hours · nothing older than 30 days</p>}
       </header>
 
       <section className="wrap mt-8 grid gap-4 lg:grid-cols-[1fr_minmax(280px,360px)] items-start">

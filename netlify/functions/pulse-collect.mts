@@ -3,7 +3,7 @@ import type { Config } from '@netlify/functions'
 import { runAndStore } from './lib/pulse-run.mts'
 
 /*
- * Every 4 hours. Hands the work to the background function (15-minute limit); if background functions
+ * Every 2 hours. Hands the work to the background function (15-minute limit); if background functions
  * aren't available on this plan, runs inline instead (scheduled functions get 30 seconds).
  */
 export default async () => {
@@ -16,4 +16,4 @@ export default async () => {
   await runAndStore(getStore('pulse'))
 }
 
-export const config: Config = { schedule: '0 */4 * * *' }
+export const config: Config = { schedule: '0 */2 * * *' }

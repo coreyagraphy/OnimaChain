@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useRef, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
 import { FeaturedOrbit } from '~/components/FeaturedOrbit'
 import { LiquidGlassLink } from '~/components/LiquidGlassLink'
 import { PulseStream, SinceLastVisit } from '~/components/Pulse'
-import { usePulse } from '~/pulse/usePulse'
+import { timeAgo, usePulse } from '~/pulse/usePulse'
+import { PulseDeck, PulseLine, PulseTicker, usePulseEvents } from '~/components/PulseDeck'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
 import { BRAND } from '~/brand'
@@ -12,7 +13,7 @@ import { BRAND } from '~/brand'
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
-  return <><Hero /><FeaturedCollection /><PulseHome /><Difference /><ResearchDomains /><MethodPreview /><FinalShop /></>
+  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><FinalShop /><MobileShopBar /></>
 }
 
 function FeaturedCollection() {
@@ -28,20 +29,46 @@ function FeaturedCollection() {
   )
 }
 
+/** Phones: once past the intro, a floating "Shop all" button stays in reach. */
+function MobileShopBar() {
+  const [show, setShow] = useState(false)
+  useEffect(() => {
+    const on = () => {
+      const footer = document.querySelector('footer')
+      const nearEnd = footer ? footer.getBoundingClientRect().top < window.innerHeight : false
+      setShow(window.scrollY > window.innerHeight * 1.2 && !nearEnd)
+    }
+    on()
+    window.addEventListener('scroll', on, { passive: true })
+    return () => window.removeEventListener('scroll', on)
+  }, [])
+  return (
+    <div className="mobile-shop-bar" data-show={show ? '1' : undefined} aria-hidden={!show}>
+      <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length} →</LiquidGlassLink>
+    </div>
+  )
+}
+
 function PulseHome() {
   const { snap } = usePulse()
+  const events = usePulseEvents(10)
+  const [lane, setLane] = useState('#5FE3FF')
   return (
-    <section className="section pulse-home" aria-labelledby="pulse-h">
-      <div className="wrap grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+    <section className="section pulse-home" aria-labelledby="pulse-h" style={{ '--deck-lane': lane } as CSSProperties}>
+      <div className="pulse-home-glow" aria-hidden />
+      <PulseLine />
+      <div className="wrap relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="label label-cyan"><span className="pulse-live" aria-hidden />PulseChain</p>
+          <p className="label label-cyan pulse-live-label"><span className="pulse-live" aria-hidden />Live · PulseChain{snap && <span className="pulse-updated">updated {timeAgo(snap.generatedAt)}</span>}</p>
           <h2 id="pulse-h" className="display text-[clamp(2.2rem,5.4vw,4.6rem)] mt-3 leading-[0.98]">The peptide world<br />doesn’t stand still.</h2>
-          <p className="lede mt-4 max-w-xl">New papers. Trial changes. Regulatory news. Videos gaining traction. We pull it together so you don’t have to hunt for it.</p>
+          <p className="lede mt-4 max-w-xl hidden md:block">New papers. Trial changes. Regulatory news. Videos gaining traction. Nothing older than 30 days, checked every 2 hours.</p>
         </div>
         {snap && <SinceLastVisit events={snap.events} />}
       </div>
-      <div className="mt-8"><PulseStream limit={10} /></div>
-      <div className="wrap mt-6"><Link to="/pulse" className="btn">Open PulseChain →</Link></div>
+      <div className="relative mt-6"><PulseTicker events={events} /></div>
+      <div className="relative mt-6 pulse-home-deck"><PulseDeck events={events} onLane={setLane} /></div>
+      <div className="relative mt-8 pulse-home-rail"><PulseStream limit={10} /></div>
+      <div className="wrap relative mt-6"><Link to="/pulse" className="btn">Open PulseChain →</Link></div>
     </section>
   )
 }
@@ -74,7 +101,7 @@ function ResearchDomains() {
     <section className="section wrap" aria-label="Shop by topic">
       <p className="label label-cyan">Shop by what you’re after</p>
       <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">What are you here for?</h2>
-      <p className="lede mt-4 max-w-xl">Seven doors into the collection. Pick one.</p>
+      <p className="lede mt-4 max-w-xl hidden md:block">Seven doors into the collection. Pick one.</p>
       <div ref={grid} className="topic-grid mt-10">
         {DOMAINS.map((d, i) => {
           const count = COMPOUNDS.filter((c) => c.domain === d.id).length
@@ -84,12 +111,12 @@ function ResearchDomains() {
               <span className="topic-veil" aria-hidden />
               <span className="topic-sheen" aria-hidden />
               <span className="relative z-[2] flex items-center justify-between gap-3">
-                <span className="mono text-[11px] text-bone/55">0{i + 1}</span>
+                <span className="topic-num mono text-[11px] text-bone/55">0{i + 1}</span>
                 <span className="topic-count">{count} {count === 1 ? 'peptide' : 'peptides'}</span>
               </span>
               <span className="relative z-[2] mt-auto">
                 <strong className="display-md block text-2xl md:text-[1.9rem] leading-tight">{d.name}</strong>
-                <span className="block mt-2 text-[14px] text-bone/75 max-w-[30ch]">{d.tagline}</span>
+                <span className="topic-tagline block mt-2 text-[14px] text-bone/75 max-w-[30ch]">{d.tagline}</span>
                 <span className="topic-cta">See all {count} →</span>
               </span>
             </Link>

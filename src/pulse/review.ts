@@ -1,3 +1,4 @@
+import { isFresh } from './fresh.ts'
 import type { PulseEvent, PulseSnapshot } from './types.ts'
 
 /*
@@ -34,7 +35,8 @@ export function applyDecision(all: Decisions, id: string, action: ReviewAction, 
 export function publicView(snap: PulseSnapshot, d: Decisions): PulseSnapshot {
   const mark = (e: PulseEvent): ReviewedEvent => (d[e.id] ? { ...e, reviewed: { action: d[e.id].action, note: d[e.id].note, at: d[e.id].at } } : e)
   const approved = snap.review.filter((e) => d[e.id]?.action === 'approve').map((e) => ({ ...mark(e), tier: 'auto-labeled' as const }))
-  const events = [...snap.events.filter((e) => d[e.id]?.action !== 'pull' && d[e.id]?.action !== 'reject').map(mark), ...approved]
+  // freshness is enforced on every read too, so items age out between collection runs
+  const events = [...snap.events.filter((e) => d[e.id]?.action !== 'pull' && d[e.id]?.action !== 'reject').map(mark), ...approved].filter((e) => isFresh(e))
   return { ...snap, events, review: [] }
 }
 

@@ -1,5 +1,6 @@
 import { COMPOUNDS } from '../data/compounds.ts'
 import { MARKET_TERMS, fda, news, pubmed, reddit, termsFor, tiktok, trials, youtube, type AdapterEnv, type AdapterResult } from './adapters.ts'
+import { MAX_AGE_DAYS } from './fresh.ts'
 import type { Activity, CompoundTrend, Label, Lane, PulseEvent, PulseSnapshot, SourceItem, Summary } from './types.ts'
 
 /*
@@ -13,7 +14,8 @@ const NAME_BY_SLUG = Object.fromEntries(COMPOUNDS.map((c) => [c.slug, c.slug ===
 /** In the U.S., only these catalog compounds have an FDA-approved use (used to catch "FDA approved X" headlines). */
 const FDA_APPROVED = new Set(['semaglutide', 'tirzepatide', 'tesamorelin', 'pt-141'])
 const FEATURED = new Set(['bpc-157', 'tb-500', 'ghk-cu', 'mots-c', 'pt-141', 'semaglutide', 'semax', 'epitalon', 'retatrutide', 'tirzepatide'])
-const KEEP_DAYS = 60
+/** Events leave the feed once their source date is older than MAX_AGE_DAYS. */
+const KEEP_DAYS = MAX_AGE_DAYS
 const DAY = 864e5
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -66,7 +68,7 @@ export function build(prev: PulseSnapshot | null, fresh: SourceItem[], runs: Pul
 
   // 1. start from what we already know (so mentions accumulate and "first seen" survives)
   const events = new Map<string, PulseEvent>()
-  for (const e of [...(prev?.events ?? []), ...(prev?.review ?? [])]) if (new Date(e.updatedAt).getTime() >= cutoff) events.set(e.id, { ...e, mentions: [...e.mentions] })
+  for (const e of [...(prev?.events ?? []), ...(prev?.review ?? [])]) if (new Date(e.primary.publishedAt).getTime() >= cutoff) events.set(e.id, { ...e, mentions: [...e.mentions] })
   const seenKeys = new Set<string>()
   for (const e of events.values()) { seenKeys.add(e.primary.key); for (const m of e.mentions) seenKeys.add(m.key) }
 
@@ -74,6 +76,8 @@ export function build(prev: PulseSnapshot | null, fresh: SourceItem[], runs: Pul
   const items = new Map<string, SourceItem & { compounds: string[] }>()
   for (const it of fresh) {
     if (items.has(it.key)) continue
+    // too old to be news, whatever the source returned
+    if (!(new Date(it.publishedAt).getTime() >= cutoff)) continue
     const linked = new Set(mentions(it.kind === 'youtube' ? `${it.title} ${it.snippet.slice(0, 160)}` : `${it.title} ${it.snippet}`))
     if (typeof it.facts.query === 'string' && it.kind !== 'youtube') linked.add(it.facts.query)
     if (it.kind === 'youtube' && typeof it.facts.query === 'string' && linked.size === 0 && new RegExp(escape(NAME_BY_SLUG[it.facts.query] ?? ''), 'i').test(it.title)) linked.add(it.facts.query)

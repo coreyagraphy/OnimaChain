@@ -1,24 +1,47 @@
 import { useEffect, useState } from 'react'
+import { isFresh } from './fresh'
 import type { Lane, PulseEvent, PulseSnapshot } from './types'
 
 /*
  * Client access to PulseChain. Live snapshot from the scheduled collector (/api/pulse) first;
  * the snapshot built at deploy time (/pulse.json) if the live one isn't there yet or can't be reached.
  */
-let cache: Promise<PulseSnapshot | null> | null = null
-function load(): Promise<PulseSnapshot | null> {
-  if (!cache) {
-    const get = (u: string) => fetch(u, { headers: { accept: 'application/json' } }).then((r) => (r.ok ? (r.json() as Promise<PulseSnapshot>) : Promise.reject(r.status)))
-    cache = get('/api/pulse').catch(() => get('/pulse.json')).catch(() => null)
-  }
-  return cache
+/** Every open page re-checks while it's visible, so the feed keeps moving without a reload. */
+const REFRESH_MS = 5 * 60 * 1000
+let current: PulseSnapshot | null = null
+let loaded = false
+let inflight: Promise<void> | null = null
+let timer: ReturnType<typeof setInterval> | null = null
+const subs = new Set<() => void>()
+
+/** Old items never reach the screen, even from a cached or fallback copy. */
+function clean(s: PulseSnapshot | null): PulseSnapshot | null {
+  return s ? { ...s, events: (s.events ?? []).filter((e) => isFresh(e)) } : null
+}
+function fetchSnap(): Promise<void> {
+  if (inflight) return inflight
+  const get = (u: string) => fetch(u, { headers: { accept: 'application/json' }, cache: 'no-cache' }).then((r) => (r.ok ? (r.json() as Promise<PulseSnapshot>) : Promise.reject(r.status)))
+  inflight = get('/api/pulse').catch(() => get('/pulse.json')).catch(() => null)
+    .then((s) => { if (s && (!current || s.generatedAt !== current.generatedAt)) { current = clean(s); subs.forEach((f) => f()) } else if (!loaded) subs.forEach((f) => f()) ; loaded = true })
+    .finally(() => { inflight = null })
+  return inflight
+}
+function startPolling() {
+  if (timer || typeof window === 'undefined') return
+  timer = setInterval(() => { if (document.visibilityState === 'visible') fetchSnap() }, REFRESH_MS)
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') fetchSnap() })
 }
 
 export function usePulse(): { snap: PulseSnapshot | null; loading: boolean } {
-  const [snap, setSnap] = useState<PulseSnapshot | null>(null)
-  const [loading, setLoading] = useState(true)
-  useEffect(() => { let on = true; load().then((s) => { if (on) { setSnap(s); setLoading(false) } }); return () => { on = false } }, [])
-  return { snap, loading }
+  const [, force] = useState(0)
+  useEffect(() => {
+    const f = () => force((n) => n + 1)
+    subs.add(f)
+    if (!loaded) fetchSnap()
+    startPolling()
+    return () => { subs.delete(f) }
+  }, [])
+  return { snap: current, loading: !loaded }
 }
 
 /* ── "Since your last visit" ── */

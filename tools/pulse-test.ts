@@ -150,4 +150,11 @@ test('YouTube language filter keeps English, drops Spanish/Portuguese/French', (
   assert.ok(!looksEnglish('Tout savoir sur la R3 pour les débutants'))
 })
 
+test('freshness: nothing older than 30 days gets in, and items age out on later runs', () => {
+  const s1 = build(null, [paper('old', 'BPC-157 old paper', { publishedAt: day(40) }), paper('new', 'BPC-157 new paper', { publishedAt: day(29) })], runs, now)
+  assert.deepEqual(s1.events.map((e) => e.id), ['pmid:new'])
+  const s2 = build(s1, [], runs, new Date(now.getTime() + 2 * 864e5))
+  assert.equal(s2.events.length, 0)
+})
+
 console.log(`pulse engine: ${passed} passed`)

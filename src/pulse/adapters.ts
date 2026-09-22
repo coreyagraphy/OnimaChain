@@ -132,7 +132,7 @@ function entryDate(d: { history?: Array<{ pubstatus: string; date: string }>; ep
 export async function trials(env: AdapterEnv): Promise<AdapterResult> {
   const source = 'ClinicalTrials.gov'
   try {
-    const since = daysAgo(env.now, 45).toISOString().slice(0, 10)
+    const since = daysAgo(env.now, 30).toISOString().slice(0, 10)
     const items: SourceItem[] = []
     const seen = new Set<string>()
     for (const c of COMPOUNDS) {
@@ -156,7 +156,7 @@ export async function trials(env: AdapterEnv): Promise<AdapterResult> {
       }
       await sleep(150)
     }
-    return { source, ok: true, items, note: `${items.length} trials updated in the last 45 days` }
+    return { source, ok: true, items, note: `${items.length} trials updated in the last 30 days` }
   } catch (e) { return { source, ok: false, items: [], note: String(e).slice(0, 140) } }
 }
 
@@ -217,8 +217,8 @@ export async function news(env: AdapterEnv, mentions: (t: string) => string[]): 
 }
 
 /* ── YouTube Data API v3 ── */
-/** search.list costs 100 quota units; six compounds per run × six runs a day stays well inside the 10,000/day default. */
-const YT_PER_RUN = 6
+/** search.list costs 100 quota units; four compounds per run × twelve runs a day (every 2 hours) = 4,800 of the 10,000/day default. */
+const YT_PER_RUN = 4
 export async function youtube(env: AdapterEnv): Promise<AdapterResult> {
   const source = 'YouTube'
   if (!env.youtubeKey) return { source, ok: false, items: [], note: 'Off: add YOUTUBE_API_KEY to switch on' }
