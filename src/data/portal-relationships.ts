@@ -1,6 +1,6 @@
-import { COMPOUND_BY_SLUG, type Compound } from './compounds'
+import { COMBINATIONS, RESEARCH_COMPOUNDS, RESEARCH_ENTITY_BY_ID, TARGETS, type ResearchEntity } from './research-entities'
 
-/** Curated, typed links. A shared shopping topic or keyword is not an evidence relationship. */
+/** Relationships are projections of the canonical registry, never a second catalog. */
 export interface PortalRelationship {
   from: string
   to: string
@@ -10,39 +10,37 @@ export interface PortalRelationship {
   kind: 'component' | 'receptor'
 }
 
+const targetLabels = Object.fromEntries(TARGETS.map((target) => [target.id, target.label]))
+
 export const PORTAL_RELATIONSHIPS: PortalRelationship[] = [
-  {
-    from: 'wolverine-blend', to: 'bpc-157', kind: 'component', label: 'Blend component',
-    detail: 'The Wolverine Blend lists BPC-157 as one of its two separate components; it is not one peptide.',
-    source: 'catalog:compound:wolverine-blend',
-  },
-  {
-    from: 'wolverine-blend', to: 'tb-500', kind: 'component', label: 'Blend component',
-    detail: 'The Wolverine Blend lists TB-500 as one of its two separate components; it is not one peptide.',
-    source: 'catalog:compound:wolverine-blend',
-  },
-  {
-    from: 'semaglutide', to: 'tirzepatide', kind: 'receptor', label: 'GLP-1 receptor',
-    detail: 'Both have GLP-1 receptor activity. Tirzepatide also acts at the GIP receptor.',
-    source: 'https://pubmed.ncbi.nlm.nih.gov/39019866/',
-  },
-  {
-    from: 'semaglutide', to: 'retatrutide', kind: 'receptor', label: 'GLP-1 receptor',
-    detail: 'Both have GLP-1 receptor activity. Retatrutide also acts at the GIP and glucagon receptors.',
-    source: 'https://pubmed.ncbi.nlm.nih.gov/39019866/',
-  },
-  {
-    from: 'tirzepatide', to: 'retatrutide', kind: 'receptor', label: 'GLP-1 + GIP receptors',
-    detail: 'Both have GLP-1 and GIP receptor activity. Retatrutide additionally acts at the glucagon receptor.',
-    source: 'https://pubmed.ncbi.nlm.nih.gov/39019866/',
-  },
+  ...COMBINATIONS.flatMap((combination) => combination.componentIds.map((componentId) => ({
+    from: combination.id,
+    to: componentId,
+    kind: 'component' as const,
+    label: 'Component',
+    detail: `${RESEARCH_ENTITY_BY_ID[componentId]?.name ?? componentId} is one separate component of ${combination.name}; the combination is not a single molecule.`,
+    source: combination.source ?? `/combinations#${combination.id}`,
+  }))),
+  ...RESEARCH_COMPOUNDS.flatMap((first, index) => RESEARCH_COMPOUNDS.slice(index + 1).flatMap((second) => {
+    const shared = first.targets.filter((target) => second.targets.includes(target))
+    if (!shared.length) return []
+    const names = shared.map((target) => targetLabels[target]).join(' + ')
+    return [{
+      from: first.id,
+      to: second.id,
+      kind: 'receptor' as const,
+      label: names,
+      detail: `${first.name} and ${second.name} are both mapped to ${names} in the OnimaChain target registry. Shared target mapping does not establish equivalent effects or safety.`,
+      source: '/targets',
+    }]
+  })),
 ]
 
-export function relationshipsFor(slug: string, pool: Compound[] = Object.values(COMPOUND_BY_SLUG)) {
-  const allowed = new Set(pool.map((compound) => compound.slug))
+export function relationshipsFor(id: string, pool: ResearchEntity[] = Object.values(RESEARCH_ENTITY_BY_ID)) {
+  const allowed = new Set(pool.map((entity) => entity.id))
   return PORTAL_RELATIONSHIPS.flatMap((relationship) => {
-    const otherSlug = relationship.from === slug ? relationship.to : relationship.to === slug ? relationship.from : null
-    const compound = otherSlug && allowed.has(otherSlug) ? COMPOUND_BY_SLUG[otherSlug] : null
-    return compound ? [{ compound, relationship }] : []
+    const otherId = relationship.from === id ? relationship.to : relationship.to === id ? relationship.from : null
+    const entity = otherId && allowed.has(otherId) ? RESEARCH_ENTITY_BY_ID[otherId] : null
+    return entity ? [{ entity, relationship }] : []
   })
 }

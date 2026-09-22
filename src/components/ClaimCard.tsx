@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { Claim } from '~/data/claims'
-import { COMPOUND_BY_SLUG, displayName } from '~/data/compounds'
+import { RESEARCH_ENTITY_BY_ID, commerceLabelFor } from '~/data/research-entities'
 import { STUDY_BY_PMID } from '~/data/studies'
 import { SourceBadge } from './SourceBadge'
 
@@ -15,7 +15,7 @@ export function ClaimCard({ claim }: { claim: Claim }) {
         <span className="chip">A claim we track</span>
       </div>
       <h3 className="display-md text-xl md:text-2xl mt-3">&ldquo;{claim.title}&rdquo;</h3>
-      <p className="text-sm muted mt-2">{displayName(COMPOUND_BY_SLUG[claim.compound])} · about: {claim.outcomeTheme}</p>
+      <p className="text-sm muted mt-2">{RESEARCH_ENTITY_BY_ID[claim.compound]?.name ?? claim.compound} · about: {claim.outcomeTheme} · {RESEARCH_ENTITY_BY_ID[claim.compound] ? commerceLabelFor(RESEARCH_ENTITY_BY_ID[claim.compound]) : 'Research record'}</p>
       <div className="mt-4 flex flex-wrap gap-2 items-center">
         <span className="text-[11px] label">Started with</span>
         <SourceBadge pmid={claim.originStudy} verified={origin?.status === 'verified'} link={false} />

@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import { BRAND } from '~/brand'
-import { CLAIMS } from '~/data/claims'
+import { CLAIMS, type ChangeEvent } from '~/data/claims'
 import { TimelineLane } from '~/components/TimelineLane'
+import { RESEARCH_ENTITIES, WATCHLIST, REGULATORY_RECORDS, RESEARCH_ENTITY_BY_ID, entityTypeLabel } from '~/data/research-entities'
 
 export const Route = createFileRoute('/timeline')({
   head: () => ({ meta: [{ title: `Timeline — ${BRAND}` }] }),
@@ -10,6 +11,19 @@ export const Route = createFileRoute('/timeline')({
 })
 
 const LANES = ['research', 'trials', 'regulatory', 'signal'] as const
+type LedgerEvent = ChangeEvent & { claim?: string; entityId?: string; source?: string }
+const LEDGER_EVENTS: LedgerEvent[] = [
+  ...CLAIMS.flatMap((claim) => claim.changeHistory.map((event) => ({ ...event, claim: claim.id, entityId: claim.compound }))),
+  ...WATCHLIST.filter((entity) => entity.statusAsOf && entity.statusSource && entity.stage).map((entity): LedgerEvent => ({
+    date: entity.statusAsOf!, change: `Research status snapshot for ${entity.name}`, before: null, after: entity.stage!,
+    lane: 'research', alteredInterpretation: false, entityId: entity.id, source: entity.statusSource,
+  })),
+  ...REGULATORY_RECORDS.map((record): LedgerEvent => ({
+    date: record.statusAsOf, change: `Regulatory record for ${RESEARCH_ENTITY_BY_ID[record.compoundId]?.name ?? record.compoundId} in ${record.jurisdiction}`,
+    before: null, after: `${record.authority}: ${record.status}`, lane: 'regulatory', alteredInterpretation: false,
+    entityId: record.compoundId, source: record.source,
+  })),
+].sort((a, b) => a.date.localeCompare(b.date))
 
 /**
  * Timeline with a time scrub. Dragging the scrubber moves "now"; events enter the scene from chronological depth.
@@ -18,8 +32,9 @@ const LANES = ['research', 'trials', 'regulatory', 'signal'] as const
 function Timeline() {
   const [only, setOnly] = useState(false)
   const [lanes, setLanes] = useState<Set<string>>(new Set(LANES))
-  const all = useMemo(() => CLAIMS.flatMap((c) => c.changeHistory.map((e) => ({ ...e, claim: c.id }))).sort((a, b) => a.date.localeCompare(b.date)), [])
-  const dates = useMemo(() => Array.from(new Set(all.map((e) => e.date))), [all])
+  const [entityId, setEntityId] = useState('all')
+  const all = useMemo(() => LEDGER_EVENTS.filter((event) => entityId === 'all' || event.entityId === entityId), [entityId])
+  const dates = useMemo(() => Array.from(new Set(LEDGER_EVENTS.map((event) => event.date))), [])
   const [t, setT] = useState(dates.length - 1)
   const now = dates[t] ?? dates[dates.length - 1]
   const events = all.filter((e) => e.date <= now).filter((e) => !only || e.alteredInterpretation)
@@ -27,7 +42,9 @@ function Timeline() {
     <div className="pt-28 wrap">
       <p className="label label-amber">Timeline · change log</p>
       <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">What changed, and when.</h1>
-      <p className="lede mt-5 max-w-2xl">Every entry has a date, a source, what changed, the old version and the new version. We never quietly rewrite history.</p>
+      <p className="lede mt-5 max-w-2xl">Claim edits, sourced Watchlist status snapshots, and any verified regulatory records share one dated view. A status snapshot is not itself a trial milestone or a claim revision.</p>
+
+      <label className="grid gap-2 mt-8 max-w-sm"><span className="label">Research record</span><select value={entityId} onChange={(event) => setEntityId(event.target.value)}><option value="all">All records</option>{RESEARCH_ENTITIES.map((entity) => <option key={entity.id} value={entity.id}>{entity.name} · {entityTypeLabel(entity)}</option>)}</select></label>
 
       <div className="mt-10 panel glass relative p-5 md:p-6">
         <div className="relative flex flex-wrap items-baseline justify-between gap-3">
@@ -38,7 +55,7 @@ function Timeline() {
         <ol className="relative mt-1 flex justify-between mono text-[10px] text-bone/45">
           {dates.map((d, i) => <li key={d} className={i === t ? 'text-cyan' : ''}>{d}</li>)}
         </ol>
-        <p className="relative mt-3 text-[12px] muted">Studies, claim updates and legal changes appear as you move through time. Only real logged entries show up. Before {dates[0]}, there was nothing to log.</p>
+        <p className="relative mt-3 text-[12px] muted">Only indexed claim edits, dated status snapshots, and sourced regulatory records appear. No event is inferred from a compound or combination page.</p>
       </div>
 
       <div className="mt-8 flex flex-wrap gap-2 items-center">
@@ -48,7 +65,7 @@ function Timeline() {
       <div className="mt-6 depth-stage">
         {LANES.filter((l) => lanes.has(l)).map((lane) => <TimelineLane key={lane} lane={lane} events={events.filter((e) => e.lane === lane)} />)}
       </div>
-      <p className="mt-8 mono text-[11px] text-bone/45">{all.length} entr{all.length === 1 ? 'y' : 'ies'} in the log · Before {dates[0]}: nothing to show.</p>
+      <p className="mt-8 mono text-[11px] text-bone/45">{all.length} entr{all.length === 1 ? 'y' : 'ies'} for this selection · log starts {dates[0]}.</p>
     </div>
   )
 }

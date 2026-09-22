@@ -3,17 +3,18 @@ import type { ChangeEvent } from '~/data/claims'
 import { ChangeDiff } from './ChangeDiff'
 import { EmptyState } from './EmptyState'
 import { gsap } from '~/motion/timeline'
+import { RESEARCH_ENTITY_BY_ID, entityPath } from '~/data/research-entities'
 
 const LANE_LABEL: Record<ChangeEvent['lane'], string> = { research: 'Research', trials: 'Trials', regulatory: 'Regulatory', signal: 'Real-world reports' }
 const LANE_EMPTY: Record<ChangeEvent['lane'], string> = {
-  research: 'Nothing new since we first added this claim.',
-  trials: 'No trials listed yet — we have not connected ClinicalTrials.gov.',
+  research: 'No dated research update is indexed for this selection.',
+  trials: 'No trial milestones are indexed to this exact record yet.',
   regulatory: 'No regulator decisions listed yet.',
   signal: 'No real-world reports yet — social platforms are not connected.',
 }
 
 /** One lane of the ledger. New events enter from chronological depth (translateZ) rather than fading upward. */
-export function TimelineLane({ lane, events }: { lane: ChangeEvent['lane']; events: Array<ChangeEvent & { claim?: string }> }) {
+export function TimelineLane({ lane, events }: { lane: ChangeEvent['lane']; events: Array<ChangeEvent & { claim?: string; entityId?: string; source?: string }> }) {
   const list = useRef<HTMLDivElement>(null)
   const seen = useRef(new Set<string>())
   useLayoutEffect(() => {
@@ -35,9 +36,11 @@ export function TimelineLane({ lane, events }: { lane: ChangeEvent['lane']; even
           <EmptyState compact title={LANE_EMPTY[lane]} />
         ) : (
           events.map((e, i) => (
-            <div key={`${e.claim ?? ''}-${e.date}-${i}`} data-ev={`${e.claim ?? ''}-${e.date}-${e.change}`} className="depth-enter">
+            <div key={`${e.claim ?? e.entityId ?? ''}-${e.date}-${i}`} data-ev={`${e.claim ?? e.entityId ?? ''}-${e.date}-${e.change}`} className="depth-enter">
               {e.claim && <p className="mono text-[11px] text-bone/50 mb-1">{e.claim}</p>}
+              {e.entityId && RESEARCH_ENTITY_BY_ID[e.entityId] && <a className="mono text-[11px] text-cyan mb-1 inline-block" href={entityPath(RESEARCH_ENTITY_BY_ID[e.entityId])}>{RESEARCH_ENTITY_BY_ID[e.entityId].name} ↗</a>}
               <ChangeDiff event={e} />
+              {e.source && <a className="mono text-[11px] text-cyan/75 mt-2 inline-block" href={e.source} target="_blank" rel="noreferrer">Research status source ↗</a>}
             </div>
           ))
         )}

@@ -1,4 +1,4 @@
-import { COMPOUNDS, displayName } from './compounds'
+import { COMPOUNDS, COMPOUND_BY_SLUG, displayName, type Compound } from './compounds'
 
 export type EntityType = 'COMPOUND' | 'COMMUNITY_STACK' | 'CLINICAL_COMBINATION'
 export type CommerceStatus = 'AVAILABLE' | 'OUT_OF_STOCK' | 'NOT_SOLD'
@@ -34,6 +34,8 @@ export interface Combination {
   source?: string
   commerceStatus: 'NOT_SOLD'
 }
+
+export type ResearchEntity = ResearchCompound | Combination
 
 export interface ProductListing {
   id: string
@@ -141,6 +143,21 @@ export const COMBINATIONS: Combination[] = [
   { id: 'petrelintide-enicepatide', type: 'CLINICAL_COMBINATION', name: 'Petrelintide + Enicepatide', aliases: [], summary: 'A registered study pairing two investigational molecules.', componentIds: ['petrelintide', 'enicepatide'], source: 'https://clinicaltrials.gov/study/NCT07589686', commerceStatus: 'NOT_SOLD' },
   { id: 'eloratzp', type: 'CLINICAL_COMBINATION', name: 'EloraTZP', aliases: [], summary: 'A studied combination of eloralintide and tirzepatide, not a new single peptide.', componentIds: ['eloralintide', 'tirzepatide'], source: 'https://investor.lilly.com/news-releases/news-release-details/lilly-present-new-data-foundayo-retatrutide-and-eloratzp-easd', commerceStatus: 'NOT_SOLD' },
 ]
+export const RESEARCH_ENTITIES: ResearchEntity[] = [...RESEARCH_COMPOUNDS, ...COMBINATIONS]
+export const RESEARCH_ENTITY_BY_ID: Record<string, ResearchEntity> = Object.fromEntries(RESEARCH_ENTITIES.map((entity) => [entity.id, entity]))
+
+export function entityTypeLabel(entity: ResearchEntity): string {
+  return entity.type === 'COMPOUND' ? entity.researchStatus === 'WATCHLIST' ? 'Watchlist compound' : 'Compound' : entity.type === 'COMMUNITY_STACK' ? 'Community stack' : 'Clinical combination'
+}
+
+export function entityPath(entity: ResearchEntity): string {
+  return entity.type !== 'COMPOUND' ? `/combinations#${entity.id}` : entity.researchStatus === 'WATCHLIST' ? `/watchlist/${entity.id}` : `/compound/${entity.id}`
+}
+
+export function coreCompoundFor(entity: ResearchEntity): Compound | null {
+  if (entity.type !== 'COMPOUND' || entity.researchStatus !== 'CORE_LIBRARY') return null
+  return COMPOUND_BY_SLUG[entity.id] ?? null
+}
 
 // Empty until actual inventory and its pricing are supplied and verified.
 export const PRODUCT_LISTINGS: ProductListing[] = []
@@ -151,6 +168,17 @@ export const REGULATORY_RECORDS: RegulatoryRecord[] = []
 
 export function availableListingFor(compoundId: string): ProductListing | undefined {
   return PRODUCT_LISTINGS.find((item) => item.compoundId === compoundId && item.commerceStatus === 'AVAILABLE' && item.inventoryLotIds.some((id) => INVENTORY_LOTS.some((lot) => lot.id === id && lot.compoundId === compoundId && lot.productListingId === item.id && lot.quantityAvailable > 0 && lot.verifiedAt && lot.verificationSource)))
+}
+
+export function commerceStatusFor(entity: ResearchEntity): CommerceStatus {
+  if (entity.type !== 'COMPOUND') return 'NOT_SOLD'
+  if (availableListingFor(entity.id)) return 'AVAILABLE'
+  return PRODUCT_LISTINGS.some((listing) => listing.compoundId === entity.id && listing.commerceStatus === 'OUT_OF_STOCK') ? 'OUT_OF_STOCK' : 'NOT_SOLD'
+}
+
+export function commerceLabelFor(entity: ResearchEntity): string {
+  const status = commerceStatusFor(entity)
+  return status === 'AVAILABLE' ? 'Available for research' : status === 'OUT_OF_STOCK' ? 'Currently unavailable' : 'Informational profile'
 }
 
 export function publicCurrentCoas(): LotCOA[] {

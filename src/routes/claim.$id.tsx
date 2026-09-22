@@ -1,6 +1,6 @@
-import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { createFileRoute, notFound } from '@tanstack/react-router'
 import { CLAIM_BY_ID, RELATIONSHIP_LABEL, TRANSLATION_STAGES } from '~/data/claims'
-import { COMPOUND_BY_SLUG, displayName } from '~/data/compounds'
+import { RESEARCH_ENTITY_BY_ID, entityPath } from '~/data/research-entities'
 import { STUDY_BY_PMID } from '~/data/studies'
 import { CORPUS, EMPTY_PLATFORM, HUMAN_SIGNAL_LINE, PLATFORMS } from '~/data/signal'
 import { LineageGraph } from '~/components/LineageGraph'
@@ -32,7 +32,7 @@ const SECTIONS = ['Where it started', 'What was actually tested', 'How the story
 function ClaimPage() {
   const { id } = Route.useLoaderData()
   const claim = CLAIM_BY_ID[id]
-  const compound = COMPOUND_BY_SLUG[claim.compound]
+  const entity = RESEARCH_ENTITY_BY_ID[claim.compound]
   const origin = claim.originStudy ? STUDY_BY_PMID[claim.originStudy] : undefined
   const verifiedOrigin = origin?.status === 'verified'
   return (
@@ -42,7 +42,7 @@ function ClaimPage() {
         <h1 className="display text-[clamp(2.4rem,6vw,5.6rem)] mt-3 max-w-5xl">&ldquo;{claim.title}&rdquo;</h1>
         <div className="mt-5 flex flex-wrap items-center gap-3">
           <span className="chip chip-cyan">A claim we track</span>
-          <Link to="/compound/$slug" params={{ slug: compound.slug }} className="chip hover:border-cyan">{displayName(compound)} ↗</Link>
+          {entity && <a href={entityPath(entity)} className="chip hover:border-cyan">{entity.name} ↗</a>}
           <span className="text-[12px] muted">We don’t stamp claims true or false. We show you where they came from and let you decide.</span>
         </div>
         <nav className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-y hairline py-3" aria-label="Sections">
