@@ -4,7 +4,7 @@
 
 The owner supplied `ChatGPT Image Sep 22, 2026, 02_45_23 PM.png` as the OnimaChain logo and confirmed that spelling. Its unchanged master is tracked at `public/brand/onimachain-master.png`; lossless crops from that same file serve the header wordmark and the full logo on About and in the footer. The browser and touch icons use its mark. The existing page copy was left alone. Earlier plain-language/humanized copy work is in commits `0230833` and `1b6a307`; the logo task did not restore older wording or apply the handoff document's alternate spelling.
 
-Local checks: TypeScript and production Vite build passed. About at 1440, 390, and 320 pixels showed loaded logo assets, no page errors, and no horizontal overflow; screenshots are in ignored `shots/logo-check/`. The payment foundation still defaults disabled. Check the Git log and Netlify site status for the source and production revision before further work.
+The functional source was pushed as `b6659c6bf272266c8f164b382aeb608f812474f0`. The full `npm run build` gate passed, including 9/9 PMID checks, pulse seed, TypeScript, and client/SSR bundles. The build was published to the existing Netlify site as production deploy `6ab2cf868db9da420ae397d1` (2026-09-22). Live `/`, `/about`, and `/claims` returned 200 with OnimaChain titles; the logo images, favicon, and manifest matched local files byte for byte. Desktop and phone browser checks found no page errors or horizontal overflow. Local and live screenshots are in ignored `shots/logo-check/`. The production `PAYMENTS_MODE` setting is absent, so the payment foundation remains disabled. Check Git and Netlify status before further work.
 
 ## Recovery checkpoint — 2026-09-22
 

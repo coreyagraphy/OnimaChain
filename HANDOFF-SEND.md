@@ -13,11 +13,11 @@ This document is the send-ready handoff for the current OnimaChain build. Read i
 | Canonical repository | `C:\Users\corey\Projects\cyravon\cyravon-app` |
 | Private GitHub remote | https://github.com/coreyagraphy/OnimaChain |
 | Branch | `main` |
-| Current source checkpoint | See `git log -1` on `main` and `WORKING_LEDGER.md` for the latest saved work |
+| Live functional source | `b6659c6bf272266c8f164b382aeb608f812474f0` (logo integration); see `git log -1` for later notes |
 | Production site | https://cyravon.netlify.app |
 | Netlify site | `cyravon` |
 | Netlify site ID | `a9d4e072-46d2-447d-b491-58f6882bf167` |
-| Current production deploy at checkpoint | `6ab1e8c80f88f750d0b95551` (2026-09-21; verify in Netlify before deployment) |
+| Current production deploy | `6ab2cf868db9da420ae397d1` (2026-09-22; verify in Netlify before further deployment) |
 | Supplied logo master | `public/brand/onimachain-master.png` (optimized variants beside it) |
 | Older handoff export (superseded by this tracked file) | `C:\Users\corey\Downloads\cyravon-HANDOFF-SEND.md` |
 | Product brief | `CYRAVON_BRIEF.md` |
@@ -28,7 +28,7 @@ This document is the send-ready handoff for the current OnimaChain build. Read i
 
 The GitHub repository is private. Anyone receiving this handoff also needs collaborator access.
 
-The GitHub repository was renamed to `coreyagraphy/OnimaChain` on 2026-09-22. The local repository path, Netlify site/URL, and older filenames retain the former working name as technical identifiers. The current Netlify site is deployed through the CLI; this source checkpoint does not publish the newer work.
+The GitHub repository was renamed to `coreyagraphy/OnimaChain` on 2026-09-22. The local repository path, Netlify site/URL, and older filenames retain the former working name as technical identifiers. The OnimaChain logo build was published to the existing Netlify site through the CLI. Netlify's CLI deploy metadata does not record a Git commit SHA, so the source revision is recorded above.
 
 ## 2. Product direction now in force
 
