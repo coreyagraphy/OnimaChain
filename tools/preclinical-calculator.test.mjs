@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { calculateMouseStudy, formatStudyNumber, mcgToMg, mgToMcg, mlToUl, ulToMl } from '../src/data/preclinical-calculator.ts'
+import { calculateMouseStudy, calculateReconstitution, formatStudyNumber, mcgToMg, mgToMcg, mlToUl, ulToMl } from '../src/data/preclinical-calculator.ts'
 
 const base = { stockMassMg: 5, diluentMl: 1, mouseMassG: 25, targetDose: 2, doseUnit: 'mg/kg', animals: 10, administrations: 3, handlingLossPercent: 10 }
 
@@ -104,4 +104,31 @@ test('display precision preserves small nonzero values and rounds predictably', 
   assert.equal(formatStudyNumber(0.000001), '0.000001')
   assert.equal(formatStudyNumber(1.23456789), '1.23457')
   assert.equal(formatStudyNumber(1e9), '1.00000e+9')
+})
+
+test('reconstitution known answer maps 10 mg plus 3 mL and 500 mcg to mark 15 and 20 doses', () => {
+  const result = calculateReconstitution({ vialMassMg: 10, diluentMl: 3, amountPerDoseMcg: 500 })
+  assert.ok(result)
+  assert.ok(Math.abs(result.concentrationMgMl - 10 / 3) < 1e-12)
+  assert.equal(result.concentrationMcgMl, 10000 / 3)
+  assert.equal(result.drawVolumeMl, 0.15)
+  assert.equal(result.drawVolumeUl, 150)
+  assert.equal(result.u100Mark, 15)
+  assert.equal(result.fullDoses, 20)
+  assert.equal(result.remainderMcg, 0)
+  assert.equal(result.remainderMl, 0)
+})
+
+test('reconstitution reports only full doses and the remaining amount', () => {
+  const result = calculateReconstitution({ vialMassMg: 10, diluentMl: 2, amountPerDoseMcg: 600 })
+  assert.equal(result?.fullDoses, 16)
+  assert.equal(result?.remainderMcg, 400)
+  assert.equal(result?.remainderMl, 0.08)
+  assert.equal(result?.u100Mark, 12)
+})
+
+test('reconstitution rejects incomplete, nonfinite, and larger-than-vial amounts', () => {
+  assert.equal(calculateReconstitution({ vialMassMg: 0, diluentMl: 3, amountPerDoseMcg: 500 }), null)
+  assert.equal(calculateReconstitution({ vialMassMg: 10, diluentMl: Number.NaN, amountPerDoseMcg: 500 }), null)
+  assert.equal(calculateReconstitution({ vialMassMg: 10, diluentMl: 3, amountPerDoseMcg: 10001 }), null)
 })

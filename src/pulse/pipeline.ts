@@ -101,7 +101,7 @@ export function build(prev: PulseSnapshot | null, fresh: SourceItem[], runs: Pul
       id, lane: it.kind === 'pubmed' ? 'research' : it.kind === 'trials' ? 'trials' : 'regulation', labels: [], headline: it.title,
       compounds: it.compounds, primary: it, mentions: old?.mentions ?? [], distinctVoices: 0, concentrated: false, promotional: false,
       conflict: null, change, summary: blankSummary, why: [], tier: 'auto', firstSeen: old?.firstSeen ?? nowIso, updatedAt: old && !changedNow ? old.updatedAt : nowIso,
-    }, now, prev !== null && !seenKeys.has(id)))
+    }, now))
   }
 
   // 4. secondary sources: fold into the event they are about, or cluster with each other
@@ -122,13 +122,13 @@ export function build(prev: PulseSnapshot | null, fresh: SourceItem[], runs: Pul
     if (best && bestScore >= (best.primary.sourceClass === 'primary' ? 0.34 : 0.42)) {
       best.mentions.push(it)
       best.updatedAt = nowIso
-      events.set(best.id, finish(best, now, false))
+      events.set(best.id, finish(best, now))
     } else {
       events.set(it.key, finish({
         id: it.key, lane: it.kind === 'youtube' ? 'video' : it.kind === 'news' ? 'industry' : 'community', labels: [], headline: it.title,
         compounds: it.compounds, primary: it, mentions: [], distinctVoices: 0, concentrated: false, promotional: false, conflict: null, change: null,
         summary: blankSummary, why: [], tier: 'auto', firstSeen: nowIso, updatedAt: nowIso,
-      }, now, true))
+      }, now))
     }
   }
 
@@ -158,7 +158,7 @@ export function build(prev: PulseSnapshot | null, fresh: SourceItem[], runs: Pul
 const blankSummary: Summary = { whatHappened: '', whyItMatters: '', whatItDoesNotShow: null, method: '' }
 
 /** Labels, flags, summary, "why you're seeing this", and publish tier — all from the stored record. */
-function finish(e: PulseEvent, now: Date, isNew: boolean): PulseEvent {
+function finish(e: PulseEvent, now: Date): PulseEvent {
   const p = e.primary
   const all = [p, ...e.mentions]
   const voices = new Map<string, number>()
@@ -191,7 +191,13 @@ function finish(e: PulseEvent, now: Date, isNew: boolean): PulseEvent {
   } else if (p.kind === 'trials') {
     labels.add('TRIAL UPDATE')
     const phases = (p.facts.phases as string[]) ?? []
-    if ((e.change && /completed|terminated|withdrawn|suspended/i.test(e.change.after)) || p.facts.hasResults || (isNew && phases.includes('PHASE3'))) labels.add('MAJOR UPDATE')
+    const recentRegistryDate = (value: unknown) => {
+      const t = new Date(String(value ?? '')).getTime()
+      return Number.isFinite(t) && t <= now.getTime() && now.getTime() - t <= KEEP_DAYS * DAY
+    }
+    const newlyPosted = recentRegistryDate(p.facts.firstPostedAt)
+    const newResults = recentRegistryDate(p.facts.resultsPostedAt)
+    if ((e.change && /completed|terminated|withdrawn|suspended/i.test(e.change.after)) || newResults || (newlyPosted && phases.includes('PHASE3'))) labels.add('MAJOR UPDATE')
   } else if (p.kind === 'fda') {
     labels.add('REGULATORY')
     if (e.compounds.length) labels.add('MAJOR UPDATE')
@@ -243,9 +249,16 @@ function summarize(e: PulseEvent): Summary {
   }
   if (p.kind === 'trials') {
     const ph = phaseLabel((p.facts.phases as string[]) ?? [])
-    const whatHappened = e.change ? `${ph} trial ${p.facts.nct} moved from ${e.change.before} to ${e.change.after}: “${p.title}”` : `${ph} trial ${p.facts.nct} is ${statusLabel(String(p.facts.status)).toLowerCase()}: “${p.title}”`
+    const status = statusLabel(String(p.facts.status)).toLowerCase()
+    const firstPosted = String(p.facts.firstPostedAt ?? '')
+    const wasFirstPosted = Boolean(firstPosted) && firstPosted.slice(0, 10) === p.publishedAt.slice(0, 10)
+    const whatHappened = e.change
+      ? `${ph} trial ${p.facts.nct} moved from ${e.change.before} to ${e.change.after}: “${p.title}”`
+      : wasFirstPosted
+        ? `A ${status} ${ph} trial record was posted on ClinicalTrials.gov: “${p.title}” (${p.facts.nct})`
+        : `ClinicalTrials.gov updated the record for ${status} ${ph} trial ${p.facts.nct}: “${p.title}”`
     const phases = ((p.facts.phases as string[]) ?? []).join(' ')
-    const why = p.facts.hasResults ? 'Results have been posted on the registry.' : /PHASE3/.test(phases) ? 'Phase 3 trials are the large ones regulators use to decide on approval.' : /PHASE2/.test(phases) ? 'Phase 2 tests whether it works in a bigger group of people.' : /PHASE1/.test(phases) ? 'Phase 1 is the first step in people.' : `A registered study involving ${who}.`
+    const why = p.facts.hasResults ? 'The registry includes posted results.' : /PHASE3/.test(phases) ? 'Phase 3 trials are the large ones regulators use to decide on approval.' : /PHASE2/.test(phases) ? 'Phase 2 tests whether it works in a bigger group of people.' : /PHASE1/.test(phases) ? 'Phase 1 is the first step in people.' : `A registered study involving ${who}.`
     return { whatHappened, whyItMatters: why, whatItDoesNotShow: p.facts.hasResults ? null : 'A registry update shows the trial’s status, not its results.', method }
   }
   if (p.kind === 'fda') return { whatHappened: `The FDA posted: “${p.title}”`, whyItMatters: e.compounds.length ? `Official update that can change how ${who} is sold, compounded or prescribed.` : 'Official update that affects the peptide market broadly.', whatItDoesNotShow: null, method }

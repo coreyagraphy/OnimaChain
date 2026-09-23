@@ -5,6 +5,7 @@ import { BRAND } from '~/brand'
 import { cartCount, useCommerceStore } from '~/stores/commerce'
 import { BrandWordmark } from './BrandWordmark'
 import { availableListingFor, PRODUCT_LISTINGS } from '~/data/research-entities'
+import { useAccount } from '~/auth/AccountProvider'
 
 const links = [
   { to: '/shop', label: 'Shop' },
@@ -12,6 +13,7 @@ const links = [
   { to: '/watchlist', label: 'Watchlist' },
   { to: '/combinations', label: 'Stacks' },
   { to: '/targets', label: 'Targets' },
+  { to: '/research-tools/preclinical-calculator', label: 'Mouse Math' },
   { to: '/coa', label: 'Lab Reports' },
   { to: '/learn', label: 'Learn' },
 ] as const
@@ -21,6 +23,7 @@ export function Nav() {
   const [menu, setMenu] = useState(false)
   const count = useCommerceStore(cartCount)
   const setCartOpen = useCommerceStore((s) => s.setCartOpen)
+  const { user, ready } = useAccount()
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setOpen((v) => !v) }
@@ -34,12 +37,12 @@ export function Nav() {
         <div className="wrap h-[72px] flex items-center justify-between">
           <Link to="/" className="brand-home group" aria-label={`${BRAND} home`}><BrandWordmark decorative /></Link>
           <nav className="hidden lg:flex items-center gap-5" aria-label="Primary">
-            {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
+            {links.map((l) => <Link key={l.to} to={l.to} className={`nav-link ${l.to === '/research-tools/preclinical-calculator' ? 'nav-calculator' : ''}`} activeProps={{ className: `nav-link is-active ${l.to === '/research-tools/preclinical-calculator' ? 'nav-calculator' : ''}` }}>{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2">
             <Link to="/waitlist" className="nav-waitlist hidden sm:inline-flex lg:hidden xl:inline-flex">Waitlist <span aria-hidden>↗</span></Link>
             <button className="nav-icon hidden sm:grid" onClick={() => setOpen(true)} aria-label="Search (Cmd/Ctrl K)"><SearchIcon /></button>
-            <span className="nav-icon hidden lg:grid opacity-45" aria-label="Account coming soon" title="Account coming soon"><AccountIcon /></span>
+            <Link to="/account" className={`nav-icon hidden sm:grid ${user ? 'is-signed-in' : ''}`} aria-label={user ? `Account for ${user.email ?? 'signed-in member'}` : ready ? 'Sign in or create an account' : 'Account'} title={user ? user.email : 'Account'}><AccountIcon /></Link>
             {PRODUCT_LISTINGS.some((item) => availableListingFor(item.compoundId)) && <button className="cart-trigger" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${count} items`} data-cursor="cart"><BagIcon /><span>Cart</span><b key={count}>{count}</b></button>}
             <button className="nav-icon lg:hidden" onClick={() => setMenu((v) => !v)} aria-expanded={menu} aria-controls="mobile-nav"><MenuIcon /></button>
           </div>
@@ -48,8 +51,9 @@ export function Nav() {
         {menu && (
           <nav id="mobile-nav" className="lg:hidden bg-obsidian/95 border-b hairline px-5 py-5 grid grid-cols-2 gap-2 fade-up" aria-label="Mobile">
             <Link to="/waitlist" className="label !text-cyan py-3" onClick={() => setMenu(false)}>Join the waitlist</Link>
-            {links.map((l) => <Link key={l.to} to={l.to} className="label !text-bone py-3" onClick={() => setMenu(false)}>{l.label}</Link>)}
+            {links.map((l) => <Link key={l.to} to={l.to} className={`label py-3 ${l.to === '/research-tools/preclinical-calculator' ? '!text-cyan mobile-calculator-link' : '!text-bone'}`} onClick={() => setMenu(false)}>{l.label}</Link>)}
             <button className="label !text-bone py-3 text-left" onClick={() => { setOpen(true); setMenu(false) }}>Search</button>
+            <Link to="/account" className="label !text-cyan py-3" onClick={() => setMenu(false)}>{user ? 'Your account' : 'Sign in / Create account'}</Link>
             <Link to="/methodology" className="label !text-bone py-3" onClick={() => setMenu(false)}>Our method</Link>
           </nav>
         )}

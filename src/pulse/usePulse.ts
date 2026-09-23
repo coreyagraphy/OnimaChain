@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { isFresh } from './fresh'
+import { diversify, isFresh } from './fresh'
 import type { Lane, PulseEvent, PulseSnapshot } from './types'
 
 /*
@@ -134,17 +134,5 @@ export async function shareEvent(e: PulseEvent): Promise<'shared' | 'copied' | '
   try { await navigator.clipboard.writeText(url); return 'copied' } catch { return 'failed' }
 }
 
-/**
- * Keep the ranked order but never show more than two of the same kind in a row, so the top of the feed mixes
- * research, trials, regulation and video instead of six trial updates back to back.
- */
-export function diversify(events: PulseEvent[], maxRun = 2): PulseEvent[] {
-  const pool = [...events], out: PulseEvent[] = []
-  while (pool.length) {
-    const tail = out.slice(-maxRun)
-    const blocked = tail.length === maxRun && tail.every((x) => x.lane === tail[0].lane) ? tail[0].lane : null
-    const i = blocked ? pool.findIndex((x) => x.lane !== blocked) : 0
-    out.push(pool.splice(i === -1 ? 0 : i, 1)[0])
-  }
-  return out
-}
+/** Mix research, trials, regulation and video instead of repeating one lane back to back. */
+export { diversify }

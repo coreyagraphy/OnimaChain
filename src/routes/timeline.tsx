@@ -39,21 +39,21 @@ function Timeline() {
   const now = dates[t] ?? dates[dates.length - 1]
   const events = all.filter((e) => e.date <= now).filter((e) => !only || e.alteredInterpretation)
   return (
-    <div className="pt-28 wrap">
+    <div className="pt-28 wrap timeline-world">
       <p className="label label-amber">Timeline · change log</p>
       <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">What changed, and when.</h1>
       <p className="lede mt-5 max-w-2xl">Claim edits, sourced Watchlist status snapshots, and any verified regulatory records share one dated view. A status snapshot is not itself a trial milestone or a claim revision.</p>
 
       <label className="grid gap-2 mt-8 max-w-sm"><span className="label">Research record</span><select value={entityId} onChange={(event) => setEntityId(event.target.value)}><option value="all">All records</option>{RESEARCH_ENTITIES.map((entity) => <option key={entity.id} value={entity.id}>{entity.name} · {entityTypeLabel(entity)}</option>)}</select></label>
 
-      <div className="mt-10 panel glass relative p-5 md:p-6">
+      <div className="mt-10 panel glass relative p-5 md:p-6 timeline-scrub">
         <div className="relative flex flex-wrap items-baseline justify-between gap-3">
           <p className="label label-cyan">Scrub through time</p>
-          <p className="mono text-[12px] text-bone/70">Now: <span className="text-bone">{now}</span> · {events.length} entr{events.length === 1 ? 'y' : 'ies'} showing · log starts {dates[0]}</p>
+          <p className="mono text-[12px] text-bone/70">Now: <span className="timeline-now">{now}</span> · {events.length} entr{events.length === 1 ? 'y' : 'ies'} showing · log starts {dates[0]}</p>
         </div>
         <input type="range" min={0} max={Math.max(0, dates.length - 1)} step={1} value={t} onChange={(e) => setT(Number(e.target.value))} className="relative w-full mt-3" aria-label="Scrub the ledger by date" aria-valuetext={now} />
         <ol className="relative mt-1 flex justify-between mono text-[10px] text-bone/45">
-          {dates.map((d, i) => <li key={d} className={i === t ? 'text-cyan' : ''}>{d}</li>)}
+          {dates.map((d, i) => <li key={d} className={i === t ? 'timeline-current' : ''}>{d}</li>)}
         </ol>
         <p className="relative mt-3 text-[12px] muted">Only indexed claim edits, dated status snapshots, and sourced regulatory records appear. No event is inferred from a compound or combination page.</p>
       </div>

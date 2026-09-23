@@ -6,6 +6,7 @@ import assert from 'node:assert/strict'
 import { build, mentions } from '../src/pulse/pipeline.ts'
 import { applyDecision, publicView, queueView, tokenOk } from '../src/pulse/review.ts'
 import { looksEnglish } from '../src/pulse/adapters.ts'
+import { diversify } from '../src/pulse/fresh.ts'
 import type { PulseSnapshot, SourceItem } from '../src/pulse/types.ts'
 
 const now = new Date('2026-09-21T12:00:00Z')
@@ -81,6 +82,30 @@ test('a trial status change is detected on the next run', () => {
   assert.deepEqual(e.change, { before: 'Recruiting', after: 'Completed' })
   assert.ok(e.labels.includes('MAJOR UPDATE'))
   assert.match(e.summary.whatHappened, /moved from Recruiting to Completed/)
+})
+
+test('trial cards describe the fresh registry action instead of presenting an old status as new', () => {
+  const posted = trial('COMPLETED')
+  posted.publishedAt = day(0)
+  posted.facts.firstPostedAt = day(0)
+  posted.facts.completionAt = day(150)
+  let e = build(null, [posted], runs, now).events[0]
+  assert.match(e.summary.whatHappened, /record was posted on ClinicalTrials\.gov/)
+
+  const updated = trial('COMPLETED')
+  updated.publishedAt = day(0)
+  updated.facts.firstPostedAt = day(300)
+  updated.facts.completionAt = day(150)
+  e = build(null, [updated], runs, now).events[0]
+  assert.match(e.summary.whatHappened, /updated the record for completed Phase 2 trial/)
+  assert.doesNotMatch(e.summary.whatHappened, /^Phase 2 trial .* is completed/)
+})
+
+test('the visible feed alternates lanes whenever another lane is available', () => {
+  const trials = Array.from({ length: 3 }, (_, i) => ({ ...build(null, [trial('RECRUITING')], runs, now).events[0], id: `trial-${i}` }))
+  const research = Array.from({ length: 2 }, (_, i) => build(null, [paper(`mix-${i}`, `BPC-157 paper ${i}`)], runs, now).events[0])
+  const mixed = diversify([...trials, ...research])
+  assert.deepEqual(mixed.slice(0, 4).map((e) => e.lane), ['trials', 'research', 'trials', 'research'])
 })
 
 test('re-running with the same sources adds nothing new (dedupe across runs)', () => {

@@ -138,7 +138,7 @@ export async function trials(env: AdapterEnv): Promise<AdapterResult> {
     for (const c of COMPOUNDS) {
       if (SKIP.has(c.slug)) continue
       const q = encodeURIComponent(c.slug === 'p21' ? '"P021"' : termsFor(c).slice(0, 2).map((t) => `"${t}"`).join(' OR '))
-      const url = `https://clinicaltrials.gov/api/v2/studies?query.intr=${q}&filter.advanced=${encodeURIComponent(`AREA[LastUpdatePostDate]RANGE[${since},MAX]`)}&sort=LastUpdatePostDate:desc&pageSize=${HIGH_VOLUME.has(c.slug) ? 3 : 6}&fields=NCTId,BriefTitle,OverallStatus,Phase,LastUpdatePostDate,Condition,LeadSponsorName,HasResults`
+      const url = `https://clinicaltrials.gov/api/v2/studies?query.intr=${q}&filter.advanced=${encodeURIComponent(`AREA[LastUpdatePostDate]RANGE[${since},MAX]`)}&sort=LastUpdatePostDate:desc&pageSize=${HIGH_VOLUME.has(c.slug) ? 3 : 6}&fields=NCTId,BriefTitle,OverallStatus,Phase,LastUpdatePostDate,StudyFirstPostDate,ResultsFirstPostDate,CompletionDate,Condition,LeadSponsorName,HasResults`
       const j = await getJson(url).catch(() => null)
       for (const s of j?.studies ?? []) {
         const p = s.protocolSection ?? {}
@@ -151,7 +151,13 @@ export async function trials(env: AdapterEnv): Promise<AdapterResult> {
           title: p.identificationModule?.briefTitle ?? nct, url: `https://clinicaltrials.gov/study/${nct}`,
           publishedAt: toIso(p.statusModule?.lastUpdatePostDateStruct?.date ?? '', env.now),
           snippet: (p.conditionsModule?.conditions ?? []).join(', '),
-          facts: { nct, query: c.slug, status: p.statusModule?.overallStatus ?? 'UNKNOWN', phases, hasResults: Boolean(s.hasResults) },
+          facts: {
+            nct, query: c.slug, status: p.statusModule?.overallStatus ?? 'UNKNOWN', phases,
+            hasResults: Boolean(s.hasResults),
+            firstPostedAt: toIso(p.statusModule?.studyFirstPostDateStruct?.date ?? '', env.now),
+            resultsPostedAt: p.statusModule?.resultsFirstPostDateStruct?.date ? toIso(p.statusModule.resultsFirstPostDateStruct.date, env.now) : '',
+            completionAt: p.statusModule?.completionDateStruct?.date ? toIso(p.statusModule.completionDateStruct.date, env.now) : '',
+          },
         })
       }
       await sleep(150)

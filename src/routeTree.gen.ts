@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as BondTheoryRouteImport } from './routes/bond-theory'
 import { Route as ClaimsRouteImport } from './routes/claims'
 import { Route as CoaRouteImport } from './routes/coa'
@@ -50,6 +51,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BondTheoryRoute = BondTheoryRouteImport.update({
@@ -207,6 +213,7 @@ const WatchlistSlugRoute = WatchlistSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
   '/coa': typeof CoaRoute
@@ -241,6 +248,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
   '/coa': typeof CoaRoute
@@ -276,6 +284,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
   '/coa': typeof CoaRoute
@@ -312,6 +321,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
     | '/bond-theory'
     | '/claims'
     | '/coa'
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/account'
     | '/bond-theory'
     | '/claims'
     | '/coa'
@@ -380,6 +391,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
     | '/bond-theory'
     | '/claims'
     | '/coa'
@@ -415,6 +427,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   BondTheoryRoute: typeof BondTheoryRoute
   ClaimsRoute: typeof ClaimsRoute
   CoaRoute: typeof CoaRoute
@@ -459,6 +472,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bond-theory': {
@@ -699,6 +719,7 @@ const WatchlistRouteWithChildren = WatchlistRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   BondTheoryRoute: BondTheoryRoute,
   ClaimsRoute: ClaimsRoute,
   CoaRoute: CoaRoute,

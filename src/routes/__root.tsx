@@ -12,6 +12,7 @@ import { DepthBackdrop } from '~/components/DepthBackdrop'
 import { startTilt } from '~/motion/tilt'
 import { BRAND, brand } from '~/brand'
 import { CommerceChrome } from '~/components/CommerceChrome'
+import { AccountProvider } from '~/auth/AccountProvider'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -81,15 +82,17 @@ function RootComponent() {
   }, [])
   return (
     <RootDocument>
-      <AgeGate />
-      <DepthBackdrop />
-      <Nav />
-      <CommerceChrome />
-      <GlobalCanvas />
-      <main className="min-h-screen" data-universe={universe}>
-        <Outlet />
-      </main>
-      <Footer />
+      <AccountProvider>
+        <AgeGate />
+        <DepthBackdrop />
+        <Nav />
+        <CommerceChrome />
+        <GlobalCanvas />
+        <main className="min-h-screen" data-universe={universe}>
+          <Outlet />
+        </main>
+        <Footer />
+      </AccountProvider>
     </RootDocument>
   )
 }

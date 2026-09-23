@@ -5,8 +5,8 @@ import { BrandLogo } from './BrandWordmark'
 
 const cols = [
   [['/waitlist', 'Waitlist'], ['/shop', 'Shop'], ['/explore', 'Explore'], ['/watchlist', 'Watchlist'], ['/combinations', 'Stacks'], ['/targets', 'Targets'], ['/coa', 'Lab Reports']],
-  [['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/research-tools', 'Research Tools'], ['/learn', 'Learn'], ['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
-  [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
+  [['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/research-tools/preclinical-calculator', 'Mouse Math'], ['/research-tools', 'Research Tools'], ['/learn', 'Learn'], ['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
+  [['/account', 'Account'], ['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const
 
 export function Footer() {
