@@ -1,0 +1,3 @@
+# Release-gated educational rebuild. Remove this block only after owner and legal review.
+User-agent: *
+Disallow: /

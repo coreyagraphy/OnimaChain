@@ -11,7 +11,7 @@ import { AgeGate } from '~/components/AgeGate'
 import { DepthBackdrop } from '~/components/DepthBackdrop'
 import { startTilt } from '~/motion/tilt'
 import { BRAND, brand } from '~/brand'
-import { CommerceChrome } from '~/components/CommerceChrome'
+import { ReaderQuickView } from '~/components/ReaderQuickView'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -45,7 +45,6 @@ export const Route = createRootRoute({
         '@type': 'WebSite',
         name: BRAND,
         description: brand.description,
-        publisher: { '@type': 'Organization', name: BRAND },
       }),
     }],
   }),
@@ -62,7 +61,7 @@ function NotFound() {
         <h1 className="display text-[clamp(2.6rem,7vw,6rem)]">This pathway ends here.</h1>
         <p className="lede mt-6 max-w-xl"><b className="text-bone">This page may have moved, or the link may be wrong. You can return to {BRAND} and keep exploring.</b></p>
         <div className="mt-8 flex gap-3">
-          <Link to="/explore" className="btn btn-primary">Shop peptides</Link>
+          <Link to="/explore" className="btn btn-primary">Explore the library</Link>
           <Link to="/" className="btn">Back to {BRAND}</Link>
         </div>
       </div>
@@ -77,6 +76,10 @@ function RootComponent() {
     initVisualMode()
     startTilt()
     startLenis()
+    // Remove only retired cart and health-goal keys, preserving learning progress.
+    for (const key of ['onimachain-commerce-cart-v1', 'ominachain-commerce-cart-v1', 'cyravon-commerce-cart-v1', 'bond-theory-picks', 'bond-theory-goals', 'pulse-last-visit', 'pulse-follow', 'pulse-review-key']) {
+      try { window.localStorage.removeItem(key) } catch { /* storage may be unavailable */ }
+    }
     return () => stopLenis()
   }, [])
   return (
@@ -84,7 +87,7 @@ function RootComponent() {
       <AgeGate />
       <DepthBackdrop />
       <Nav />
-      <CommerceChrome />
+      <ReaderQuickView />
       <GlobalCanvas />
       <main className="min-h-screen" data-universe={universe}>
         <Outlet />

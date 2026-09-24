@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BRAND } from '~/brand'
 import { requestTiltPermission } from '~/motion/tilt'
 
@@ -7,10 +7,11 @@ const KEY = 'age-gate-21'
 /**
  * Age gate. Shown once per browser on first visit; the answer is kept in localStorage.
  * Renders nothing on the server and until mounted, so SSR and hydration always match.
- * Plain language on purpose: the person reading this is a shopper, not a scientist.
+ * Plain-language educational access notice. The 21+ rule is a site policy, not legal clearance.
  */
 export function AgeGate() {
   const [state, setState] = useState<'unknown' | 'ask' | 'ok' | 'no'>('unknown')
+  const panel = useRef<HTMLDivElement>(null)
   useEffect(() => {
     try {
       setState(window.localStorage.getItem(KEY) === '1' ? 'ok' : 'ask')
@@ -23,6 +24,19 @@ export function AgeGate() {
     else delete document.body.dataset.depthOpen
     return () => { delete document.body.dataset.depthOpen }
   }, [state])
+  useEffect(() => {
+    if (state !== 'ask' && state !== 'no') return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return
+      const buttons = Array.from(panel.current?.querySelectorAll<HTMLButtonElement>('button:not([disabled])') ?? [])
+      if (!buttons.length) return
+      const first = buttons[0], last = buttons[buttons.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [state])
   if (state === 'unknown' || state === 'ok') return null
   const accept = () => {
     // this tap is a user gesture, so iOS can ask once for motion access (phone-tilt depth); declining changes nothing else
@@ -33,7 +47,7 @@ export function AgeGate() {
   return (
     <div className="fixed inset-0 z-[120] grid place-items-center p-5" role="dialog" aria-modal="true" aria-labelledby="age-gate-title" data-lenis-prevent>
       <div className="absolute inset-0 veil" aria-hidden />
-      <div className="glass relative w-full max-w-[520px] rounded-3xl p-7 md:p-9 drawer-in">
+      <div ref={panel} className="glass relative w-full max-w-[520px] rounded-3xl p-7 md:p-9 drawer-in">
         <p className="relative label label-cyan">Before you come in</p>
         {state === 'ask' ? (
           <>
@@ -42,7 +56,7 @@ export function AgeGate() {
             <ul className="relative mt-4 grid gap-1.5 text-[13px] text-bone/65">
               <li>Everything here is for research and education. It is not medical advice.</li>
               <li>We never tell you how much to take or how to use anything.</li>
-              <li>Prices and checkout are still being finalized.</li>
+              <li>This educational site does not sell peptides or provide ordering.</li>
             </ul>
             <div className="relative mt-7 flex flex-wrap gap-3">
               <button className="btn btn-primary" onClick={accept} autoFocus>Yes, I&rsquo;m 21 or older</button>

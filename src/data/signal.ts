@@ -46,10 +46,10 @@ export const PLATFORMS = [
 ] as const
 
 export const SCIENTIFIC_SOURCES = [
-  { id: 'pubmed', name: 'PubMed', state: 'Connected — every PubMed ID is checked before the site is built', enabled: true },
+  { id: 'pubmed', name: 'PubMed', state: 'Build-time citation metadata check; not claim review', enabled: true },
   { id: 'crossref', name: 'Crossref', state: 'Not connected', enabled: false },
   { id: 'clinicaltrials', name: 'ClinicalTrials.gov', state: 'Not connected', enabled: false },
-  { id: 'fda', name: 'FDA', state: 'Not connected', enabled: false },
+  { id: 'fda', name: 'FDA', state: 'Selected official records attached manually; no live connector', enabled: false },
   { id: 'wada', name: 'WADA', state: 'Not connected', enabled: false },
   { id: 'pdb', name: 'RCSB PDB (identifiers only)', state: 'IDs listed; 3D files not downloaded', enabled: false },
 ] as const

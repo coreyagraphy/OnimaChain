@@ -133,6 +133,7 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
             onPointerLeave={() => { if (st.hovered === j) st.hovered = -1 }}
             onFocus={() => center(j)}
             aria-hidden={j >= compounds.length ? true : undefined}
+            inert={j >= compounds.length ? true : undefined}
           >
             <CompoundCard compound={c} index={j} fluid lively />
           </div>

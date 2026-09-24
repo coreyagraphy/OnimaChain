@@ -11,8 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as BondTheoryRouteImport } from './routes/bond-theory'
 import { Route as ClaimsRouteImport } from './routes/claims'
+import { Route as CoaRouteImport } from './routes/coa'
+import { Route as CombinationsRouteImport } from './routes/combinations'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CorrectionsRouteImport } from './routes/corrections'
@@ -23,15 +26,20 @@ import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as ObservatoryRouteImport } from './routes/observatory'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PulseRouteImport } from './routes/pulse'
+import { Route as ResearchToolsRouteImport } from './routes/research-tools'
 import { Route as SavedRouteImport } from './routes/saved'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SignalRouteImport } from './routes/signal'
+import { Route as TargetsRouteImport } from './routes/targets'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as WaitlistRouteImport } from './routes/waitlist'
+import { Route as WatchlistRouteImport } from './routes/watchlist'
 import { Route as ClaimIdRouteImport } from './routes/claim.$id'
 import { Route as CompoundSlugRouteImport } from './routes/compound.$slug'
 import { Route as LearnSlugRouteImport } from './routes/learn.$slug'
 import { Route as PulseReviewRouteImport } from './routes/pulse_.review'
+import { Route as ResearchToolsPreclinicalCalculatorRouteImport } from './routes/research-tools.preclinical-calculator'
 import { Route as StatusCompoundRouteImport } from './routes/status.$compound'
 import { Route as StudyPmidRouteImport } from './routes/study.$pmid'
 
@@ -45,6 +53,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BondTheoryRoute = BondTheoryRouteImport.update({
   id: '/bond-theory',
   path: '/bond-theory',
@@ -53,6 +66,16 @@ const BondTheoryRoute = BondTheoryRouteImport.update({
 const ClaimsRoute = ClaimsRouteImport.update({
   id: '/claims',
   path: '/claims',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoaRoute = CoaRouteImport.update({
+  id: '/coa',
+  path: '/coa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CombinationsRoute = CombinationsRouteImport.update({
+  id: '/combinations',
+  path: '/combinations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompareRoute = CompareRouteImport.update({
@@ -105,14 +128,29 @@ const PulseRoute = PulseRouteImport.update({
   path: '/pulse',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResearchToolsRoute = ResearchToolsRouteImport.update({
+  id: '/research-tools',
+  path: '/research-tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SavedRoute = SavedRouteImport.update({
   id: '/saved',
   path: '/saved',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignalRoute = SignalRouteImport.update({
   id: '/signal',
   path: '/signal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TargetsRoute = TargetsRouteImport.update({
+  id: '/targets',
+  path: '/targets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -128,6 +166,11 @@ const TimelineRoute = TimelineRouteImport.update({
 const WaitlistRoute = WaitlistRouteImport.update({
   id: '/waitlist',
   path: '/waitlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WatchlistRoute = WatchlistRouteImport.update({
+  id: '/watchlist',
+  path: '/watchlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClaimIdRoute = ClaimIdRouteImport.update({
@@ -150,6 +193,12 @@ const PulseReviewRoute = PulseReviewRouteImport.update({
   path: '/pulse/review',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResearchToolsPreclinicalCalculatorRoute =
+  ResearchToolsPreclinicalCalculatorRouteImport.update({
+    id: '/preclinical-calculator',
+    path: '/preclinical-calculator',
+    getParentRoute: () => ResearchToolsRoute,
+  } as any)
 const StatusCompoundRoute = StatusCompoundRouteImport.update({
   id: '/status/$compound',
   path: '/status/$compound',
@@ -164,8 +213,11 @@ const StudyPmidRoute = StudyPmidRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
+  '/coa': typeof CoaRoute
+  '/combinations': typeof CombinationsRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/corrections': typeof CorrectionsRoute
@@ -176,23 +228,31 @@ export interface FileRoutesByFullPath {
   '/observatory': typeof ObservatoryRoute
   '/privacy': typeof PrivacyRoute
   '/pulse': typeof PulseRoute
+  '/research-tools': typeof ResearchToolsRouteWithChildren
   '/saved': typeof SavedRoute
+  '/shop': typeof ShopRoute
   '/signal': typeof SignalRoute
+  '/targets': typeof TargetsRoute
   '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
   '/waitlist': typeof WaitlistRoute
+  '/watchlist': typeof WatchlistRoute
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
   '/pulse/review': typeof PulseReviewRoute
+  '/research-tools/preclinical-calculator': typeof ResearchToolsPreclinicalCalculatorRoute
   '/status/$compound': typeof StatusCompoundRoute
   '/study/$pmid': typeof StudyPmidRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
+  '/coa': typeof CoaRoute
+  '/combinations': typeof CombinationsRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/corrections': typeof CorrectionsRoute
@@ -203,15 +263,20 @@ export interface FileRoutesByTo {
   '/observatory': typeof ObservatoryRoute
   '/privacy': typeof PrivacyRoute
   '/pulse': typeof PulseRoute
+  '/research-tools': typeof ResearchToolsRouteWithChildren
   '/saved': typeof SavedRoute
+  '/shop': typeof ShopRoute
   '/signal': typeof SignalRoute
+  '/targets': typeof TargetsRoute
   '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
   '/waitlist': typeof WaitlistRoute
+  '/watchlist': typeof WatchlistRoute
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
   '/pulse/review': typeof PulseReviewRoute
+  '/research-tools/preclinical-calculator': typeof ResearchToolsPreclinicalCalculatorRoute
   '/status/$compound': typeof StatusCompoundRoute
   '/study/$pmid': typeof StudyPmidRoute
 }
@@ -219,8 +284,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/bond-theory': typeof BondTheoryRoute
   '/claims': typeof ClaimsRoute
+  '/coa': typeof CoaRoute
+  '/combinations': typeof CombinationsRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/corrections': typeof CorrectionsRoute
@@ -231,15 +299,20 @@ export interface FileRoutesById {
   '/observatory': typeof ObservatoryRoute
   '/privacy': typeof PrivacyRoute
   '/pulse': typeof PulseRoute
+  '/research-tools': typeof ResearchToolsRouteWithChildren
   '/saved': typeof SavedRoute
+  '/shop': typeof ShopRoute
   '/signal': typeof SignalRoute
+  '/targets': typeof TargetsRoute
   '/terms': typeof TermsRoute
   '/timeline': typeof TimelineRoute
   '/waitlist': typeof WaitlistRoute
+  '/watchlist': typeof WatchlistRoute
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
   '/pulse_/review': typeof PulseReviewRoute
+  '/research-tools/preclinical-calculator': typeof ResearchToolsPreclinicalCalculatorRoute
   '/status/$compound': typeof StatusCompoundRoute
   '/study/$pmid': typeof StudyPmidRoute
 }
@@ -248,8 +321,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
     | '/bond-theory'
     | '/claims'
+    | '/coa'
+    | '/combinations'
     | '/compare'
     | '/contact'
     | '/corrections'
@@ -260,23 +336,31 @@ export interface FileRouteTypes {
     | '/observatory'
     | '/privacy'
     | '/pulse'
+    | '/research-tools'
     | '/saved'
+    | '/shop'
     | '/signal'
+    | '/targets'
     | '/terms'
     | '/timeline'
     | '/waitlist'
+    | '/watchlist'
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
     | '/pulse/review'
+    | '/research-tools/preclinical-calculator'
     | '/status/$compound'
     | '/study/$pmid'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/account'
     | '/bond-theory'
     | '/claims'
+    | '/coa'
+    | '/combinations'
     | '/compare'
     | '/contact'
     | '/corrections'
@@ -287,23 +371,31 @@ export interface FileRouteTypes {
     | '/observatory'
     | '/privacy'
     | '/pulse'
+    | '/research-tools'
     | '/saved'
+    | '/shop'
     | '/signal'
+    | '/targets'
     | '/terms'
     | '/timeline'
     | '/waitlist'
+    | '/watchlist'
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
     | '/pulse/review'
+    | '/research-tools/preclinical-calculator'
     | '/status/$compound'
     | '/study/$pmid'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
     | '/bond-theory'
     | '/claims'
+    | '/coa'
+    | '/combinations'
     | '/compare'
     | '/contact'
     | '/corrections'
@@ -314,15 +406,20 @@ export interface FileRouteTypes {
     | '/observatory'
     | '/privacy'
     | '/pulse'
+    | '/research-tools'
     | '/saved'
+    | '/shop'
     | '/signal'
+    | '/targets'
     | '/terms'
     | '/timeline'
     | '/waitlist'
+    | '/watchlist'
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
     | '/pulse_/review'
+    | '/research-tools/preclinical-calculator'
     | '/status/$compound'
     | '/study/$pmid'
   fileRoutesById: FileRoutesById
@@ -330,8 +427,11 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   BondTheoryRoute: typeof BondTheoryRoute
   ClaimsRoute: typeof ClaimsRoute
+  CoaRoute: typeof CoaRoute
+  CombinationsRoute: typeof CombinationsRoute
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
   CorrectionsRoute: typeof CorrectionsRoute
@@ -342,11 +442,15 @@ export interface RootRouteChildren {
   ObservatoryRoute: typeof ObservatoryRoute
   PrivacyRoute: typeof PrivacyRoute
   PulseRoute: typeof PulseRoute
+  ResearchToolsRoute: typeof ResearchToolsRouteWithChildren
   SavedRoute: typeof SavedRoute
+  ShopRoute: typeof ShopRoute
   SignalRoute: typeof SignalRoute
+  TargetsRoute: typeof TargetsRoute
   TermsRoute: typeof TermsRoute
   TimelineRoute: typeof TimelineRoute
   WaitlistRoute: typeof WaitlistRoute
+  WatchlistRoute: typeof WatchlistRoute
   ClaimIdRoute: typeof ClaimIdRoute
   CompoundSlugRoute: typeof CompoundSlugRoute
   PulseReviewRoute: typeof PulseReviewRoute
@@ -370,6 +474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bond-theory': {
       id: '/bond-theory'
       path: '/bond-theory'
@@ -382,6 +493,20 @@ declare module '@tanstack/react-router' {
       path: '/claims'
       fullPath: '/claims'
       preLoaderRoute: typeof ClaimsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coa': {
+      id: '/coa'
+      path: '/coa'
+      fullPath: '/coa'
+      preLoaderRoute: typeof CoaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/combinations': {
+      id: '/combinations'
+      path: '/combinations'
+      fullPath: '/combinations'
+      preLoaderRoute: typeof CombinationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compare': {
@@ -454,6 +579,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PulseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/research-tools': {
+      id: '/research-tools'
+      path: '/research-tools'
+      fullPath: '/research-tools'
+      preLoaderRoute: typeof ResearchToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/saved': {
       id: '/saved'
       path: '/saved'
@@ -461,11 +593,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SavedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signal': {
       id: '/signal'
       path: '/signal'
       fullPath: '/signal'
       preLoaderRoute: typeof SignalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/targets': {
+      id: '/targets'
+      path: '/targets'
+      fullPath: '/targets'
+      preLoaderRoute: typeof TargetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -487,6 +633,13 @@ declare module '@tanstack/react-router' {
       path: '/waitlist'
       fullPath: '/waitlist'
       preLoaderRoute: typeof WaitlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/watchlist': {
+      id: '/watchlist'
+      path: '/watchlist'
+      fullPath: '/watchlist'
+      preLoaderRoute: typeof WatchlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/claim/$id': {
@@ -517,6 +670,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PulseReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/research-tools/preclinical-calculator': {
+      id: '/research-tools/preclinical-calculator'
+      path: '/preclinical-calculator'
+      fullPath: '/research-tools/preclinical-calculator'
+      preLoaderRoute: typeof ResearchToolsPreclinicalCalculatorRouteImport
+      parentRoute: typeof ResearchToolsRoute
+    }
     '/status/$compound': {
       id: '/status/$compound'
       path: '/status/$compound'
@@ -544,11 +704,27 @@ const LearnRouteChildren: LearnRouteChildren = {
 
 const LearnRouteWithChildren = LearnRoute._addFileChildren(LearnRouteChildren)
 
+interface ResearchToolsRouteChildren {
+  ResearchToolsPreclinicalCalculatorRoute: typeof ResearchToolsPreclinicalCalculatorRoute
+}
+
+const ResearchToolsRouteChildren: ResearchToolsRouteChildren = {
+  ResearchToolsPreclinicalCalculatorRoute:
+    ResearchToolsPreclinicalCalculatorRoute,
+}
+
+const ResearchToolsRouteWithChildren = ResearchToolsRoute._addFileChildren(
+  ResearchToolsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   BondTheoryRoute: BondTheoryRoute,
   ClaimsRoute: ClaimsRoute,
+  CoaRoute: CoaRoute,
+  CombinationsRoute: CombinationsRoute,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,
   CorrectionsRoute: CorrectionsRoute,
@@ -559,11 +735,15 @@ const rootRouteChildren: RootRouteChildren = {
   ObservatoryRoute: ObservatoryRoute,
   PrivacyRoute: PrivacyRoute,
   PulseRoute: PulseRoute,
+  ResearchToolsRoute: ResearchToolsRouteWithChildren,
   SavedRoute: SavedRoute,
+  ShopRoute: ShopRoute,
   SignalRoute: SignalRoute,
+  TargetsRoute: TargetsRoute,
   TermsRoute: TermsRoute,
   TimelineRoute: TimelineRoute,
   WaitlistRoute: WaitlistRoute,
+  WatchlistRoute: WatchlistRoute,
   ClaimIdRoute: ClaimIdRoute,
   CompoundSlugRoute: CompoundSlugRoute,
   PulseReviewRoute: PulseReviewRoute,

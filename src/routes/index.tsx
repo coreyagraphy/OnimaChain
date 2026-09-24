@@ -3,9 +3,6 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Hero } from '~/components/Hero'
 import { FeaturedOrbit } from '~/components/FeaturedOrbit'
 import { LiquidGlassLink } from '~/components/LiquidGlassLink'
-import { PulseStream, SinceLastVisit } from '~/components/Pulse'
-import { timeAgo, usePulse } from '~/pulse/usePulse'
-import { PulseDeck, PulseLine, PulseTicker, usePulseEvents } from '~/components/PulseDeck'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
 import { BRAND, brand } from '~/brand'
@@ -19,13 +16,13 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><WaitlistTeaser /><FinalShop /><MobileShopBar /></>
+  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><LearningGateway /><FinalLearn /><MobileLearnBar /></>
 }
 
-function WaitlistTeaser() {
+function LearningGateway() {
   return <section className="waitlist-teaser wrap" aria-labelledby="waitlist-teaser-heading">
-    <div><p className="label label-cyan">First access</p><h2 id="waitlist-teaser-heading" className="display-md">A place in line.<br /><span>20% off your first order.</span></h2><p>Opening date to be announced. See the waitlist preview; signups begin after our site move.</p></div>
-    <Link to="/waitlist" className="btn btn-primary">View the waitlist <span aria-hidden>↗</span></Link>
+    <div><p className="label label-cyan">Learn by doing</p><h2 id="waitlist-teaser-heading" className="display-md">Look closer.<br /><span>Think clearer.</span></h2><p>Rotate a conceptual evidence world, test a conclusion, and see exactly where an inference travels too far. Your mission progress stays in this browser.</p></div>
+    <Link to="/observatory" className="btn btn-primary">Enter Evidence Worlds <span aria-hidden>↗</span></Link>
   </section>
 }
 
@@ -35,15 +32,15 @@ function FeaturedCollection() {
     <section className="section collection-stage" aria-label="Featured compounds">
       <div className="wrap flex flex-wrap items-end justify-between gap-6">
         <div><p className="label label-cyan">Featured compounds</p><h2 className="atmo-title mt-4"><span className="atmo-line">Every molecule has</span><span className="atmo-neon"><span className="atmo-glow" aria-hidden>its own atmosphere.</span><span className="atmo-glow atmo-glow-b" aria-hidden>its own atmosphere.</span><span className="atmo-foil">its own atmosphere.</span></span></h2></div>
-        <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length}</LiquidGlassLink>
+        <LiquidGlassLink to="/explore">Explore all {COMPOUNDS.length} records</LiquidGlassLink>
       </div>
       <FeaturedOrbit compounds={featured} />
     </section>
   )
 }
 
-/** Phones: once past the intro, a floating "Shop all" button stays in reach. */
-function MobileShopBar() {
+/** Phones: once past the intro, the learning gateway stays in reach. */
+function MobileLearnBar() {
   const [show, setShow] = useState(false)
   useEffect(() => {
     const on = () => {
@@ -57,31 +54,23 @@ function MobileShopBar() {
   }, [])
   return (
     <div className="mobile-shop-bar" data-show={show ? '1' : undefined} aria-hidden={!show}>
-      <LiquidGlassLink to="/explore">Shop all {COMPOUNDS.length} →</LiquidGlassLink>
+      <LiquidGlassLink to="/learn">Play & Learn →</LiquidGlassLink>
     </div>
   )
 }
 
 function PulseHome() {
-  const { snap } = usePulse()
-  const events = usePulseEvents(10)
-  const [lane, setLane] = useState('#5FE3FF')
   return (
-    <section className="section pulse-home" aria-labelledby="pulse-h" style={{ '--deck-lane': lane } as CSSProperties}>
+    <section className="section pulse-home" aria-labelledby="pulse-h">
       <div className="pulse-home-glow" aria-hidden />
-      <PulseLine />
       <div className="wrap relative grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="label label-cyan pulse-live-label"><span className="pulse-live" aria-hidden />Live · PulseChain{snap && <span className="pulse-updated">updated {timeAgo(snap.generatedAt)}</span>}</p>
-          <h2 id="pulse-h" className="display text-[clamp(2.2rem,5.4vw,4.6rem)] mt-3 leading-[0.98]">The peptide world<br />doesn’t stand still.</h2>
-          <p className="lede mt-4 max-w-xl hidden md:block">New papers. Trial changes. Regulatory news. Videos gaining traction. Nothing older than 30 days, checked every 2 hours.</p>
+          <p className="label label-cyan pulse-live-label">Research Time Machine</p>
+          <h2 id="pulse-h" className="display text-[clamp(2.2rem,5.4vw,4.6rem)] mt-3 leading-[0.98]">Ideas become tools.<br />Sources mark the moments.</h2>
+          <p className="lede mt-4 max-w-xl">Travel through documented moments in peptide science. Select a year, read what happened, and open the original source.</p>
         </div>
-        {snap && <SinceLastVisit events={snap.events} />}
+        <Link to="/observatory" search={{ station: 'history' }} className="btn btn-primary">Explore the timeline →</Link>
       </div>
-      <div className="relative mt-6"><PulseTicker events={events} /></div>
-      <div className="relative mt-6 pulse-home-deck"><PulseDeck events={events} onLane={setLane} /></div>
-      <div className="relative mt-8 pulse-home-rail"><PulseStream limit={10} /></div>
-      <div className="wrap relative mt-6"><Link to="/pulse" className="btn">Open PulseChain →</Link></div>
     </section>
   )
 }
@@ -92,7 +81,7 @@ function Difference() {
       <div className="molecular-divider" aria-hidden><i/><i/><i/><i/><i/></div>
       <div className="wrap relative z-10 grid lg:grid-cols-[.75fr_1.25fr] gap-10 items-end">
         <p className="label label-violet">Why this is different</p>
-        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>product page.</h2><p className="lede mt-7 max-w-2xl">Every compound has a story behind it. We organize the published research, show how far it has gone, and keep online reports separate from controlled studies—so you can explore the full picture without digging through dozens of tabs.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/claims" className="btn">Explore the research</Link><Link to="/observatory" className="btn btn-primary">Enter the Observatory →</Link></div></div>
+        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>name list.</h2><p className="lede mt-7 max-w-2xl">A molecule's identity, a citation record, and a reviewed scientific conclusion are different things. Explore what is indexed, where its source leads, and what remains unreviewed.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/claims" className="btn">Explore the research</Link><Link to="/observatory" className="btn btn-primary">Enter the Observatory →</Link></div></div>
       </div>
     </section>
   )
@@ -111,10 +100,10 @@ function ResearchDomains() {
     return () => io.disconnect()
   }, [])
   return (
-    <section className="section wrap" aria-label="Shop by topic">
-      <p className="label label-cyan">Shop by what you’re after</p>
-      <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">What are you here for?</h2>
-      <p className="lede mt-4 max-w-xl hidden md:block">Seven doors into the collection. Pick one.</p>
+    <section className="section wrap" aria-label="Browse scientific subjects">
+      <p className="label label-cyan">Browse by subject</p>
+      <h2 className="display text-[clamp(2.4rem,5vw,5rem)] mt-3">Seven ways into the science.</h2>
+      <p className="lede mt-4 max-w-xl hidden md:block">These are editorial subjects, not personal-use categories.</p>
       <div ref={grid} className="topic-grid mt-10">
         {DOMAINS.map((d, i) => {
           const count = COMPOUNDS.filter((c) => c.domain === d.id).length
@@ -125,18 +114,18 @@ function ResearchDomains() {
               <span className="topic-sheen" aria-hidden />
               <span className="relative z-[2] flex items-center justify-between gap-3">
                 <span className="topic-num mono text-[11px] text-bone/55">0{i + 1}</span>
-                <span className="topic-count">{count} {count === 1 ? 'peptide' : 'peptides'}</span>
+                <span className="topic-count">{count} {count === 1 ? 'record' : 'records'}</span>
               </span>
               <span className="relative z-[2] mt-auto">
                 <strong className="display-md block text-2xl md:text-[1.9rem] leading-tight">{d.name}</strong>
                 <span className="topic-tagline block mt-2 text-[14px] text-bone/75 max-w-[30ch]">{d.tagline}</span>
-                <span className="topic-cta">See all {count} →</span>
+              <span className="topic-cta">Explore {count} →</span>
               </span>
             </Link>
           )
         })}
       </div>
-      <p className="mt-4 mono text-[11px] text-bone/40">Pictures set the mood. They are not results, and they are not photos of what a product does.</p>
+      <p className="mt-4 mono text-[11px] text-bone/40">Images are conceptual artwork, not measured structures or evidence of a biological effect.</p>
     </section>
   )
 }
@@ -158,8 +147,8 @@ function MethodPreview() {
   )
 }
 
-function FinalShop() {
+function FinalLearn() {
   return (
-    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">{BRAND} collection</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See the molecule.<br/>Then decide.</h2><p className="lede mt-6 mx-auto max-w-xl">{brand.secondaryTagline}</p><Link to="/explore" className="btn btn-primary mt-9">Shop the collection</Link><p className="mt-6 text-[11px] faint">Checkout will open after pricing, shipping, and product eligibility are confirmed.</p></div></section>
+    <section className="section final-shop"><div className="wrap text-center"><p className="label label-violet">{BRAND} Learning Lab</p><h2 className="display text-[clamp(3.2rem,8vw,8rem)] mt-4">See the molecule.<br/>Question the claim.</h2><p className="lede mt-6 mx-auto max-w-xl">A cell experiment, an animal study and a human trial answer different questions. Learn how to tell them apart.</p><Link to="/learn" className="btn btn-primary mt-9">Enter the Learning Lab</Link></div></section>
   )
 }

@@ -1,5 +1,5 @@
 /**
- * Official (non-PubMed) records attached to commerce descriptions.
+ * Official (non-PubMed) records attached to educational molecule records.
  * These are FDA application overviews and DailyMed searches — not invented
  * labels, not off-label marketing, and not a substitute for the full PI.
  * Quote only indications retrieved from those records.
@@ -32,7 +32,7 @@ export const OFFICIAL_SOURCES: OfficialSource[] = [
     indication:
       "FDA-approved (2017) as Ozempic for type 2 diabetes. The current DailyMed label lists it as a GLP-1 receptor agonist used with diet and exercise to improve glycemic control in adults with type 2 diabetes mellitus.",
     limitation:
-      "Approved uses are brand- and indication-specific. Research-use vials on this site are not those prescription products.",
+      "Approved uses are brand- and indication-specific; this educational record is not a product listing.",
   },
   {
     id: "dailymed-ozempic",
@@ -54,7 +54,7 @@ export const OFFICIAL_SOURCES: OfficialSource[] = [
     url: "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=215256",
     retrieved: "2026-09-21",
     indication:
-      "FDA-approved (2021) as Wegovy, a separate semaglutide brand for chronic weight management in eligible patients — not interchangeable with research-use material.",
+      "FDA-approved (2021) as Wegovy, a separate semaglutide brand for chronic weight management in eligible patients. Approval cannot be transferred to other formulations.",
   },
   {
     id: "fda-mounjaro-215866",
@@ -65,7 +65,7 @@ export const OFFICIAL_SOURCES: OfficialSource[] = [
     url: "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=215866",
     retrieved: "2026-09-21",
     indication:
-      "FDA-approved (2022) as Mounjaro. Current labeling: with diet and exercise to improve blood sugar in people 10 years and older with type 2 diabetes, and to reduce major cardiovascular events in adults with type 2 diabetes at high risk.",
+      "FDA-approved (2022) as Mounjaro, a product-specific tirzepatide brand for type 2 diabetes. Consult the linked current FDA label for eligible ages, uses, and limitations; this record does not certify another preparation.",
     limitation: "Boxed warning for thyroid C-cell tumors in rats; human relevance not determined.",
   },
   {
@@ -88,7 +88,7 @@ export const OFFICIAL_SOURCES: OfficialSource[] = [
     url: "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=217806",
     retrieved: "2026-09-21",
     indication:
-      "FDA-approved as Zepbound, a tirzepatide brand for chronic weight management in eligible patients. Not the same as a research-use vial.",
+      "FDA-approved as Zepbound, a tirzepatide brand for chronic weight management in eligible patients. Approval is specific to the labeled product and indication.",
   },
   {
     id: "fda-egrifta-022505",
@@ -137,6 +137,17 @@ export const OFFICIAL_SOURCES: OfficialSource[] = [
     retrieved: "2026-09-21",
     indication:
       "VYLEESI (bremelanotide injection), for subcutaneous use. Initial U.S. approval: 2019. Contraindicated in uncontrolled hypertension or known cardiovascular disease.",
+  },
+  {
+    id: "fda-forzinity-2025",
+    compounds: ["ss-31"],
+    kind: "fda-application",
+    title: "Forzinity (elamipretide) — FDA drug-trials snapshot",
+    identifier: "FDA approval September 19, 2025",
+    url: "https://www.fda.gov/drugs/drug-trials-snapshots/drug-trials-snapshots-forzinity",
+    retrieved: "2026-09-23",
+    indication: "FDA granted accelerated approval to Forzinity to improve muscle strength in adults and children with Barth syndrome weighing at least 30 kg.",
+    limitation: "This is a product- and indication-specific approval. It does not establish a general benefit of elamipretide for aging or other mitochondrial conditions.",
   },
 ];
 

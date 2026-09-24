@@ -1,5 +1,7 @@
 # Payment backend: prepared, not open for sales
 
+> RETIRED FOR SITE A PART A (2026-09-23): This is a historical test-scaffold note, not current setup guidance. `/api/checkout` and `/api/payments/stripe/webhook` now return HTTP 410 for every request; no storefront, cart, or payment UI is active. Do not follow the setup steps below for the educational site or set payment variables in its environment. Historical test code and records are preserved only for audit/migration review.
+
 This is a **test-only foundation**. Live Stripe keys are rejected. The storefront still has placeholder prices and a disabled checkout button. No credentials, database, Stripe account, webhook, or hosting settings were provisioned. No actual payment has been made.
 
 ## Architecture
