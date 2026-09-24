@@ -17,7 +17,7 @@ export function Footer() {
           <BrandLogo className="footer-brand-logo" />
           <p className="mt-4 text-sm text-bone/80 max-w-sm">{brand.primaryTagline}</p>
           <p className="mt-2 text-sm muted max-w-sm">{brand.secondaryTagline}</p>
-          <p className="mono text-[11px] text-bone/40">Sources last checked: {CORPUS_CHECKED_AT.slice(0, 10)} · PubMed records verified through NCBI</p>
+          <p className="mono text-[11px] text-bone/60">Sources last checked: {CORPUS_CHECKED_AT.slice(0, 10)} · PubMed records verified through NCBI</p>
         </div>
         {cols.map((c, i) => (
           <ul key={i} className="grid gap-2 content-start">

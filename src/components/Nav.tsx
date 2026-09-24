@@ -12,6 +12,7 @@ const links = [
   { to: '/signal', label: 'Portal of Tides' },
   { to: '/bond-theory', label: 'Bond Theory' },
   { to: '/learn', label: 'Learn' },
+  { to: '/observatory', label: 'Lab' },
   { to: '/about', label: 'About' },
 ] as const
 
@@ -32,20 +33,20 @@ export function Nav() {
       <header className="fixed top-0 inset-x-0 z-40 nav-glass">
         <div className="wrap h-[72px] flex items-center justify-between">
           <Link to="/" className="brand-home group" aria-label={`${BRAND} home`}><BrandWordmark decorative /></Link>
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
+          <nav className="hidden xl:flex items-center gap-4" aria-label="Primary">
             {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2">
-            <Link to="/waitlist" className="nav-waitlist hidden sm:inline-flex lg:hidden xl:inline-flex">Waitlist <span aria-hidden>↗</span></Link>
+            <Link to="/waitlist" className="nav-waitlist hidden sm:inline-flex">Waitlist <span aria-hidden>↗</span></Link>
             <button className="nav-icon hidden sm:grid" onClick={() => setOpen(true)} aria-label="Search (Cmd/Ctrl K)"><SearchIcon /></button>
             <span className="nav-icon hidden lg:grid opacity-45" aria-label="Account coming soon" title="Account coming soon"><AccountIcon /></span>
             <button className="cart-trigger" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${count} items`} data-cursor="cart"><BagIcon /><span>Cart</span><b key={count}>{count}</b></button>
-            <button className="nav-icon lg:hidden" onClick={() => setMenu((v) => !v)} aria-expanded={menu} aria-controls="mobile-nav"><MenuIcon /></button>
+            <button className="nav-icon xl:hidden" onClick={() => setMenu((v) => !v)} aria-label={menu ? 'Close menu' : 'Open menu'} aria-expanded={menu} aria-controls="mobile-nav"><MenuIcon /></button>
           </div>
         </div>
         <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan/15 to-transparent" />
         {menu && (
-          <nav id="mobile-nav" className="lg:hidden bg-obsidian/95 border-b hairline px-5 py-5 grid grid-cols-2 gap-2 fade-up" aria-label="Mobile">
+          <nav id="mobile-nav" className="xl:hidden bg-obsidian/95 border-b hairline px-5 py-5 grid grid-cols-2 gap-2 fade-up" aria-label="Mobile">
             <Link to="/waitlist" className="label !text-cyan py-3" onClick={() => setMenu(false)}>Join the waitlist</Link>
             {links.map((l) => <Link key={l.to} to={l.to} className="label !text-bone py-3" onClick={() => setMenu(false)}>{l.label}</Link>)}
             <button className="label !text-bone py-3 text-left" onClick={() => { setOpen(true); setMenu(false) }}>Search</button>

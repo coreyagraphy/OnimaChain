@@ -92,7 +92,7 @@ function Difference() {
       <div className="molecular-divider" aria-hidden><i/><i/><i/><i/><i/></div>
       <div className="wrap relative z-10 grid lg:grid-cols-[.75fr_1.25fr] gap-10 items-end">
         <p className="label label-violet">Why this is different</p>
-        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>product page.</h2><p className="lede mt-7 max-w-2xl">Every compound has a story behind it. We organize the published research, show how far it has gone, and keep online reports separate from controlled studies—so you can explore the full picture without digging through dozens of tabs.</p><Link to="/claims" className="btn mt-8">Explore the research</Link></div>
+        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>product page.</h2><p className="lede mt-7 max-w-2xl">Every compound has a story behind it. We organize the published research, show how far it has gone, and keep online reports separate from controlled studies—so you can explore the full picture without digging through dozens of tabs.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/claims" className="btn">Explore the research</Link><Link to="/observatory" className="btn btn-primary">Enter the Observatory →</Link></div></div>
       </div>
     </section>
   )

@@ -20,6 +20,7 @@ import { Route as CoverageRouteImport } from './routes/coverage'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as MethodologyRouteImport } from './routes/methodology'
+import { Route as ObservatoryRouteImport } from './routes/observatory'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PulseRouteImport } from './routes/pulse'
 import { Route as SavedRouteImport } from './routes/saved'
@@ -87,6 +88,11 @@ const LearnRoute = LearnRouteImport.update({
 const MethodologyRoute = MethodologyRouteImport.update({
   id: '/methodology',
   path: '/methodology',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ObservatoryRoute = ObservatoryRouteImport.update({
+  id: '/observatory',
+  path: '/observatory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/learn': typeof LearnRouteWithChildren
   '/methodology': typeof MethodologyRoute
+  '/observatory': typeof ObservatoryRoute
   '/privacy': typeof PrivacyRoute
   '/pulse': typeof PulseRoute
   '/saved': typeof SavedRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/explore': typeof ExploreRoute
   '/learn': typeof LearnRouteWithChildren
   '/methodology': typeof MethodologyRoute
+  '/observatory': typeof ObservatoryRoute
   '/privacy': typeof PrivacyRoute
   '/pulse': typeof PulseRoute
   '/saved': typeof SavedRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/learn': typeof LearnRouteWithChildren
   '/methodology': typeof MethodologyRoute
+  '/observatory': typeof ObservatoryRoute
   '/privacy': typeof PrivacyRoute
   '/pulse': typeof PulseRoute
   '/saved': typeof SavedRoute
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/learn'
     | '/methodology'
+    | '/observatory'
     | '/privacy'
     | '/pulse'
     | '/saved'
@@ -274,6 +284,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/learn'
     | '/methodology'
+    | '/observatory'
     | '/privacy'
     | '/pulse'
     | '/saved'
@@ -300,6 +311,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/learn'
     | '/methodology'
+    | '/observatory'
     | '/privacy'
     | '/pulse'
     | '/saved'
@@ -327,6 +339,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   LearnRoute: typeof LearnRouteWithChildren
   MethodologyRoute: typeof MethodologyRoute
+  ObservatoryRoute: typeof ObservatoryRoute
   PrivacyRoute: typeof PrivacyRoute
   PulseRoute: typeof PulseRoute
   SavedRoute: typeof SavedRoute
@@ -418,6 +431,13 @@ declare module '@tanstack/react-router' {
       path: '/methodology'
       fullPath: '/methodology'
       preLoaderRoute: typeof MethodologyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/observatory': {
+      id: '/observatory'
+      path: '/observatory'
+      fullPath: '/observatory'
+      preLoaderRoute: typeof ObservatoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -536,6 +556,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   LearnRoute: LearnRouteWithChildren,
   MethodologyRoute: MethodologyRoute,
+  ObservatoryRoute: ObservatoryRoute,
   PrivacyRoute: PrivacyRoute,
   PulseRoute: PulseRoute,
   SavedRoute: SavedRoute,

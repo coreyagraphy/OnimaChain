@@ -19,7 +19,7 @@ function PortalOfTides() {
           <PortalTitle className="mt-5" />
           <div className="mt-10 grid md:grid-cols-[1fr_.75fr] gap-8 items-end">
             <p className="lede max-w-2xl">Ideas change as they travel. Pick a lesson, follow it back to the source, and learn where the evidence ends and the opinion begins.</p>
-            <p className="mono text-[11px] text-right text-bone/45 hidden md:block">10 lessons · 1 ready to try now<br/>more open as we finish checking them</p>
+            <div className="md:text-right"><p className="mono text-[11px] text-bone/45 hidden md:block">10 lessons · 1 ready to try now<br/>more open as we finish checking them</p><Link to="/observatory" className="btn btn-primary mt-5 inline-flex">Enter the six-station Observatory →</Link></div>
           </div>
         </div>
         <div className="portal-waterline" aria-hidden />
