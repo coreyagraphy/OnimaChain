@@ -3,21 +3,21 @@ const base = process.env.PART_A_BASE_URL || 'http://127.0.0.1:8080'
 const retired = {
   '/shop': '/learn',
   '/waitlist': '/learn',
-  '/bond-theory': '/observatory?station=evidence',
-  '/combinations': '/observatory?station=evidence&case=3',
-  '/research-tools': '/observatory?station=scale',
-  '/research-tools/preclinical-calculator': '/observatory?station=scale',
-  '/coa': '/observatory?station=report',
+  '/bond-theory': '/learn/chainforge',
+  '/combinations': '/learn?activity=evidence&case=3',
+  '/research-tools': '/learn?activity=scale',
+  '/research-tools/preclinical-calculator': '/learn?activity=scale',
+  '/coa': '/learn?activity=report',
   '/targets': '/observatory?station=molecule',
-  '/pulse': '/observatory?station=history',
-  '/pulse/review': '/observatory?station=history',
-  '/timeline': '/observatory?station=history',
-  '/watchlist': '/observatory?station=history',
+  '/pulse': '/learn?activity=history',
+  '/pulse/review': '/learn?activity=history',
+  '/timeline': '/learn?activity=history',
+  '/watchlist': '/learn?activity=history',
   '/account': '/privacy',
   '/saved': '/learn',
-  '/compound/wolverine-blend': '/observatory?station=evidence',
+  '/compound/wolverine-blend': '/learn?activity=evidence',
 }
-const kept = ['/', '/explore', '/learn', '/observatory', '/signal', '/compare', '/claims', '/methodology', '/coverage', '/about', '/contact', '/corrections', '/privacy', '/terms', '/learn/how-internet-claims-mutate', '/claim/CLAIM-BPC157-TENDON-REPAIR', '/claim/CLAIM-TB4-CELL-MIGRATION', '/study/21030672', '/status/ss-31', '/compound/thymosin-beta-4']
+const kept = ['/learn/chainforge', '/learn?activity=evidence', '/', '/explore', '/learn', '/observatory', '/signal', '/compare', '/claims', '/methodology', '/coverage', '/about', '/contact', '/corrections', '/privacy', '/terms', '/learn/how-internet-claims-mutate', '/claim/CLAIM-BPC157-TENDON-REPAIR', '/claim/CLAIM-TB4-CELL-MIGRATION', '/study/21030672', '/status/ss-31', '/compound/thymosin-beta-4']
 const profiles = ['aod-9604','bpc-157','cerebrolysin','cjc-1295','epitalon','follistatin-344','ghk-cu','ghrp-2','ghrp-6','glutathione','hexarelin','humanin','igf-1-lr3','ipamorelin','kisspeptin-10','kpv','ll-37','melanotan-ii','mots-c','nad-plus','p21','pinealon','pt-141','retatrutide','selank','semaglutide','semax','sermorelin','ss-31','tb-500','tesamorelin','thymalin','thymogen','thymosin-alpha-1','tirzepatide','thymosin-beta-4']
 const lessons = ['how-internet-claims-mutate','how-animal-research-works','what-in-vitro-means','why-replication-matters','correlation-vs-causation','how-peptides-interact-with-receptors','why-source-independence-matters','reading-a-research-paper','understanding-clinical-trial-phases','research-vs-anecdote']
 const studies = ['21030672','42542926','41754849','40789979','40756949','34170491','32245208','36706591','41235866']
@@ -37,6 +37,12 @@ for (const slug of profiles) await check(`/status/${slug}`, 200)
 for (const slug of lessons) await check(`/learn/${slug}`, 200)
 for (const pmid of studies) await check(`/study/${pmid}`, 200)
 for (const path of ['/api/checkout', '/api/payments/stripe/webhook', '/api/pulse', '/api/pulse-review']) await check(path, 410)
+for (const path of ['/api/checkout', '/api/payments/stripe/webhook', '/api/pulse', '/api/pulse-review']) {
+  const response = await fetch(new URL(path, base), { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' })
+  console.log(`${response.status===410?'PASS':'FAIL'} POST ${path} ${response.status}`)
+  if(response.status!==410)failed++
+}
+for(const [path,status] of [['checkout',404],['payment-stripe-webhook',404],['pulse',404],['pulse-review',404],['pulse-collect',410],['pulse-run-background',202]]) await check('/.netlify/functions/'+path,status)
 await check('/api/editorial', 200)
 const closedPost = await fetch(new URL('/api/editorial', base), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ page: '/compound/bpc-157', statement: 'A factual correction for review.' }) })
 const postOk = closedPost.status === 503

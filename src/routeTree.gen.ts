@@ -38,6 +38,7 @@ import { Route as WatchlistRouteImport } from './routes/watchlist'
 import { Route as ClaimIdRouteImport } from './routes/claim.$id'
 import { Route as CompoundSlugRouteImport } from './routes/compound.$slug'
 import { Route as LearnSlugRouteImport } from './routes/learn.$slug'
+import { Route as LearnChainforgeRouteImport } from './routes/learn_.chainforge'
 import { Route as PulseReviewRouteImport } from './routes/pulse_.review'
 import { Route as ResearchToolsPreclinicalCalculatorRouteImport } from './routes/research-tools.preclinical-calculator'
 import { Route as StatusCompoundRouteImport } from './routes/status.$compound'
@@ -188,6 +189,11 @@ const LearnSlugRoute = LearnSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => LearnRoute,
 } as any)
+const LearnChainforgeRoute = LearnChainforgeRouteImport.update({
+  id: '/learn_/chainforge',
+  path: '/learn/chainforge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PulseReviewRoute = PulseReviewRouteImport.update({
   id: '/pulse_/review',
   path: '/pulse/review',
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
+  '/learn/chainforge': typeof LearnChainforgeRoute
   '/pulse/review': typeof PulseReviewRoute
   '/research-tools/preclinical-calculator': typeof ResearchToolsPreclinicalCalculatorRoute
   '/status/$compound': typeof StatusCompoundRoute
@@ -275,6 +282,7 @@ export interface FileRoutesByTo {
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
+  '/learn/chainforge': typeof LearnChainforgeRoute
   '/pulse/review': typeof PulseReviewRoute
   '/research-tools/preclinical-calculator': typeof ResearchToolsPreclinicalCalculatorRoute
   '/status/$compound': typeof StatusCompoundRoute
@@ -311,6 +319,7 @@ export interface FileRoutesById {
   '/claim/$id': typeof ClaimIdRoute
   '/compound/$slug': typeof CompoundSlugRoute
   '/learn/$slug': typeof LearnSlugRoute
+  '/learn_/chainforge': typeof LearnChainforgeRoute
   '/pulse_/review': typeof PulseReviewRoute
   '/research-tools/preclinical-calculator': typeof ResearchToolsPreclinicalCalculatorRoute
   '/status/$compound': typeof StatusCompoundRoute
@@ -348,6 +357,7 @@ export interface FileRouteTypes {
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
+    | '/learn/chainforge'
     | '/pulse/review'
     | '/research-tools/preclinical-calculator'
     | '/status/$compound'
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
+    | '/learn/chainforge'
     | '/pulse/review'
     | '/research-tools/preclinical-calculator'
     | '/status/$compound'
@@ -418,6 +429,7 @@ export interface FileRouteTypes {
     | '/claim/$id'
     | '/compound/$slug'
     | '/learn/$slug'
+    | '/learn_/chainforge'
     | '/pulse_/review'
     | '/research-tools/preclinical-calculator'
     | '/status/$compound'
@@ -453,6 +465,7 @@ export interface RootRouteChildren {
   WatchlistRoute: typeof WatchlistRoute
   ClaimIdRoute: typeof ClaimIdRoute
   CompoundSlugRoute: typeof CompoundSlugRoute
+  LearnChainforgeRoute: typeof LearnChainforgeRoute
   PulseReviewRoute: typeof PulseReviewRoute
   StatusCompoundRoute: typeof StatusCompoundRoute
   StudyPmidRoute: typeof StudyPmidRoute
@@ -663,6 +676,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnSlugRouteImport
       parentRoute: typeof LearnRoute
     }
+    '/learn_/chainforge': {
+      id: '/learn_/chainforge'
+      path: '/learn/chainforge'
+      fullPath: '/learn/chainforge'
+      preLoaderRoute: typeof LearnChainforgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pulse_/review': {
       id: '/pulse_/review'
       path: '/pulse/review'
@@ -746,6 +766,7 @@ const rootRouteChildren: RootRouteChildren = {
   WatchlistRoute: WatchlistRoute,
   ClaimIdRoute: ClaimIdRoute,
   CompoundSlugRoute: CompoundSlugRoute,
+  LearnChainforgeRoute: LearnChainforgeRoute,
   PulseReviewRoute: PulseReviewRoute,
   StatusCompoundRoute: StatusCompoundRoute,
   StudyPmidRoute: StudyPmidRoute,

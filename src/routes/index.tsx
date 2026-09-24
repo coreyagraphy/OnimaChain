@@ -22,8 +22,8 @@ function Home() {
 
 function LearningGateway() {
   return <section className="waitlist-teaser wrap" aria-labelledby="waitlist-teaser-heading">
-    <div><p className="label label-cyan">Learn by doing</p><h2 id="waitlist-teaser-heading" className="display-md">Look closer.<br /><span>Think clearer.</span></h2><p>Rotate a conceptual evidence world, test a conclusion, and see exactly where an inference travels too far. Your mission progress stays in this browser.</p></div>
-    <Link to="/observatory" className="btn btn-primary">Enter Evidence Worlds <span aria-hidden>↗</span></Link>
+    <div><p className="label label-cyan">Learn by doing</p><h2 id="waitlist-teaser-heading" className="display-md">Look closer.<br /><span>Think clearer.</span></h2><p>Capture a building block, steer through the chamber, and connect a fictional sequence. Practice at your pace. Game results stay in this browser.</p></div>
+    <Link to="/learn/chainforge" className="btn btn-primary">Play Chainforge <span aria-hidden>↗</span></Link>
   </section>
 }
 
@@ -70,7 +70,7 @@ function PulseHome() {
           <h2 id="pulse-h" className="display text-[clamp(2.2rem,5.4vw,4.6rem)] mt-3 leading-[0.98]">Ideas become tools.<br />Sources mark the moments.</h2>
           <p className="lede mt-4 max-w-xl">Travel through documented moments in peptide science. Select a year, read what happened, and open the original source.</p>
         </div>
-        <Link to="/observatory" search={{ station: 'history' }} className="btn btn-primary">Explore the timeline →</Link>
+        <Link to="/learn" search={{ activity: 'history' }} className="btn btn-primary">Explore the timeline →</Link>
       </div>
     </section>
   )

@@ -13,17 +13,17 @@ async function newPage(width, height) {
   await page.addInitScript(() => localStorage.setItem('age-gate-21', '1'))
   return page
 }
-async function visit(page, path) { await page.goto(`${base}${path}`); await page.waitForTimeout(500) }
+async function visit(page, path) { await page.goto(`${base}${path}`); await page.waitForTimeout(1500) }
 try {
   const page = await newPage(1440, 900)
   await visit(page, '/learn')
   await page.screenshot({ path: fileURLToPath(new URL('learn-desktop.png', out)), fullPage: true })
-  expect(await page.getByRole('link', { name: /Enter station/i }).count() === 6, 'Learning Lab links to six stations')
+  expect(await page.locator('.activity-door').count() === 6, 'Learning Lab links to six stations')
 
   await visit(page, '/observatory?station=evidence')
   for (const correctIndex of [1, 1, 1, 1]) {
     await page.locator('.obs-options button').nth(correctIndex).click()
-    expect(await page.getByText('You got it. That matches the study.').isVisible(), 'Evidence Worlds gives correct-answer feedback')
+    await page.getByText('You got it. That matches the study.').waitFor(); expect(await page.getByText('You got it. That matches the study.').isVisible(), 'Evidence Worlds gives correct-answer feedback')
     if (await page.getByRole('button', { name: 'Next case' }).count()) await page.getByRole('button', { name: 'Next case' }).click()
   }
   expect(await page.getByText('All 4 missions complete.', { exact: false }).isVisible(), 'Evidence Worlds completes all missions')

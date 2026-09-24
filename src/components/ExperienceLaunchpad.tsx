@@ -16,10 +16,10 @@ export function ActivitySculpture({ shape }: { shape: string }) {
 
 export function ExperienceLaunchpad({ compact = false }: { compact?: boolean }) {
   return <section className={`experience-launchpad wrap ${compact ? 'is-compact' : ''}`} aria-labelledby="experience-title">
-    <div className="experience-heading"><div><p className="electric-eyebrow">THE OBSERVATORY / OPEN TO CURIOSITY</p><h2 id="experience-title">Less reading.<br/><em>More discovering.</em></h2></div><p>No science degree needed. Pick something that makes you curious. Every activity shows you what to do.</p></div>
-    <div className="activity-grid">{ACTIVITIES.map((item, i) => <Link key={item.id} to="/observatory" search={{ station: item.id }} className={`activity-door door-${item.shape}`} style={{ '--activity': item.color } as CSSProperties}>
+    <div className="experience-heading"><div><p className="electric-eyebrow">OPTIONAL LESSONS / OPEN TO CURIOSITY</p><h2 id="experience-title">Less reading.<br/><em>More discovering.</em></h2></div><p>No science degree needed. Pick something that makes you curious. Every activity shows you what to do.</p></div>
+    <div className="activity-grid">{ACTIVITIES.map((item, i) => <Link key={item.id} to={item.id==='molecule'?'/observatory':'/learn'} search={item.id==='molecule'?{}:{activity:item.id}} className={`activity-door door-${item.shape}`} style={{ '--activity': item.color } as CSSProperties}>
       <span className="activity-number">0{i + 1}<span>EXPLORE ↗</span></span><ActivitySculpture shape={item.shape}/>
-      <div className="activity-copy"><span>{item.verb}</span><h3>{item.title}</h3><p>{item.detail}</p><span className="activity-enter">Enter station <b aria-hidden="true">↗</b></span></div>
+      <div className="activity-copy"><span>{item.verb}</span><h3>{item.title}</h3><p>{item.detail}</p><span className="activity-enter">Explore <b aria-hidden="true">↗</b></span></div>
     </Link>)}</div>
     <p className="experience-note">Conceptual visuals, real questions. No account needed. Your challenge progress stays in this browser.</p>
   </section>

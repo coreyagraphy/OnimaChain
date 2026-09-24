@@ -3,7 +3,7 @@ import { brand } from '~/brand'
 import { BrandLogo } from './BrandWordmark'
 
 const cols = [
-  [['/explore', 'Explore'], ['/claims', 'Research'], ['/signal', 'Source map'], ['/observatory', 'Evidence Observatory'], ['/learn', 'Learning Lab']],
+  [['/explore', 'Explore'], ['/claims', 'Research'], ['/signal', 'Source map'], ['/observatory', 'Molecular Observatory'], ['/learn', 'Learning Lab']],
   [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections']],
   [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const

@@ -16,7 +16,7 @@ import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/compound/$slug')({
   loader: ({ params }) => {
-    if (params.slug === 'wolverine-blend') throw redirect({ to: '/observatory', search: { station: 'evidence' }, statusCode: 302 })
+    if (params.slug === 'wolverine-blend') throw redirect({ to: '/learn', search: { activity: 'evidence' }, statusCode: 302 })
     if (!COMPOUND_BY_SLUG[params.slug]) throw notFound()
     return { slug: params.slug }
   },

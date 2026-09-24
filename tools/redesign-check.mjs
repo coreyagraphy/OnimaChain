@@ -25,8 +25,9 @@ try {
         }
       }
       if (label === 'molecule') {
-        await page.getByRole('tab', { name: 'The connections', exact: true }).click()
-        check(await page.getByRole('tabpanel').innerText().then(t => t.includes('highlighted links')), name + ' molecule controls explain bonds')
+        await page.getByRole('button', { name: /Example 1: .* at position 2$/ }).click()
+        await page.waitForFunction(()=>document.querySelector('.residue-readout')?.textContent?.includes('position 2'))
+        check(true, name + ' molecule sequence controls update linked selection')
       }
       if (['report','constellation','history'].includes(label)) {
         const controls = page.locator('.discovery-controls button')

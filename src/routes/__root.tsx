@@ -74,10 +74,11 @@ function NotFound() {
 function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const universe = universeFor(pathname)
+  const gameplay = pathname === '/learn/chainforge'
+  useEffect(() => { if(gameplay) stopLenis(); else startLenis(); return () => stopLenis() }, [gameplay])
   useEffect(() => {
     initVisualMode()
     startTilt()
-    startLenis()
     // Remove only retired cart and health-goal keys, preserving learning progress.
     for (const key of ['onimachain-commerce-cart-v1', 'ominachain-commerce-cart-v1', 'cyravon-commerce-cart-v1', 'bond-theory-picks', 'bond-theory-goals', 'pulse-last-visit', 'pulse-follow', 'pulse-review-key']) {
       try { window.localStorage.removeItem(key) } catch { /* storage may be unavailable */ }
@@ -87,10 +88,10 @@ function RootComponent() {
   return (
     <RootDocument>
       <AgeGate />
-      <DepthBackdrop />
+      {!gameplay && <DepthBackdrop />}
       <Nav />
       <ReaderQuickView />
-      <GlobalCanvas />
+      {!gameplay && <GlobalCanvas />}
       <main className="min-h-screen" data-universe={universe}>
         <Outlet />
       </main>

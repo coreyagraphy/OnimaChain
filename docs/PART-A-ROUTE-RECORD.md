@@ -1,5 +1,7 @@
 # Part A educational-site route and release record
 
+September 24 follow-up: [HALO-IMPLEMENTATION-RECORD.md](HALO-IMPLEMENTATION-RECORD.md) records the observational Observatory, preserved optional lessons, Chainforge, and separate satellite status. Route destinations below reflect this follow-up; earlier detailed test narratives remain historical where noted.
+
 Visual/interaction follow-up: see [IMMERSIVE-REDESIGN.md](IMMERSIVE-REDESIGN.md) for the new activity entrances, plain-English station names, responsive 3D scenes, card presentation changes and additional checks. The retirement and release policies below remain unchanged.
 
 Review branch: `codex/full-site-experience` in the full OnimaChain repository. Base commit before this pass: `b8c84c20dfc39abb56900c4b1c6dcf8b7595cad0`. Review PR: [#1](https://github.com/coreyagraphy/OnimaChain/pull/1), kept draft. Work and checks below are **local** at `http://127.0.0.1:8080`, not the unrelated `:5173` prototype. No staging deploy, production publish, merge, cache purge, or post-deployment verification has occurred. The repository's public/private setting was not changed.
@@ -14,8 +16,8 @@ This is an implementation and test record, **not a release approval**. The publi
 | --- | --- | --- | --- |
 | `/` | Keep; editorial review pending | Removed sales/waitlist/promotional entry points; Observatory gateway, research library and static sourced-history entry remain | 200; browser gateway visual checked |
 | `/explore` | Keep; identity records, not products | Search/sort/grid/list and model preview preserved; prices, variants, cart and benefit summaries removed | 200; browser quick view and search checked |
-| `/learn` | Expand | Six direct Observatory station cards plus existing lesson catalog; no registration or health input | 200; desktop/phone visual and station links checked |
-| `/observatory` | Keep and expand | Evidence Worlds (4 fictional missions, local progress/replay), Scale Lab, Report Detective, Evidence Constellation, Molecule Explorer and Research Time Machine | 200; interaction checks below |
+| `/learn` | Expand | Chainforge entrance, Observatory entrance, five optional activities and existing lesson catalog; direct child lessons render via Outlet | 200; desktop/phone visual and station links checked |
+| `/observatory` | Keep and expand | Observational molecular workbench: linked sequence selection, rotation, isolated residue inspection, accurately labeled comparison and provenance. No quiz, score or timer | 200; interaction checks below |
 | `/signal` | Keep topic/identity map; real edge review pending | Benefit/stack framing removed; unreviewed receptor-pair edges withheld; users can still select identities and sources | 200; no claim that an empty relationship map is a completed source atlas |
 | `/compare` | Rewrite | Side-by-side identity, sequence and source inventory rather than suitability/effectiveness ranking | 200 |
 | `/claims` | Keep as critical-appraisal index | Tracked wording is not presented as reviewed clinical advice | 200 |
@@ -88,19 +90,19 @@ Every row was a logged-out direct local GET, with redirects disabled in the test
 | --- | --- | --- |
 | `/shop` | `/learn` | 302 |
 | `/waitlist` | `/learn` | 302 |
-| `/bond-theory` | `/observatory?station=evidence` | 302 |
-| `/combinations` | `/observatory?station=evidence&case=3` (fictional “What changed?” mission) | 302 |
-| `/research-tools` | `/observatory?station=scale` | 302 |
-| `/research-tools/preclinical-calculator` | `/observatory?station=scale` | 302 |
-| `/coa` | `/observatory?station=report` | 302 |
+| `/bond-theory` | `/learn/chainforge` | 302 |
+| `/combinations` | `/learn?activity=evidence&case=3` (fictional “What changed?” mission) | 302 |
+| `/research-tools` | `/learn?activity=scale` | 302 |
+| `/research-tools/preclinical-calculator` | `/learn?activity=scale` | 302 |
+| `/coa` | `/learn?activity=report` | 302 |
 | `/targets` | `/observatory?station=molecule` | 302 |
-| `/pulse` | `/observatory?station=history` | 302 |
-| `/pulse/review` | `/observatory?station=history` | 302 |
-| `/timeline` | `/observatory?station=history` | 302 |
-| `/watchlist` | `/observatory?station=history` | 302 |
+| `/pulse` | `/learn?activity=history` | 302 |
+| `/pulse/review` | `/learn?activity=history` | 302 |
+| `/timeline` | `/learn?activity=history` | 302 |
+| `/watchlist` | `/learn?activity=history` | 302 |
 | `/account` | `/privacy` | 302 |
 | `/saved` | `/learn` | 302 |
-| `/compound/wolverine-blend` | `/observatory?station=evidence` | 302 |
+| `/compound/wolverine-blend` | `/learn?activity=evidence` | 302 |
 
 The old Target Atlas and watchlist have **not** been recreated as fully sourced tools. The Molecule Explorer and four sourced historical milestones are working educational replacements, while exact receptor-pair edges and live-feed claims remain held. No personal-goal matching, stack construction, administration calculator, catalog pricing, cart, or ordering UI remains mounted.
 

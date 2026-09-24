@@ -1,0 +1,291 @@
+.molecular-workbench {
+  padding-top: 115px;
+  padding-bottom: 70px;
+}
+.molecular-workbench header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 35px;
+  margin-bottom: 30px;
+}
+.molecular-workbench h1 {
+  font: 700 clamp(54px, 7vw, 96px)/0.95 var(--font-display);
+  margin-top: 18px;
+}
+.molecular-workbench h1 em {
+  font-style: normal;
+  color: #ff9b58;
+}
+.molecular-workbench header > p {
+  max-width: 400px;
+  color: #c5d0d8;
+  line-height: 1.6;
+}
+.workbench-toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.workbench-toolbar button,
+.workbench-example-selects select {
+  padding: 11px 15px;
+  border: 1px solid #8096a366;
+  background: #152534;
+  border-radius: 5px;
+  font-size: 14px;
+  min-height: 44px;
+}
+.workbench-toolbar button[aria-pressed='true'] {
+  background: #edff59;
+  color: #18200e;
+}
+.workbench-example-selects {
+  display: flex;
+  gap: 25px;
+  align-items: end;
+  flex-wrap: wrap;
+  margin: 24px 0 16px;
+}
+.workbench-example-selects label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  color: #d3dee4;
+}
+.workbench-example-selects .scale-toggle {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+}
+.workbench-stage {
+  height: 480px;
+  position: relative;
+  border: 1px solid #8292a144;
+  background:
+    radial-gradient(ellipse at 75% 35%, #ff762e19, transparent 60%),
+    radial-gradient(ellipse at 25% 80%, #edff5913, transparent 60%), #0c1927;
+  box-shadow:
+    0 13px 0 -7px #040b10,
+    0 14px 0 -7px #ff762e66;
+}
+.workbench-stage-label,
+.workbench-model-note {
+  position: absolute;
+  z-index: 2;
+  left: 22px;
+  right: 22px;
+  pointer-events: none;
+  font: 500 11px/1.5 var(--font-mono);
+  color: #cad7de;
+}
+.workbench-stage-label {
+  top: 20px;
+  color: #ffae74;
+}
+.workbench-model-note {
+  bottom: 15px;
+}
+.workbench-static {
+  height: 100%;
+  display: flex;
+  padding: 60px 20px;
+}
+.workbench-loading {
+  padding: 80px;
+  text-align: center;
+}
+.workbench-comparison-note {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #cbd5da;
+  padding: 22px 0 0;
+}
+.workbench-readouts {
+  display: grid;
+  gap: 25px;
+  margin-top: 35px;
+}
+.workbench-readouts.is-compare {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.workbench-readouts section {
+  min-width: 0;
+  padding: 25px;
+  background: #152432;
+  border-top: 2px solid #ff762e;
+}
+.workbench-record-heading {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+.workbench-record-heading h2 {
+  font: 600 36px var(--font-display);
+}
+.workbench-record-heading a,
+.workbench-reading a,
+.workbench-reading > a,
+.workbench-readouts details a {
+  color: #edff59;
+  font-size: 14px;
+}
+.workbench-provenance {
+  font-size: 12px;
+  color: #abc1d0;
+  margin: 12px 0;
+}
+.sequence-selector {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.sequence-selector button {
+  display: grid;
+  gap: 5px;
+  min-width: 42px;
+  min-height: 53px;
+  border: 1px solid #6e8b9c;
+  background: #0b1927;
+  border-radius: 5px;
+}
+.sequence-selector button small {
+  font-size: 10px;
+  color: #acbfcb;
+}
+.sequence-selector button b {
+  font: 600 18px var(--font-mono);
+}
+.sequence-selector button[aria-pressed='true'] {
+  background: #edff59;
+  color: #16220e;
+}
+.sequence-selector button[aria-pressed='true'] small {
+  color: #31421b;
+}
+.residue-readout {
+  border-left: 2px solid #ff9b58;
+  padding-left: 15px;
+  margin-top: 25px;
+}
+.residue-readout strong {
+  font-size: 20px;
+}
+.residue-readout strong span {
+  font-size: 13px;
+  color: #b7cbd8;
+}
+.residue-readout p,
+.workbench-readouts details p {
+  color: #c4d2da;
+  line-height: 1.65;
+  font-size: 15px;
+  margin-top: 9px;
+}
+.workbench-readouts details {
+  margin-top: 25px;
+}
+.workbench-readouts summary {
+  cursor: pointer;
+  min-height: 44px;
+  font-size: 15px;
+}
+.workbench-reading {
+  margin-top: 45px;
+  max-width: 850px;
+}
+.workbench-reading h2 {
+  font: 600 44px var(--font-display);
+}
+.workbench-reading p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #c3d0da;
+  margin: 15px 0;
+}
+.workbench-reading a {
+  display: inline-block;
+  margin: 10px 20px 0 0;
+}
+.lesson-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+.lesson-switcher a {
+  border: 1px solid #8697a366;
+  padding: 12px;
+  font-size: 14px;
+}
+.lesson-switcher a[aria-current] {
+  color: #edff59;
+  border-color: #edff59;
+}
+.optional-activities.observatory-page {
+  padding-top: 0;
+}
+.learning-game-entry {
+  margin: 30px auto;
+  padding: 35px;
+  background: linear-gradient(130deg, #ff762e22, #172735);
+  border: 1px solid #ff762e99;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  justify-content: space-between;
+}
+.learning-game-entry h2 {
+  font: 700 58px var(--font-display);
+}
+.learning-game-entry p {
+  max-width: 550px;
+  color: #cbd7df;
+  line-height: 1.6;
+}
+.learning-game-entry a {
+  white-space: nowrap;
+}
+@media (max-width: 700px) {
+  .molecular-workbench {
+    padding-top: 105px;
+  }
+  .molecular-workbench header {
+    display: block;
+  }
+  .molecular-workbench header > p {
+    margin-top: 20px;
+    font-size: 15px;
+  }
+  .workbench-stage {
+    height: 340px;
+  }
+  .workbench-stage-label {
+    font-size: 9px;
+    left: 12px;
+    right: 12px;
+  }
+  .workbench-readouts.is-compare {
+    grid-template-columns: 1fr;
+  }
+  .workbench-example-selects {
+    gap: 15px;
+  }
+  .workbench-record-heading {
+    align-items: start;
+  }
+  .workbench-record-heading h2 {
+    font-size: 30px;
+  }
+  .workbench-toolbar button {
+    flex-grow: 1;
+  }
+  .learning-game-entry {
+    display: block;
+    padding: 24px;
+  }
+  .learning-game-entry a {
+    margin-top: 20px;
+  }
+}

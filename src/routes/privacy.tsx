@@ -3,6 +3,7 @@ import { BRAND } from '~/brand'
 
 const POINTS = [
   ['What this browser keeps', 'The age gate stores your yes/no acknowledgment locally. Evidence Worlds stores completed fictional mission numbers, not the answers you chose.'],
+  ['Chainforge', 'Chainforge stores completed mission IDs and local best times/retries under onimachain:chainforge:v1. Practice, precision, daily seeds and sequence-mode results have separate entries. No account, leaderboard or upload is used. Clear saved game results on the game page removes this key.'],
   ['Retired tools', 'When this version loads, it removes known local cart, Bond Theory goal/pick, and Pulse preference/review-key entries from this browser. It does not delete any server records. The educational site no longer accepts orders, health-goal matching, or public live-feed submissions.'],
   ['Editorial messages, once enabled', 'The correction form remains closed until a real operator, inbox, sender and delivery test are configured. Once enabled, it sends your page reference, message, optional source URL and optional reply email to the configured editorial inbox through the email provider. Please do not submit medical records or treatment details.'],
   ['Your choices', 'Replay Evidence Worlds to clear its saved mission completion. You can also clear this site’s browser storage in your browser settings. An optional reply email is not required to submit an editorial message when the channel opens.'],
