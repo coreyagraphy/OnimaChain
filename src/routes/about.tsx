@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { BRAND, brand } from '~/brand'
 import { BrandLogo } from '~/components/BrandWordmark'
+import { OperatorIdentity } from '~/components/OperatorIdentity'
 
 export const Route = createFileRoute('/about')({
   head: () => ({ meta: [
@@ -41,7 +42,7 @@ function About() {
         <div className="panel glass relative p-6"><p className="relative label label-cyan">What the labels mean</p><p className="relative mt-3 text-sm text-bone/85">A PubMed check confirms citation details, not a claim. Tracked statements show a source connection or say when that connection is still under review.</p></div>
         <div className="panel glass relative p-6"><p className="relative label label-amber">What we do not do</p><p className="relative mt-3 text-sm text-bone/85">We do not give medical advice, tell you how much to take, or make up customer stories and results.</p></div>
         <div className="panel glass relative p-6"><p className="relative label label-violet">How to use it</p><p className="relative mt-3 text-sm text-bone/85">Start in the <Link to="/explore" className="underline">research library</Link>, inspect the labeled molecule view, then open cited records. Read our <Link to="/methodology" className="underline">method</Link> for the boundary between a citation and a reviewed scientific conclusion.</p></div>
-        <div className="panel glass relative p-6 md:col-span-2"><p className="relative label label-amber">Operator and review disclosure</p><p className="relative mt-3 text-sm text-bone/85">The public operator identity, editorial contact and any material commercial relationships must be confirmed before publication. This review branch makes no claim of independent scientific or legal approval.</p></div>
+        <div className="panel glass relative p-6 md:col-span-2"><p className="relative label label-amber">Operator and review disclosure</p><OperatorIdentity/><p className="relative mt-4 text-sm text-bone/85">Any material commercial relationships and final scientific and legal review remain to be confirmed. This site does not claim independent scientific or legal approval.</p></div>
       </section>
     </div>
   )

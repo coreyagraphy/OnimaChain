@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { BRAND } from '~/brand'
+import { OperatorIdentity } from '~/components/OperatorIdentity'
 
 const RULES = [
   ['You must be 21 or older', 'Must be 21 and over to enter. By using this site you confirm you are.'],
@@ -18,12 +19,13 @@ export const Route = createFileRoute('/terms')({
       <p className="label label-cyan">Terms</p>
       <h1 className="display text-[clamp(2.4rem,6vw,5.4rem)] mt-3">The rules, short and honest.</h1>
       <p className="lede mt-5 max-w-2xl">Seven things you agree to by using {BRAND}.</p>
+      <OperatorIdentity />
       <ol className="mt-10 grid gap-3 max-w-3xl">
         {RULES.map(([t, b], i) => (
           <li key={t} className="panel-flat p-5 flex gap-4"><span className="mono text-bone/40 pt-1">{String(i + 1).padStart(2, '0')}</span><div><p className="font-semibold text-bone/95">{t}</p><p className="mt-1.5 text-sm text-bone/80">{b}</p></div></li>
         ))}
       </ol>
-      <p className="mt-8 mono text-[11px] text-bone/45">Release-gated draft · operator identity and legal review pending.</p>
+      <p className="mt-8 mono text-[11px] text-bone/45">Release-gated draft · legal review pending.</p>
     </div>
   ),
 })

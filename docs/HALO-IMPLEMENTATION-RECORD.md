@@ -1,5 +1,7 @@
 # Halo gap implementation and evidence — September 24, 2026
 
+Current-status note: the owner later dropped the separate satellite prototype. Its local repository was moved to the Recycle Bin and the port-8192 preview stopped; the satellite report below is a historical implementation record, not an active roadmap. The educational build remains on the draft review branch and is not yet published.
+
 ## Release boundary
 
 Education changes are in the **full local app**, `C:/Users/corey/OneDrive/Documents/ChatGPT/OnimaChain-integration`, branch `codex/full-site-experience`, based on `284bf641ac8bd4d2ce9bd1a0a426335a72f62b02`. Preview: `http://127.0.0.1:8080`. This is not the earlier port-5173 prototype, staging, or production. PR #1 remains draft. No production deployment, merge, real editorial intake, commerce, invitation or shipment was performed. The final commit is reported in the handoff; this document travels in that commit.

@@ -1,12 +1,14 @@
 # Part A educational-site route and release record
 
+September 24 operator update: the owner supplied the public display name **This is a Mental Vision** and editorial address **create@mentalvision.ai**. They are now shown in the local review build and configured as production Netlify environment values. The online form remains fail-closed; no sender, mail-provider key, delivery verification, final privacy/provider inventory, or legal review has been supplied. The owner asked to review the design before delivery testing or publishing. The earlier release-gate statements below are historical to the original pass.
+
 September 24 follow-up: [HALO-IMPLEMENTATION-RECORD.md](HALO-IMPLEMENTATION-RECORD.md) records the observational Observatory, preserved optional lessons, Chainforge, and separate satellite status. Route destinations below reflect this follow-up; earlier detailed test narratives remain historical where noted.
 
 Visual/interaction follow-up: see [IMMERSIVE-REDESIGN.md](IMMERSIVE-REDESIGN.md) for the new activity entrances, plain-English station names, responsive 3D scenes, card presentation changes and additional checks. The retirement and release policies below remain unchanged.
 
 Review branch: `codex/full-site-experience` in the full OnimaChain repository. Base commit before this pass: `b8c84c20dfc39abb56900c4b1c6dcf8b7595cad0`. Review PR: [#1](https://github.com/coreyagraphy/OnimaChain/pull/1), kept draft. Work and checks below are **local** at `http://127.0.0.1:8080`, not the unrelated `:5173` prototype. No staging deploy, production publish, merge, cache purge, or post-deployment verification has occurred. The repository's public/private setting was not changed.
 
-This is an implementation and test record, **not a release approval**. The public operator name, controlled editorial inbox and sender are not supplied. Contact and privacy remain release-gated; actual inbox delivery, provider/hosting/analytics inventory, conflicts disclosure, source-level scientific review, qualified legal review, and owner sign-off remain open. `robots.txt` disallows indexing in this review build. Do not remove that block as a substitute for these gates.
+This is an implementation and test record, **not a release approval**. A public display name and editorial address have now been supplied; the sender and mail-provider key have not. The online form remains closed. Delivery testing, provider/hosting/analytics inventory, conflicts disclosure, source-level scientific review, qualified legal review, and owner sign-off remain open. `robots.txt` disallows indexing in this review build. Do not remove that block as a substitute for these gates.
 
 ## Canonical educational routes
 
@@ -27,11 +29,11 @@ This is an implementation and test record, **not a release approval**. The publi
 | `/status/$compound` | Rewrite shared template | Attached product-specific official records only; absent record says **not reviewed**, not **not approved** | All 36 variants returned 200; SS-31 checked directly |
 | `/methodology` | Keep/rewrite | Metadata, claim and official-product states separated; review limits and correction process stated | 200 |
 | `/coverage` | Keep/rewrite | Counts identity/citation records; no blanket claim-validation count | 200 |
-| `/about` | Keep/rewrite; owner disclosure pending | No invented operator, qualification or independence claim; release gate visible | 200 |
-| `/contact` | Hold from release pending identity/delivery test | Configurable editorial intake renders closed until real operator, controlled inbox/sender, provider key and verified delivery flag are supplied | 200; form absent in browser; `/api/editorial` checks below |
-| `/corrections` | Hold intake from release pending identity/delivery test | Honest empty ledger and same fail-closed editorial form; no invented historical corrections | 200 |
-| `/privacy` | Hold from release pending operator/provider/legal review | Describes observed local storage and retired-key cleanup; names unresolved hosting/log/email facts rather than inventing a completed notice | 200 |
-| `/terms` | Keep as draft; legal review pending | Removed sales/ordering terms; education-only scope | 200 |
+| `/about` | Keep/rewrite; commercial-relationship disclosure pending | Owner-supplied public operator and email now shown with Mental Vision's gradient; no invented qualification or independence claim | 200; September 24 browser check confirmed name/email |
+| `/contact` | Hold online form until sender/delivery test | Direct mailto to supplied address now shown; configurable online form remains closed until verified sender, provider key and delivery flag are supplied | 200; September 24 browser check confirmed name/email, form absent |
+| `/corrections` | Hold online form until sender/delivery test | Honest empty ledger, direct mailto, same fail-closed editorial form; no invented historical corrections | 200; September 24 browser check confirmed name/email, form absent |
+| `/privacy` | Hold from release pending provider/legal review | Operator contact now shown; observed local storage and retired-key cleanup retained; unresolved hosting/log/email facts remain explicit | 200; September 24 browser check confirmed name/email |
+| `/terms` | Keep as draft; legal review pending | Operator contact now shown; education-only scope retained | 200; September 24 browser check confirmed name/email |
 
 ### Profile-by-profile disposition
 
