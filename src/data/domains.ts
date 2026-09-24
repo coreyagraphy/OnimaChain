@@ -11,9 +11,9 @@ export type RigId = 'dock' | 'pulse' | 'branch' | 'bloom' | 'propagate' | 'rekni
 
 export interface Domain {
   id: DomainId
-  /** Plain, consumer-facing topic name (shown everywhere). */
+  /** Educational browsing subject (not a personal-use category). */
   name: string
-  /** One persuasive line; describes what people look into, never promises a result. */
+  /** Scope line for the subject, without an outcome promise. */
   tagline: string
   /** Faded background image for the topic card (public/topics). Illustrative only. */
   image: string
@@ -30,10 +30,10 @@ export interface Domain {
 export const DOMAINS: Domain[] = [
   {
     id: 'repair',
-    name: 'Recovery & Repair',
-    tagline: 'For the days after the hard days.',
+    name: 'Tissue biology',
+    tagline: 'Models of tissue response and repair research.',
     image: '/topics/repair.webp',
-    researchLabel: 'Peptides people look into for recovery and repair',
+    researchLabel: 'Peptides indexed in tissue-biology research',
     rig: 'branch',
     grammar: 'Branch — a line network grows from the edges toward the centre and closes over a mask.',
     palette: { base: '#5FE3FF', accent: '#9FF0FF', glow: '#5FE3FF' },
@@ -41,10 +41,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'metabolic',
-    name: 'Weight & Metabolism',
-    tagline: 'Get to know the names in weight management.',
+    name: 'Metabolic signaling',
+    tagline: 'Hormones, receptors and metabolic study settings.',
     image: '/topics/metabolic.webp',
-    researchLabel: 'Peptides people look into for weight and metabolism',
+    researchLabel: 'Peptides indexed in metabolic-signaling research',
     rig: 'dock',
     grammar: 'Dock — a ligand approaches a receptor ring; on contact, a signal wave propagates inward.',
     palette: { base: '#4F7BFF', accent: '#8FB0FF', glow: '#2247D6' },
@@ -52,10 +52,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'somatotropic',
-    name: 'Growth & Muscle',
-    tagline: 'Studied around your body’s own growth signals.',
+    name: 'Growth-factor biology',
+    tagline: 'Study records involving growth signaling pathways.',
     image: '/topics/somatotropic.webp',
-    researchLabel: 'Peptides people look into for growth and muscle',
+    researchLabel: 'Peptides indexed in growth-factor research',
     rig: 'pulse',
     grammar: 'Pulse — emissive intensity rides a night-weighted 24h waveform; bursts on the peaks.',
     palette: { base: '#8A63FF', accent: '#B9A2FF', glow: '#8A63FF' },
@@ -63,10 +63,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'dermal',
-    name: 'Skin, Hair & Glow',
-    tagline: 'Collagen, color, and that lit-from-within look.',
+    name: 'Skin and pigment biology',
+    tagline: 'Pigment and tissue models, separated by study setting.',
     image: '/topics/dermal.webp',
-    researchLabel: 'Peptides people look into for skin and hair',
+    researchLabel: 'Peptides indexed in skin and pigment research',
     rig: 'bloom',
     grammar: 'Bloom — a point emits a radial diffusion field that spreads outward and settles.',
     palette: { base: '#9FD8E8', accent: '#D7EEF5', glow: '#7FC8DD' },
@@ -74,10 +74,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'cognitive',
-    name: 'Focus & Mood',
-    tagline: 'Brain peptides people talk about for calm and clarity.',
+    name: 'Nervous-system research',
+    tagline: 'Neural mechanisms and the limits of their models.',
     image: '/topics/cognitive.webp',
-    researchLabel: 'Peptides people look into for focus and mood',
+    researchLabel: 'Peptides indexed in nervous-system research',
     rig: 'propagate',
     grammar: 'Propagate — a single packet hops a sparse graph; edges flash in sequence as it crosses.',
     palette: { base: '#A98BFF', accent: '#CBB8FF', glow: '#8A63FF' },
@@ -85,10 +85,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'longevity',
-    name: 'Aging & Cell Energy',
-    tagline: 'The fountain-of-youth research: what’s real, what’s hype.',
+    name: 'Cellular energy and aging',
+    tagline: 'Cellular-energy questions and evidence boundaries.',
     image: '/topics/longevity.webp',
-    researchLabel: 'Peptides people look into for aging and cell energy',
+    researchLabel: 'Compounds indexed in cellular-energy research',
     rig: 'reknit',
     grammar: 'Reknit — an assembly curve played in reverse with slow rotation.',
     palette: { base: '#7FD1C9', accent: '#B2EBE5', glow: '#5FE3FF' },
@@ -96,10 +96,10 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: 'immune',
-    name: 'Immune Defense',
-    tagline: 'Studied around how the body guards itself.',
+    name: 'Immune-system research',
+    tagline: 'Immune-signaling research by model and source.',
     image: '/topics/immune.webp',
-    researchLabel: 'Peptides people look into for immune support',
+    researchLabel: 'Peptides indexed in immune-system research',
     rig: 'sweep',
     grammar: 'Sweep — a cone of light sweeps a field of points, locks on one, flags it, and resumes.',
     palette: { base: '#B7C6D6', accent: '#E3ECF3', glow: '#9FD8E8' },

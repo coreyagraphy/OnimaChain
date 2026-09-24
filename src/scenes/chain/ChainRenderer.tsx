@@ -9,6 +9,9 @@ import { useQuality } from '~/motion/useReducedMotion'
 
 export interface ChainRendererProps {
   geometry: ChainGeometry
+  onSelectResidue?: (index: number) => void
+  isolatedResidue?: number | null
+  referenceMode?: boolean
   /** 0 → scattered, 1 → assembled. A ref is read every frame (scroll scrub); a number is static. */
   progress?: number | RefObject<number>
   tint?: string
@@ -74,6 +77,9 @@ function easeOutCubic(t: number) {
 
 export function ChainRenderer({
   geometry: g,
+  onSelectResidue,
+  isolatedResidue = null,
+  referenceMode = false,
   progress = 1,
   tint = '#5FE3FF',
   accent = '#8A63FF',
@@ -250,7 +256,7 @@ export function ChainRenderer({
     }
     if (decor.current) {
       const k = Math.max(0, Math.min(1, (p - 0.8) / 0.2))
-      decor.current.visible = k > 0
+      decor.current.visible = k > 0 && isolatedResidue === null
       decor.current.scale.setScalar(0.001 + k)
     }
     if (markers.current) {
@@ -264,11 +270,12 @@ export function ChainRenderer({
       signalOrb.current.position.copy(curve.getPointAt(u))
       const pulse = 0.72 + Math.sin(tRef.current * 4.2) * 0.18
       signalOrb.current.scale.setScalar(pulse * (lod === 2 ? 0.58 : 0.86))
-      signalOrb.current.visible = p > 0.82
+      signalOrb.current.visible = p > 0.82 && !referenceMode
       if (signalLight.current) signalLight.current.intensity = (2.4 + 1.2 * Math.sin(tRef.current * 4.2)) * intensity
     }
     // Tube reveal
     if (tube.current) {
+      tube.current.visible = isolatedResidue === null
       const assembled = Math.floor(Math.max(0, p * (n + STAGGER) - STAGGER))
       const frac = n > 1 ? Math.min(1, assembled / (n - 1)) : p
       const segs = Math.floor(frac * tubularSegments)
@@ -298,7 +305,7 @@ export function ChainRenderer({
         )
         const base = lod === 0 ? sizeRadius(r.size) * 0.72 : lod === 1 ? 0.7 : 0.55
         const s = (g.placeholder ? 0.45 : base * (0.6 + 0.4 * t)) * atomScale
-        S.setScalar(s)
+        S.setScalar(isolatedResidue !== null && isolatedResidue !== i ? 0 : s)
         M.compose(V, spins[i] ?? Q, S)
         inst.current.setMatrixAt(i, M)
       }
@@ -357,6 +364,7 @@ export function ChainRenderer({
           {/* residues */}
           <instancedMesh
             ref={inst}
+            onClick={event => { if (onSelectResidue && event.instanceId !== undefined) { event.stopPropagation(); onSelectResidue(event.instanceId) } }}
             args={[undefined, undefined, n]}
             frustumCulled={false}
             onUpdate={(m) => {

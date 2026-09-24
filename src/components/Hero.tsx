@@ -17,8 +17,8 @@ const HeroScene = lazy(() => import('~/scenes/hero/HeroScene').then((m) => ({ de
  *   52–74%  the site's theme, three big lines, each lighting a marker in the scene (nothing else on screen)
  *   76%+    the headline, alone, after the camera has cleared the molecule
  */
-const PIN = 2.2 // viewport heights of scroll the hero holds for (desktop)
-/** Phones get straight to the shop: the headline and buttons are there from the first frame, the fly-in is one short scroll. */
+const PIN = 1.4 // viewport heights of scroll the hero holds for (desktop)
+/** Phones get straight to the library: the headline and buttons are there from the first frame. */
 const PIN_MOBILE = 0.7
 const CAPTIONS = [
   { from: 0.12, to: 0.3, k: 'Meet the molecule', v: 'BPC-157 is a chain of 15 amino acids.' },
@@ -74,13 +74,20 @@ export function Hero() {
     if (!section.current || isStatic || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { if (isMobile) paint(1); return }
     paint(0)
     const cleanup = createScrub({ trigger: section.current, end: `+=${(isMobile ? PIN_MOBILE : PIN) * 100}%`, pin: true, scrub: true, onProgress: paint })
-    const onMove = (e: PointerEvent) => { if (e.pointerType !== 'mouse') return; pointer.current.x = (e.clientX / window.innerWidth - 0.5) * 2; pointer.current.y = (e.clientY / window.innerHeight - 0.5) * 2 }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    // keep the tilt-driven HTML layers alive between scroll events (transform-only writes)
     let raf = 0
-    const idle = () => { paint(progress.current); raf = requestAnimationFrame(idle) }
-    raf = requestAnimationFrame(idle)
-    return () => { cleanup(); cancelAnimationFrame(raf); window.removeEventListener('pointermove', onMove) }
+    const queuePaint = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => { raf = 0; paint(progress.current) })
+    }
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return
+      pointer.current.x = (e.clientX / window.innerWidth - 0.5) * 2
+      pointer.current.y = (e.clientY / window.innerHeight - 0.5) * 2
+      queuePaint()
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('deviceorientation', queuePaint, { passive: true })
+    return () => { cleanup(); cancelAnimationFrame(raf); window.removeEventListener('pointermove', onMove); window.removeEventListener('deviceorientation', queuePaint) }
   }, [isStatic]) // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Skip intro: move the document and the shared progress to the finished frame, then hand focus to the first action. */
@@ -98,7 +105,7 @@ export function Hero() {
 
   return (
     <div className="hero-pin-root">
-    <section ref={section} className="hero-shell relative h-[100vh] w-full overflow-hidden bg-obsidian grain" aria-label="Molecular collection introduction">
+    <section ref={section} className="hero-shell relative h-[100vh] w-full overflow-hidden bg-obsidian grain" aria-label="Peptide research introduction">
       <picture><source media="(max-aspect-ratio: 4/5)" srcSet="/posters/hero-portrait.jpg"/><img src="/posters/hero.jpg" alt="A glowing sequence-derived molecular chain in a deep cyan and violet laboratory environment" width={1440} height={900} fetchPriority="high" decoding="async" className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[1400ms]" style={{opacity:firstFrame?0:1}}/></picture>
       <div ref={chroma} className="hero-chroma" aria-hidden/><div ref={orbA} className="hero-orbit hero-orbit-a" aria-hidden/><div ref={orbB} className="hero-orbit hero-orbit-b" aria-hidden/>
       {allowed && <Lod0Canvas className="absolute inset-0" style={{position:'absolute',inset:0,width:'100%',height:'100%'}} onFirstFrame={()=>setFirstFrame(true)} cameraZ={16}><Suspense fallback={null}><HeroScene progress={progress} pointer={pointer}/></Suspense></Lod0Canvas>}
@@ -108,7 +115,8 @@ export function Hero() {
       {!isStatic && !mobile && (
         <div ref={introRef} className="absolute inset-x-0 bottom-[12vh] z-10 wrap pointer-events-none">
           <p className="label label-cyan">Peptides, up close</p>
-          <p className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-3 max-w-[14ch] text-bone">Explore the world of peptides.</p>
+          <p className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-3 max-w-[14ch] text-bone">Small molecules.<br/>Big questions.</p>
+          <div className="hero-entry-links"><Link to="/learn">Try something hands-on ↗</Link><Link to="/explore">Meet the molecules</Link></div>
           <p className="mt-6 flex items-center gap-3 text-[14px] text-bone/75"><span className="hero-scroll-cue" aria-hidden />Scroll to explore</p>
         </div>
       )}
@@ -131,9 +139,9 @@ export function Hero() {
         onFocusCapture={() => { if (!isStatic && progress.current < HEAD_IN[1]) skip() }}
       >
         <p className="label label-cyan mb-5">{brand.primaryTagline}</p>
-        <h1 className="display hero-title text-bone">See the molecule.<br/><span>Understand the story.</span></h1>
-        <p className="lede mt-7 max-w-xl hidden md:block">Shop common peptides, learn what each one is, and check the original sources without needing a science degree.</p>
-        <div className="mt-9 flex flex-wrap gap-3"><Link ref={primaryCta} to="/explore" className="btn btn-primary">Shop the collection</Link><Link to="/signal" className="btn">Find a peptide</Link></div>
+        <h1 className="display hero-title text-bone">See the molecule.<br/><span>Understand the evidence.</span></h1>
+        <p className="lede mt-7 max-w-xl hidden md:block">Explore peptide science in plain English. See what studies tested, what they found, and what remains uncertain.</p>
+        <div className="mt-9 flex flex-wrap gap-3"><Link ref={primaryCta} to="/explore" className="btn btn-primary">Explore the library</Link><Link to="/learn" className="btn">Enter the Learning Lab</Link></div>
       </div>
 
       {/* 12–50%: captions */}

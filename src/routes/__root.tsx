@@ -1,17 +1,18 @@
 import { createRootRoute, HeadContent, Link, Outlet, Scripts, useRouterState } from '@tanstack/react-router'
-import { useEffect, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import appCss from '../styles/app.css?url'
+import electricCss from '../styles/electric.css?url'
 import { Nav } from '~/components/Nav'
 import { Footer } from '~/components/Footer'
-import { GlobalCanvas } from '~/scenes/Canvas'
 import { initVisualMode } from '~/motion/useReducedMotion'
-import { startLenis, stopLenis } from '~/motion/lenis'
 import { NotFoundFragment } from '~/components/NotFoundFragment'
 import { AgeGate } from '~/components/AgeGate'
 import { DepthBackdrop } from '~/components/DepthBackdrop'
 import { startTilt } from '~/motion/tilt'
 import { BRAND, brand } from '~/brand'
-import { CommerceChrome } from '~/components/CommerceChrome'
+import { useReaderStore } from '~/stores/reader'
+
+const ReaderQuickView = lazy(() => import('~/components/ReaderQuickView').then(module => ({ default: module.ReaderQuickView })))
 
 export const Route = createRootRoute({
   head: () => ({
@@ -33,10 +34,10 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
+      { rel: 'stylesheet', href: electricCss },
       { rel: 'icon', type: 'image/png', href: brand.icon },
       { rel: 'manifest', href: '/site.webmanifest' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
-      { rel: 'preload', as: 'image', href: '/posters/hero.jpg' },
     ],
     scripts: [{
       type: 'application/ld+json',
@@ -45,7 +46,6 @@ export const Route = createRootRoute({
         '@type': 'WebSite',
         name: BRAND,
         description: brand.description,
-        publisher: { '@type': 'Organization', name: BRAND },
       }),
     }],
   }),
@@ -62,7 +62,7 @@ function NotFound() {
         <h1 className="display text-[clamp(2.6rem,7vw,6rem)]">This pathway ends here.</h1>
         <p className="lede mt-6 max-w-xl"><b className="text-bone">This page may have moved, or the link may be wrong. You can return to {BRAND} and keep exploring.</b></p>
         <div className="mt-8 flex gap-3">
-          <Link to="/explore" className="btn btn-primary">Shop peptides</Link>
+          <Link to="/explore" className="btn btn-primary">Explore the library</Link>
           <Link to="/" className="btn">Back to {BRAND}</Link>
         </div>
       </div>
@@ -73,19 +73,35 @@ function NotFound() {
 function RootComponent() {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const universe = universeFor(pathname)
+  const gameplay = pathname === '/learn/chainforge'
+  const quickViewOpen = useReaderStore(state => state.quickView !== null)
+  // Smooth scrolling belongs to the scroll-choreographed home page. Native scrolling
+  // keeps lessons and research responsive and leaves GSAP out of their initial bundle.
+  useEffect(() => {
+    if (pathname !== '/') return
+    let cancelled = false
+    let stop: (() => void) | undefined
+    void import('~/motion/lenis').then(({ startLenis, stopLenis }) => {
+      if (cancelled) return
+      startLenis()
+      stop = stopLenis
+    })
+    return () => { cancelled = true; stop?.() }
+  }, [pathname])
   useEffect(() => {
     initVisualMode()
     startTilt()
-    startLenis()
-    return () => stopLenis()
+    // Remove only retired cart and health-goal keys, preserving learning progress.
+    for (const key of ['onimachain-commerce-cart-v1', 'ominachain-commerce-cart-v1', 'cyravon-commerce-cart-v1', 'bond-theory-picks', 'bond-theory-goals', 'pulse-last-visit', 'pulse-follow', 'pulse-review-key']) {
+      try { window.localStorage.removeItem(key) } catch { /* storage may be unavailable */ }
+    }
   }, [])
   return (
     <RootDocument>
       <AgeGate />
-      <DepthBackdrop />
+      {!gameplay && <DepthBackdrop />}
       <Nav />
-      <CommerceChrome />
-      <GlobalCanvas />
+      {quickViewOpen && <Suspense fallback={null}><ReaderQuickView /></Suspense>}
       <main className="min-h-screen" data-universe={universe}>
         <Outlet />
       </main>

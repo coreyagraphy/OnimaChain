@@ -1,15 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { EmptyState } from '~/components/EmptyState'
+import { EditorialIntake } from '~/components/EditorialIntake'
 import { BRAND } from '~/brand'
 
 export const Route = createFileRoute('/corrections')({
-  head: () => ({ meta: [{ title: `Corrections — ${BRAND}` }] }),
-  component: () => (
-    <div className="pt-28 wrap">
-      <p className="label label-amber">Corrections</p>
-      <h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">When we get something wrong, it goes here.</h1>
-      <p className="lede mt-5 max-w-2xl">Every fix is logged with the date, what changed, the old version, the new version, why, and the source. We never quietly delete the old version.</p>
-      <div className="mt-10 panel-flat overflow-x-auto"><table className="data"><thead><tr><th>Date</th><th>What changed</th><th>Before</th><th>After</th><th>Why</th><th>Source</th></tr></thead><tbody><tr><td colSpan={6} className="!p-0"><EmptyState compact title="Nothing to correct yet." detail="The ledger opened 2026-09-20 with the first claim records. Submit an error via Report an error (in production)." /></td></tr></tbody></table></div>
-    </div>
-  ),
+  head: () => ({ meta: [{ title: `Corrections — ${BRAND}` }, { name: 'description', content: 'Dated public corrections and a release-gated editorial intake for source or factual errors.' }] }),
+  component: Corrections,
 })
+
+function Corrections() {
+  return <div className="pt-28 wrap"><p className="label label-amber">Corrections</p><h1 className="display text-[clamp(2.6rem,7vw,6.4rem)] mt-3">A change should leave a trail.</h1><p className="lede mt-5 max-w-2xl">After publication, substantive corrections will identify the affected page, date, previous wording, revised wording, reason and source. Changes in this review branch are not yet public corrections.</p><div className="mt-10 panel-flat p-6 max-w-3xl"><strong>Public correction ledger</strong><p className="text-sm muted mt-2">No post-release corrections are recorded in this build. This does not mean every page has been scientifically reviewed.</p></div><div className="mt-10"><EditorialIntake /></div></div>
+}

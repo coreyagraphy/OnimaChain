@@ -1,7 +1,7 @@
 import type { Compound } from './compounds'
 import { DEPOSITED_CONFORMERS } from './conformers'
 
-export type StructureKind = 'deposited' | 'predicted' | 'sequence' | 'blend' | 'mixture' | 'non-peptide' | 'unresolved'
+export type StructureKind = 'deposited' | 'predicted' | 'sequence' | 'mixture' | 'non-peptide' | 'unresolved'
 
 export interface StructurePresentation {
   kind: StructureKind
@@ -26,10 +26,6 @@ const REFERENCE_URLS: Record<string, string> = {
 }
 
 export function structurePresentation(compound: Compound): StructurePresentation {
-  if (compound.slug === 'wolverine-blend') return {
-    kind: 'blend', label: 'Two separate peptides', detail: 'BPC-157 + TB-500; no single blend molecule',
-    sourceUrl: '/compound/wolverine-blend',
-  }
   if (compound.tags.includes('non-peptide')) return {
     kind: 'non-peptide', label: 'Not a peptide', detail: 'A peptide backbone would be inaccurate',
   }

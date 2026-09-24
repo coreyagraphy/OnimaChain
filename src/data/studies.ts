@@ -71,7 +71,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '42542926',
     expectKeyword: 'tendon',
-    compounds: ['bpc-157', 'tb-500'],
+    compounds: ['bpc-157'],
     speciesFromTitle: 'rat',
     studyType: 'animal',
     tags: ['tendon', 'wound-healing'],
@@ -105,7 +105,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '34170491',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: ['thymosin-beta-4'],
     speciesFromTitle: null,
     studyType: 'in-vitro',
     tags: ['mechanistic', 'cell-migration', 'actin'],
@@ -115,7 +115,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '32245208',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: [], // exact molecule/form association pending review
     speciesFromTitle: 'mouse',
     studyType: 'animal',
     tags: [],
@@ -123,7 +123,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '36706591',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: [], // exact molecule/form association pending review
     speciesFromTitle: null,
     studyType: 'in-vitro',
     tags: [],
@@ -131,7 +131,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '41235866',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: [], // exact molecule/form association pending review
     speciesFromTitle: null,
     studyType: null,
     tags: ['wound-healing'],
@@ -168,11 +168,4 @@ export function studiesForCompound(slug: string, onlyVerified = true): Study[] {
 
 export function pubmedUrl(pmid: string) {
   return `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
-}
-
-/** Distinct last-author surnames among a study set — a crude, honest proxy for research-group count. */
-export function distinctGroups(studies: Study[]): string[] {
-  const set = new Set<string>()
-  for (const s of studies) if (s.meta?.lastAuthor) set.add(s.meta.lastAuthor)
-  return [...set]
 }

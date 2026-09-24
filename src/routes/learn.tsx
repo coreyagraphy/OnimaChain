@@ -1,47 +1,25 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import type { CSSProperties } from 'react'
+import { createFileRoute, Link, Outlet, useRouterState } from '@tanstack/react-router'
 import { LESSONS } from '~/data/lessons'
 import { BRAND } from '~/brand'
-import { PortalTitle } from '~/components/PortalTitle'
+import { ExperienceLaunchpad } from '~/components/ExperienceLaunchpad'
+import { LearningActivities } from '~/components/LearningActivities'
+import '../styles/workbench.css'
 
 export const Route = createFileRoute('/learn')({
-  head: () => ({ meta: [{ title: `Portal of Tides — ${BRAND}` }, { name: 'description', content: 'Short lessons that teach you how to tell a real study from a good story.' }] }),
-  component: PortalOfTides,
+  validateSearch:(s:Record<string,unknown>):{activity?:string;case?:number}=>({activity:typeof s.activity==='string'?s.activity:undefined,case:Number.isInteger(Number(s.case))?Number(s.case):undefined}),
+  head: () => ({ meta: [{ title: `Play & Learn — ${BRAND}` }, { name: 'description', content: 'Turn a molecule, spot an exaggerated headline, and explore the invisible. Six hands-on activities in plain English.' }] }),
+  component: LearningLab,
 })
-
-function PortalOfTides() {
-  return (
-    <div className="portal-page pt-[72px]">
-      <header className="portal-hero">
-        <div className="portal-caustics" aria-hidden><i/><i/><i/></div>
-        <div className="wrap relative z-10 py-20 md:py-28">
-          <p className="label portal-label">Start here</p>
-          <PortalTitle className="mt-5" />
-          <div className="mt-10 grid md:grid-cols-[1fr_.75fr] gap-8 items-end">
-            <p className="lede max-w-2xl">Ideas change as they travel. Pick a lesson, follow it back to the source, and learn where the evidence ends and the opinion begins.</p>
-            <p className="mono text-[11px] text-right text-bone/45 hidden md:block">10 lessons · 1 ready to try now<br/>more open as we finish checking them</p>
-          </div>
-        </div>
-        <div className="portal-waterline" aria-hidden />
-      </header>
-
-      <section className="wrap py-16 md:py-24" aria-label="Lessons">
-        <div className="flex flex-wrap items-end justify-between gap-5">
-          <div><p className="label portal-label">Pick a lesson</p><h2 className="display text-[clamp(2rem,5vw,4.7rem)] mt-3">Learn to spot the real thing.</h2></div>
-          <p className="text-sm muted max-w-sm">Each lesson shows the original study next to the versions that grew out of it.</p>
-        </div>
-        <ol className="tide-lessons mt-12">
-          {LESSONS.map((l, i) => (
-            <li key={l.slug} style={{ '--tide-index': i } as CSSProperties}>
-              {l.status === 'interactive' ? <Link to="/learn/$slug" params={{ slug: l.slug }} className="tide-lesson is-open"><TideCard lesson={l} index={i} status="Enter lesson" /></Link> : <div className="tide-lesson" aria-disabled="true"><TideCard lesson={l} index={i} status="Forming" /></div>}
-            </li>
-          ))}
-        </ol>
-      </section>
-    </div>
-  )
-}
-
-function TideCard({ lesson, index, status }: { lesson: (typeof LESSONS)[number]; index: number; status: string }) {
-  return <><div className="tide-fill" aria-hidden/><div className="tide-card-copy"><div className="flex justify-between gap-4"><span className="mono text-[11px] text-bone/42">{String(index+1).padStart(2,'0')}</span><span className="label portal-label">{status}</span></div><h3 className="display-md text-2xl md:text-3xl mt-10">{lesson.title}</h3><p className="text-sm text-bone/62 mt-3 max-w-md">{lesson.summary}</p></div><span className="tide-arrow" aria-hidden>↗</span></>
+function LearningLab() {
+  const search=Route.useSearch()
+  const pathname=useRouterState({select:state=>state.location.pathname})
+  if(pathname!=='/learn')return <Outlet/>
+  if(search.activity)return <LearningActivities station={search.activity} initialCase={search.case}/>
+  return <div className="learning-playground">
+    <header className="playground-intro wrap"><span className="electric-eyebrow">PEPTIDE SCIENCE / HANDS ON</span><h1>Follow your<br/><em>curiosity.</em><span className="intro-asterisk" aria-hidden>✳</span></h1><p>Turn it. Zoom in. Try an answer.<br/>Start anywhere. Learn something you can use.</p><a href="#experience-title" className="playground-scroll">Choose an activity ↓</a></header>
+    <section className="learning-game-entry wrap"><p className="electric-eyebrow">NEW / A PLAYABLE 3D CHAMBER</p><h2>Catch. Guide. Connect.</h2><p>Build a fictional chain one piece at a time. Moving shutters, glowing targets, and room to try again.</p><Link to="/learn/chainforge" className="btn btn-primary">Play Chainforge →</Link><p>Prefer to observe? <Link to="/observatory">Open the molecular workbench →</Link></p></section>
+    <ExperienceLaunchpad/>
+    <section className="wrap open-lessons"><p className="electric-eyebrow">GO A LITTLE DEEPER</p><h2>Follow a story back to its source.</h2>{LESSONS.filter(l=>l.status==='interactive').map(l=><Link key={l.slug} to="/learn/$slug" params={{slug:l.slug}} className="open-lesson"><div><h3>{l.title}</h3><p>{l.summary}</p></div><span>Open lesson ↗</span></Link>)}
+    <details><summary>Coming later: {LESSONS.filter(l=>l.status!=='interactive').length} more lessons</summary><ul>{LESSONS.filter(l=>l.status!=='interactive').map(l=><li key={l.slug}>{l.title} — preview only</li>)}</ul></details></section>
+  </div>
 }

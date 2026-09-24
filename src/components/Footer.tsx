@@ -1,11 +1,10 @@
 import { Link } from '@tanstack/react-router'
-import { CORPUS_CHECKED_AT } from '~/data/studies'
 import { brand } from '~/brand'
 import { BrandLogo } from './BrandWordmark'
 
 const cols = [
-  [['/waitlist', 'Waitlist'], ['/explore', 'Shop'], ['/claims', 'Research'], ['/signal', 'Portal of Tides'], ['/bond-theory', 'Bond Theory'], ['/learn', 'Learn']],
-  [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections'], ['/timeline', 'Timeline']],
+  [['/explore', 'Explore'], ['/claims', 'Research'], ['/signal', 'Source map'], ['/observatory', 'Molecular Observatory'], ['/learn', 'Learning Lab']],
+  [['/methodology', 'Methodology'], ['/coverage', 'Coverage'], ['/corrections', 'Corrections']],
   [['/about', 'About'], ['/contact', 'Contact'], ['/privacy', 'Privacy'], ['/terms', 'Terms']],
 ] as const
 
@@ -17,7 +16,7 @@ export function Footer() {
           <BrandLogo className="footer-brand-logo" />
           <p className="mt-4 text-sm text-bone/80 max-w-sm">{brand.primaryTagline}</p>
           <p className="mt-2 text-sm muted max-w-sm">{brand.secondaryTagline}</p>
-          <p className="mono text-[11px] text-bone/40">Sources last checked: {CORPUS_CHECKED_AT.slice(0, 10)} · PubMed records verified through NCBI</p>
+          <p className="mono text-[11px] text-bone/60">Citation metadata checks are not scientific claim reviews. See each record for its source status.</p>
         </div>
         {cols.map((c, i) => (
           <ul key={i} className="grid gap-2 content-start">
@@ -30,7 +29,7 @@ export function Footer() {
       <div className="border-t hairline">
         <div className="wrap py-6">
           <p className="text-[12px] text-bone/60 max-w-3xl">
-            <b className="text-bone/80">You must be 21 or older to use this site.</b> Everything here is for research and education. It is not medical advice, and we never tell you how much of anything to take. Talk to a doctor before you change anything about your health. Prices, checkout, shipping and product eligibility are still being finalized.
+            <b className="text-bone/80">You must be 21 or older to use this site.</b> OnimaChain is an educational reference. We do not take product orders through this website. This is not medical advice or a recommendation to use a compound.
           </p>
         </div>
       </div>
