@@ -5,11 +5,11 @@ import { BRAND } from '~/brand'
 import { BrandWordmark } from './BrandWordmark'
 
 const links = [
-  { to: '/explore', label: 'Explore' },
+  { to: '/explore', label: 'Molecules' },
   { to: '/learn', label: 'Play & Learn' },
   { to: '/claims', label: 'Research' },
-  { to: '/methodology', label: 'Method' },
-  { to: '/about', label: 'About' },
+  { to: '/observatory', label: 'Observatory' },
+  { to: '/signal', label: 'Source map' },
   { to: '/contact', label: 'Contact' },
 ] as const
 
@@ -31,7 +31,7 @@ export function Nav() {
           <nav className="hidden xl:flex items-center gap-4" aria-label="Primary">
             {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2"><Link to="/learn" className="nav-play">Jump in <span aria-hidden>↗</span></Link>
             <button className="nav-icon hidden sm:grid" onClick={() => setOpen(true)} aria-label="Search (Cmd/Ctrl K)"><SearchIcon /></button>
             <button className="nav-icon xl:hidden" onClick={() => setMenu((v) => !v)} aria-label={menu ? 'Close menu' : 'Open menu'} aria-expanded={menu} aria-controls="mobile-nav"><MenuIcon /></button>
           </div>

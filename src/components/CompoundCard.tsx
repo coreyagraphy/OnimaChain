@@ -53,6 +53,7 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
         </> : <div className="structure-unavailable" role="img" aria-label={`${displayName(compound)}: ${presentation.detail}`}><strong>{presentation.label}</strong><p>{presentation.detail}</p></div>}
       </div>
       <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span></div>
+      {compound.sequence && <span className="product-residue-count">{geometry.length}<small>amino acids</small></span>}
       <span className="product-structure-kind" aria-label={`Structure provenance: ${presentation.label}`}>{presentation.label}</span>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
         <div className="min-w-0 overflow-hidden"><h3 ref={nameRef} className="wordmark product-card-title w-full min-w-0" style={titleStyle}>{displayName(compound)}</h3></div>

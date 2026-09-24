@@ -6,6 +6,7 @@ import { LiquidGlassLink } from '~/components/LiquidGlassLink'
 import { COMPOUND_BY_SLUG, COMPOUNDS } from '~/data/compounds'
 import { DOMAINS } from '~/data/domains'
 import { BRAND, brand } from '~/brand'
+import { ExperienceLaunchpad } from '~/components/ExperienceLaunchpad'
 
 export const Route = createFileRoute('/')({
   head: () => ({ meta: [
@@ -16,7 +17,7 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-  return <><Hero /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><LearningGateway /><FinalLearn /><MobileLearnBar /></>
+  return <><Hero /><ExperienceLaunchpad compact /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><LearningGateway /><FinalLearn /><MobileLearnBar /></>
 }
 
 function LearningGateway() {

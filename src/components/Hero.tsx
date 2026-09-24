@@ -17,7 +17,7 @@ const HeroScene = lazy(() => import('~/scenes/hero/HeroScene').then((m) => ({ de
  *   52–74%  the site's theme, three big lines, each lighting a marker in the scene (nothing else on screen)
  *   76%+    the headline, alone, after the camera has cleared the molecule
  */
-const PIN = 2.2 // viewport heights of scroll the hero holds for (desktop)
+const PIN = 1.4 // viewport heights of scroll the hero holds for (desktop)
 /** Phones get straight to the library: the headline and buttons are there from the first frame. */
 const PIN_MOBILE = 0.7
 const CAPTIONS = [
@@ -108,7 +108,8 @@ export function Hero() {
       {!isStatic && !mobile && (
         <div ref={introRef} className="absolute inset-x-0 bottom-[12vh] z-10 wrap pointer-events-none">
           <p className="label label-cyan">Peptides, up close</p>
-          <p className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-3 max-w-[14ch] text-bone">Explore the world of peptides.</p>
+          <p className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-3 max-w-[14ch] text-bone">Small molecules.<br/>Big questions.</p>
+          <div className="hero-entry-links"><Link to="/learn">Try something hands-on ↗</Link><Link to="/explore">Meet the molecules</Link></div>
           <p className="mt-6 flex items-center gap-3 text-[14px] text-bone/75"><span className="hero-scroll-cue" aria-hidden />Scroll to explore</p>
         </div>
       )}

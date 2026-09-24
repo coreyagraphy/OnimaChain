@@ -111,7 +111,7 @@ function EvidenceModel({ result, calm, yaw }: { result: Result; calm: boolean; y
   const narrow = useThree(state => state.size.width < 600)
   return <group rotation={[0, yaw, 0]} scale={narrow ? 1.18 : 1}>
     <Orb position={[-2.13, 0.19, 0]} color="#67e4ee" kind="source" calm={calm} />
-    <ClaimGate color={result === 'incorrect' ? '#eaa77d' : '#afa6ff'} calm={calm} />
+    <ClaimGate color={result === 'incorrect' ? '#eaa77d' : '#edff59'} calm={calm} />
     <Bridge result={result} />
     <Pedestal x={-2.13} color="#67e4ee" />
     <Pedestal x={2.13} color={result === 'incorrect' ? '#eaa77d' : '#afa6ff'} />
@@ -124,29 +124,32 @@ function EvidenceModel({ result, calm, yaw }: { result: Result; calm: boolean; y
 }
 
 const moleculePoints: V3[] = [[-2.5,-0.15,0.05],[-1.74,0.36,0.2],[-0.93,-0.07,0.45],[-0.12,0.35,0.18],[0.73,-0.18,-0.1],[1.57,0.18,0.22],[2.42,-0.26,0.12]]
-function MoleculeModel({ yaw }: { yaw: number }) {
+function MoleculeModel({ yaw, focus, calm }: { yaw: number; focus: number; calm: boolean }) {
+  const model = useRef<Group>(null)
+  useFrame(({ clock }) => { if (model.current && !calm) model.current.rotation.x = Math.sin(clock.elapsedTime * .45) * .18 })
+  const positions: V3[] = moleculePoints.map((p, i) => focus === 2 ? [(i - 3) * .65, Math.sin(i * 1.5) * .65, Math.cos(i * 1.5) * .65] : p)
   const narrow = useThree(state => state.size.width < 600)
-  return <group rotation={[0, yaw, 0]} scale={narrow ? 1.08 : 1}>
-    {moleculePoints.slice(0, -1).map((p, i) => <Line key={i} coords={[p, moleculePoints[i + 1]]} color="#8cd7df" radius={0.055} opacity={0.85} />)}
-    {moleculePoints.map((p, i) => <group position={p} key={i}>
+  return <group ref={model} rotation={[0, yaw, 0]} scale={narrow ? 1.08 : 1}>
+    {positions.slice(0, -1).map((p, i) => <Line key={i} coords={[p, positions[i + 1]]} color={focus === 1 ? "#edff59" : "#8cd7df"} radius={focus === 1 ? 0.095 : 0.055} opacity={0.85} />)}
+    {positions.map((p, i) => <group position={p} key={i}>
       <mesh castShadow><sphereGeometry args={[i % 2 === 0 ? 0.25 : 0.32, 28, 20]} /><meshPhysicalMaterial color={i % 2 === 0 ? '#66d8e5' : '#9287da'} metalness={0.28} roughness={0.24} emissive={i % 2 === 0 ? '#14687a' : '#413b80'} emissiveIntensity={0.22} /></mesh>
       <mesh rotation={[0.2, i * 0.32, 0.3]}><torusGeometry args={[0.4, 0.009, 5, 50]} /><meshBasicMaterial color="#c5f5fa" transparent opacity={0.38} /></mesh>
     </group>)}
   </group>
 }
 
-export default function ObservatoryScene({ mode = 'evidence', result = null, calm = false, yaw = 0, active = true }: { mode?: 'evidence' | 'molecule'; result?: Result; calm?: boolean; yaw?: number; active?: boolean }) {
+export default function ObservatoryScene({ mode = 'evidence', result = null, calm = false, yaw = 0, active = true, focus = 0 }: { mode?: 'evidence' | 'molecule'; result?: Result; calm?: boolean; yaw?: number; active?: boolean; focus?: number }) {
   const visible = useDocumentVisible()
   const quality = useQuality()
   return <Canvas role="img" aria-label={mode === 'molecule' ? 'Rotatable conceptual peptide chain' : 'Rotatable source-to-claim evidence model'} fallback={<div className="obs-canvas-fallback">3D unavailable. The written lesson and answer controls remain usable.</div>} shadows={quality.shadows} frameloop={!active || !visible ? 'never' : calm ? 'demand' : 'always'} dpr={quality.dpr} camera={{ position: [0, 1.05, 7.5], fov: 42 }} gl={{ antialias: quality.tier !== 'low', alpha: true, powerPreference: 'high-performance' }} onCreated={({ gl }) => { gl.toneMapping = ACESFilmicToneMapping; gl.toneMappingExposure = 1.25; gl.outputColorSpace = SRGBColorSpace; gl.setClearColor('#0b1a35', 0) }}>
     <fog attach="fog" args={['#0b1a35', 8, 18]} />
     <ambientLight intensity={0.94} color="#b8d8f6" />
     <directionalLight position={[-3, 5, 5]} intensity={4.2} color="#a8f5ff" castShadow shadow-mapSize-width={512} shadow-mapSize-height={512} />
-    <pointLight position={[3, 2, -2]} intensity={45} distance={10} color="#9a58ff" />
+    <pointLight position={[3, 2, -2]} intensity={45} distance={10} color="#ff762e" />
     <pointLight position={[-3, -0.2, 2]} intensity={16} distance={7} color="#28c5f8" />
     <pointLight position={[0, -2, 3]} intensity={11} distance={8} color="#468eb5" />
     <Field calm={calm} />
-    {mode === 'molecule' ? <MoleculeModel yaw={yaw} /> : <EvidenceModel result={result} calm={calm} yaw={yaw} />}
+    {mode === 'molecule' ? <MoleculeModel yaw={yaw} focus={focus} calm={calm} /> : <EvidenceModel result={result} calm={calm} yaw={yaw} />}
     <OrbitControls makeDefault enablePan={false} enableZoom minDistance={5.5} maxDistance={10} minPolarAngle={0.7} maxPolarAngle={2.0} autoRotate={false} enableDamping={!calm} />
   </Canvas>
 }

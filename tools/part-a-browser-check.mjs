@@ -23,11 +23,11 @@ try {
   await visit(page, '/observatory?station=evidence')
   for (const correctIndex of [1, 1, 1, 1]) {
     await page.locator('.obs-options button').nth(correctIndex).click()
-    expect(await page.getByText('Within the evidence.').isVisible(), 'Evidence Worlds gives correct-answer feedback')
+    expect(await page.getByText('You got it. That matches the study.').isVisible(), 'Evidence Worlds gives correct-answer feedback')
     if (await page.getByRole('button', { name: 'Next case' }).count()) await page.getByRole('button', { name: 'Next case' }).click()
   }
   expect(await page.getByText('All 4 missions complete.', { exact: false }).isVisible(), 'Evidence Worlds completes all missions')
-  await page.getByRole('button', { name: 'Replay Evidence Worlds' }).click()
+  await page.getByRole('button', { name: 'Try the four challenges again' }).click()
   expect(await page.getByText('CASE 1 / 4', { exact: false }).isVisible(), 'Evidence Worlds replay resets progress')
 
   await visit(page, '/observatory?station=scale')
@@ -40,8 +40,8 @@ try {
 
   await visit(page, '/observatory?station=report')
   await page.getByRole('button', { name: 'Purity', exact: true }).click()
-  expect(await page.getByText('A peak-area percentage depends', { exact: false }).isVisible(), 'Report Detective reveals the purity limitation')
-  await page.getByRole('button', { name: /These measurements do not establish/ }).click()
+  expect(await page.getByText('96% describes the main peak', { exact: false }).isVisible(), 'Report Detective reveals the purity limitation')
+  await page.getByRole('button', { name: /These tests do not tell us/ }).click()
   expect(await page.getByText('Exactly. An analytical field', { exact: false }).isVisible(), 'Report Detective checks report scope')
   await page.screenshot({ path: fileURLToPath(new URL('report-desktop.png', out)), fullPage: true })
 

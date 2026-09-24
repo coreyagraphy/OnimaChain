@@ -1,6 +1,7 @@
 import { createRootRoute, HeadContent, Link, Outlet, Scripts, useRouterState } from '@tanstack/react-router'
 import { useEffect, type ReactNode } from 'react'
 import appCss from '../styles/app.css?url'
+import electricCss from '../styles/electric.css?url'
 import { Nav } from '~/components/Nav'
 import { Footer } from '~/components/Footer'
 import { GlobalCanvas } from '~/scenes/Canvas'
@@ -33,6 +34,7 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: 'stylesheet', href: appCss },
+      { rel: 'stylesheet', href: electricCss },
       { rel: 'icon', type: 'image/png', href: brand.icon },
       { rel: 'manifest', href: '/site.webmanifest' },
       { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },

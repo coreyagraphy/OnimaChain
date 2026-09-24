@@ -1,5 +1,7 @@
 # Part A educational-site route and release record
 
+Visual/interaction follow-up: see [IMMERSIVE-REDESIGN.md](IMMERSIVE-REDESIGN.md) for the new activity entrances, plain-English station names, responsive 3D scenes, card presentation changes and additional checks. The retirement and release policies below remain unchanged.
+
 Review branch: `codex/full-site-experience` in the full OnimaChain repository. Base commit before this pass: `b8c84c20dfc39abb56900c4b1c6dcf8b7595cad0`. Review PR: [#1](https://github.com/coreyagraphy/OnimaChain/pull/1), kept draft. Work and checks below are **local** at `http://127.0.0.1:8080`, not the unrelated `:5173` prototype. No staging deploy, production publish, merge, cache purge, or post-deployment verification has occurred. The repository's public/private setting was not changed.
 
 This is an implementation and test record, **not a release approval**. The public operator name, controlled editorial inbox and sender are not supplied. Contact and privacy remain release-gated; actual inbox delivery, provider/hosting/analytics inventory, conflicts disclosure, source-level scientific review, qualified legal review, and owner sign-off remain open. `robots.txt` disallows indexing in this review build. Do not remove that block as a substitute for these gates.
