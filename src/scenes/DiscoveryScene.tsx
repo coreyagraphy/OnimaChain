@@ -1,11 +1,20 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Group, MathUtils } from 'three'
 import { useDocumentVisible, useQuality } from '~/motion/useReducedMotion'
 import type { DiscoveryMode } from '~/components/DiscoveryStage'
 
 const colors = ['#77eaff', '#ff772f', '#eeff64', '#b7a1ff']
+function MobileFramePacer({ active }: { active: boolean }) {
+  const invalidate = useThree(state => state.invalidate)
+  useEffect(() => {
+    if (!active) return
+    const timer = window.setInterval(() => invalidate(), 33)
+    return () => window.clearInterval(timer)
+  }, [active, invalidate])
+  return null
+}
 function World({ mode, selected, linked, calm, onSelect }: { mode: DiscoveryMode; selected: number; linked: number[]; calm: boolean; onSelect?: (index: number) => void }) {
   const rig = useRef<Group>(null)
   const width = useThree(state => state.size.width)
@@ -40,8 +49,11 @@ function World({ mode, selected, linked, calm, onSelect }: { mode: DiscoveryMode
 export default function DiscoveryScene(props: { mode: DiscoveryMode; selected: number; linked: number[]; calm: boolean; active: boolean; onSelect?: (index: number) => void }) {
   const quality = useQuality()
   const visible = useDocumentVisible()
-  return <Canvas aria-label={`Interactive conceptual ${props.mode} scene`} role="img" frameloop={!props.active || !visible ? 'never' : props.calm ? 'demand' : 'always'} dpr={quality.dpr} camera={{ position: [0,2.4,8.5], fov: 42 }} gl={{alpha:true, antialias:true}}>
+  const mobile = typeof window !== 'undefined' && window.innerWidth < 768
+  const animate = props.active && visible && !props.calm
+  return <Canvas aria-label={`Interactive conceptual ${props.mode} scene`} role="img" frameloop={!props.active || !visible ? 'never' : props.calm || mobile ? 'demand' : 'always'} dpr={mobile ? [1, Math.min(1.25, quality.dpr[1])] : quality.dpr} camera={{ position: [0,2.4,8.5], fov: 42 }} gl={{alpha:true, antialias:true}}>
     <ambientLight intensity={1.1}/><directionalLight position={[-3,5,5]} intensity={4} color="#e1f9ff"/><pointLight position={[4,1,3]} intensity={55} color="#ff762e"/><pointLight position={[-4,2,1]} intensity={40} color="#edff59"/>
+    {mobile && <MobileFramePacer active={animate} />}
     <World {...props}/><OrbitControls enablePan={false} enableZoom={false} enableDamping={!props.calm} minPolarAngle={.6} maxPolarAngle={1.7}/>
   </Canvas>
 }

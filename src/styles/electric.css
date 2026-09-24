@@ -176,3 +176,5 @@ main .label-cyan,.electric-eyebrow{color:#ffab72!important}
 .obs-scale-layout .obs-primary{background:linear-gradient(100deg,#edff59,#ffc252 55%,#ff762e);box-shadow:0 7px 24px #ff762e55}
 @media(max-width:700px){.discovery-scale:after{bottom:65px;right:5%;font-size:8px;letter-spacing:.2em}.obs-scale-layout .obs-sort-card{padding:18px 14px}.obs-scale-layout .obs-sort-row{min-height:75px}}
 @media(prefers-reduced-motion:reduce){.obs-scale-layout .obs-sort-row{transition:none}}
+.product-card .product-molecule-fallback{opacity:.85;filter:drop-shadow(0 0 13px color-mix(in srgb,var(--product) 68%,transparent))}
+.product-card:hover .product-molecule-fallback,.product-card:focus-within .product-molecule-fallback{opacity:1}

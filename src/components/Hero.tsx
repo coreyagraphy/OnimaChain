@@ -74,13 +74,20 @@ export function Hero() {
     if (!section.current || isStatic || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { if (isMobile) paint(1); return }
     paint(0)
     const cleanup = createScrub({ trigger: section.current, end: `+=${(isMobile ? PIN_MOBILE : PIN) * 100}%`, pin: true, scrub: true, onProgress: paint })
-    const onMove = (e: PointerEvent) => { if (e.pointerType !== 'mouse') return; pointer.current.x = (e.clientX / window.innerWidth - 0.5) * 2; pointer.current.y = (e.clientY / window.innerHeight - 0.5) * 2 }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    // keep the tilt-driven HTML layers alive between scroll events (transform-only writes)
     let raf = 0
-    const idle = () => { paint(progress.current); raf = requestAnimationFrame(idle) }
-    raf = requestAnimationFrame(idle)
-    return () => { cleanup(); cancelAnimationFrame(raf); window.removeEventListener('pointermove', onMove) }
+    const queuePaint = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => { raf = 0; paint(progress.current) })
+    }
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return
+      pointer.current.x = (e.clientX / window.innerWidth - 0.5) * 2
+      pointer.current.y = (e.clientY / window.innerHeight - 0.5) * 2
+      queuePaint()
+    }
+    window.addEventListener('pointermove', onMove, { passive: true })
+    window.addEventListener('deviceorientation', queuePaint, { passive: true })
+    return () => { cleanup(); cancelAnimationFrame(raf); window.removeEventListener('pointermove', onMove); window.removeEventListener('deviceorientation', queuePaint) }
   }, [isStatic]) // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Skip intro: move the document and the shared progress to the finished frame, then hand focus to the first action. */

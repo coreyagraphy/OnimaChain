@@ -50,7 +50,7 @@ function Explore(){
       </div>
       <section className="wrap">
         <p className="mt-4 mono text-[11px] text-bone/50" role="status">{rows.length} of {COMPOUNDS.length} records{domain!=='all'&&` · ${TOPIC_NAME[domain]}`}</p>
-        {view==='grid'?<div ref={grid} key={scene} className="shop-grid mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><div key={c.slug} className="shop-card" style={{'--i':Math.min(i,11)} as React.CSSProperties}><CompoundCard compound={c} index={i} fluid lively/></div>)}</div>:
+        {view==='grid'?<div ref={grid} key={scene} className="shop-grid mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><div key={c.slug} className="shop-card" style={{'--i':Math.min(i,11)} as React.CSSProperties}><CompoundCard compound={c} index={i} fluid/></div>)}</div>:
         <div className="mt-6 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Molecule record</th><th>Subject</th><th>Structure</th><th>Review state</th><th/></tr></thead><tbody>{rows.map(c=><ProductRow key={c.slug} compound={c} />)}</tbody></table></div>}
         {rows.length===0&&<div className="panel p-10 mt-8 text-center"><h2 className="display-md text-2xl">No match yet.</h2><p className="muted text-sm mt-2">Try a different name, alias, or subject.</p></div>}
         <p className="text-[12px] muted mt-10">Identity and citation records do not establish a clinical benefit. Outcome summaries remain withheld until claim-level review.</p>

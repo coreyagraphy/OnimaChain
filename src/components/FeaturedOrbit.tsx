@@ -135,7 +135,7 @@ export function FeaturedOrbit({ compounds }: { compounds: Compound[] }) {
             aria-hidden={j >= compounds.length ? true : undefined}
             inert={j >= compounds.length ? true : undefined}
           >
-            <CompoundCard compound={c} index={j} fluid lively />
+            <CompoundCard compound={c} index={j} fluid lively={j % compounds.length === current} />
           </div>
         ))}
       </div>

@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
 import { displayName, type Compound } from '~/data/compounds'
 import { descriptionFor, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAIN_BY_ID } from '~/data/domains'
@@ -24,7 +24,10 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
   const geometry = useMemo(() => buildChain(compound), [compound])
   const setQuickView = useReaderStore((s) => s.setQuickView)
   const [hover, setHover] = useState(false)
-  const [tilt, setTilt] = useState({ x: 0, y: 0 })
+  const [focused, setFocused] = useState(false)
+  const cardRef = useRef<HTMLElement>(null)
+  const tiltFrame = useRef(0)
+  const tiltTarget = useRef({ x: 0, y: 0 })
   const stageRef = useRef<HTMLDivElement>(null)
   const [nearScreen, setNearScreen] = useState(false)
   const quickViewOpen = useReaderStore((s) => s.quickView !== null)
@@ -38,18 +41,39 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
     observer.observe(stage)
     return () => observer.disconnect()
   }, [])
-  const render3d = nearScreen && !quickViewOpen && canvasAllowed
+  useEffect(() => () => window.cancelAnimationFrame(tiltFrame.current), [])
+  // A grid of cards must not create one WebGL context per visible molecule.
+  // Animated sequence art remains visible; live 3D is reserved for deliberate attention.
+  const render3d = nearScreen && !quickViewOpen && canvasAllowed && (hover || focused || lively)
   const nameRef = useFitText<HTMLHeadingElement>([compound.slug, lay, fluid], 12)
   const titleStyle = { ...wordmarkStyle(theme), backgroundImage: `linear-gradient(180deg, #ffffff 9%, #f2eee6 56%, color-mix(in srgb, ${theme.primary} 55%, #dce8ef) 100%)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textShadow: `0 2px 0 ${theme.extrusionStyle}a8, 0 0 6px ${theme.primary}55, 0 0 19px ${theme.glow}45, 0 14px 26px #000d` } as CSSProperties
-  const style = { '--product': theme.primary, '--product-2': theme.secondary, '--product-3': theme.tertiary, transform: hover && !reducedMotion ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-7px)` : undefined } as CSSProperties
+  const style = { '--product': theme.primary, '--product-2': theme.secondary, '--product-3': theme.tertiary } as CSSProperties
+  const onMove = (e: PointerEvent<HTMLElement>) => {
+    if (reducedMotion || e.pointerType !== 'mouse') return
+    const rect = e.currentTarget.getBoundingClientRect()
+    tiltTarget.current = { x: -((e.clientY - rect.top) / rect.height - 0.5) * 5, y: ((e.clientX - rect.left) / rect.width - 0.5) * 5 }
+    if (tiltFrame.current) return
+    tiltFrame.current = window.requestAnimationFrame(() => {
+      tiltFrame.current = 0
+      const { x, y } = tiltTarget.current
+      if (cardRef.current) cardRef.current.style.transform = `perspective(1000px) rotateX(${x}deg) rotateY(${y}deg) translateY(-7px)`
+    })
+  }
+  const onLeave = (e: PointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'mouse') return
+    setHover(false)
+    window.cancelAnimationFrame(tiltFrame.current)
+    tiltFrame.current = 0
+    cardRef.current?.style.removeProperty('transform')
+  }
   return (
-    <article className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[510px]' : SIZE[lay]}`} data-layout={fluid ? 'fluid' : lay} data-title-style={theme.titleStyle} data-structure-kind={presentation.kind} style={style} onPointerEnter={() => setHover(true)} onPointerLeave={() => { setHover(false); setTilt({ x: 0, y: 0 }) }} onPointerMove={(e) => { if (reducedMotion) return; const r=e.currentTarget.getBoundingClientRect(); setTilt({ x:-((e.clientY-r.top)/r.height-.5)*5, y:((e.clientX-r.left)/r.width-.5)*5 }) }}>
+    <article ref={cardRef} className={`product-card card-tilt group relative shrink-0 overflow-hidden ${fluid ? 'w-full h-[510px]' : SIZE[lay]}`} data-layout={fluid ? 'fluid' : lay} data-title-style={theme.titleStyle} data-structure-kind={presentation.kind} style={style} onPointerEnter={(e) => { if (e.pointerType === 'mouse') setHover(true) }} onPointerLeave={onLeave} onFocusCapture={() => setFocused(true)} onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setFocused(false) }} onPointerMove={onMove}>
       <div className="product-card-atmosphere" aria-hidden />
       <div className="product-neon-lens" aria-hidden><i /><i /><i /></div>
       <Link to="/compound/$slug" params={{ slug: compound.slug }} className="absolute inset-0 z-[1]" aria-label={`Open ${displayName(compound)}`} data-cursor="product" />
       <div ref={stageRef} className="product-molecule absolute inset-x-0 top-0 pointer-events-none" data-render-3d={render3d}>
         {compound.sequence ? <>
-          {render3d ? <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={5.6} dpr={[1, 1.2]} preserveDrawingBuffer={false}><Suspense fallback={null}><CardMoleculeScene geometry={geometry} tint={theme.primary} accent={theme.secondary} active={hover || lively} /></Suspense></Lod0Canvas> : <SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />}
+          {render3d ? <Lod0Canvas className="absolute inset-0" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }} cameraZ={5.6} dpr={[1, 1.2]} preserveDrawingBuffer={false}><Suspense fallback={null}><CardMoleculeScene geometry={geometry} tint={theme.primary} accent={theme.secondary} active={hover || focused || lively} /></Suspense></Lod0Canvas> : <SequenceSVG geometry={geometry} tint={theme.primary} className="product-molecule-fallback absolute inset-0 w-full h-full p-5" />}
         </> : <div className="structure-unavailable" role="img" aria-label={`${displayName(compound)}: ${presentation.detail}`}><strong>{presentation.label}</strong><p>{presentation.detail}</p></div>}
       </div>
       <div className="absolute inset-x-0 top-0 p-5 flex items-start justify-between pointer-events-none z-[2]"><span className="label" style={{ color: theme.primary }}>{domain.name}</span></div>
