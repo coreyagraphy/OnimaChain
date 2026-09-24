@@ -18,13 +18,13 @@ export function DiscoveryStage({ mode, selected = 0, onSelect, linked = [] }: { 
   const frame = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!frame.current) return
-    const observer = new IntersectionObserver(entries => setVisible(entries.some(item => item.isIntersecting)))
+    const observer = new IntersectionObserver(entries => setVisible(entries.some(item => item.isIntersecting)), { rootMargin: '200px 0px' })
     observer.observe(frame.current)
     return () => observer.disconnect()
   }, [])
   return <div className={`discovery-stage discovery-${mode}`} data-paused={paused || calm} ref={frame}>
     <div className="discovery-caption"><span>MOVE THROUGH THE IDEA</span><span>CONCEPTUAL / NOT TO SCALE</span></div>
-    <div className="discovery-canvas">{allowed ? <Suspense fallback={<ActivitySculpture shape={mode === 'report' ? 'sheets' : mode === 'scale' ? 'scale' : 'rings'}/>}><Scene mode={mode} selected={selected} linked={linked} calm={calm || paused} active={visible} onSelect={onSelect}/></Suspense> : <ActivitySculpture shape={mode === 'report' ? 'sheets' : mode === 'scale' ? 'scale' : mode === 'constellation' ? 'network' : 'rings'}/>}</div>
+    <div className="discovery-canvas">{allowed && visible ? <Suspense fallback={<ActivitySculpture shape={mode === 'report' ? 'sheets' : mode === 'scale' ? 'scale' : 'rings'}/>}><Scene mode={mode} selected={selected} linked={linked} calm={calm || paused} active={visible} onSelect={onSelect}/></Suspense> : <ActivitySculpture shape={mode === 'report' ? 'sheets' : mode === 'scale' ? 'scale' : mode === 'constellation' ? 'network' : 'rings'}/>}</div>
     <div className="discovery-controls">{labels[mode].map((label, index) => <button type="button" key={label} aria-pressed={selected === index} onClick={() => onSelect?.(index)} disabled={!onSelect} className={selected === index ? 'active' : ''}>{label}</button>)}</div>
     <div className="discovery-footer"><span>{allowed ? 'Drag the scene to look around' : 'Static view · use the labeled controls'}</span>{allowed && <button onClick={() => setPaused(value => !value)}>{paused ? 'Resume motion' : 'Pause motion'}</button>}</div>
   </div>

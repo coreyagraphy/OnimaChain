@@ -37,7 +37,7 @@ export function DepthBackdrop() {
     const mobile = window.innerWidth < 768
     const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.5)
     const sprites = COLORS.map((c) => sprite(c, 64))
-    const N = mobile ? 110 : 220
+    const N = mobile ? 72 : 140
     let seed = 0x9e3779b1
     const rnd = () => { seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5; return ((seed >>> 0) % 100000) / 100000 }
     const ps: P[] = Array.from({ length: N }, () => {
@@ -48,9 +48,16 @@ export function DepthBackdrop() {
     const resize = () => { W = window.innerWidth; H = window.innerHeight; cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px' }
     resize()
     window.addEventListener('resize', resize)
-    let raf = 0, last = performance.now(), t = 0
+    let raf = 0, last = performance.now(), lastPaint = 0, t = 0
     const tx = { x: 0, y: 0 }
     const draw = (now: number) => {
+      // The particles drift slowly; drawing them at 25–30 fps is visually smooth
+      // while leaving the main thread and GPU available for the active lesson.
+      if (!reduced && now - lastPaint < (mobile ? 40 : 33)) {
+        raf = requestAnimationFrame(draw)
+        return
+      }
+      lastPaint = now
       const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt
       tx.x += (tilt.x - tx.x) * Math.min(1, dt * 3)
       tx.y += (tilt.y - tx.y) * Math.min(1, dt * 3)

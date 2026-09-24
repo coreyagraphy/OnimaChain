@@ -9,10 +9,13 @@ import { BRAND, brand } from '~/brand'
 import { ExperienceLaunchpad } from '~/components/ExperienceLaunchpad'
 
 export const Route = createFileRoute('/')({
-  head: () => ({ meta: [
-    { title: `${BRAND} — ${brand.primaryTagline}` },
-    { name: 'description', content: brand.description },
-  ] }),
+  head: () => ({
+    meta: [
+      { title: `${BRAND} — ${brand.primaryTagline}` },
+      { name: 'description', content: brand.description },
+    ],
+    links: [{ rel: 'preload', as: 'image', href: '/posters/hero.jpg' }],
+  }),
   component: Home,
 })
 

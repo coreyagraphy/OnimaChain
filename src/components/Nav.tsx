@@ -1,8 +1,9 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { SearchModal } from './SearchModal'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { BRAND } from '~/brand'
 import { BrandWordmark } from './BrandWordmark'
+
+const SearchModal = lazy(() => import('./SearchModal').then(module => ({ default: module.SearchModal })))
 
 const links = [
   { to: '/explore', label: 'Molecules' },
@@ -44,7 +45,7 @@ export function Nav() {
           </nav>
         )}
       </header>
-      <SearchModal open={open} onClose={() => setOpen(false)} />
+      {open && <Suspense fallback={<span className="sr-only" role="status">Opening search…</span>}><SearchModal open={open} onClose={() => setOpen(false)} /></Suspense>}
     </>
   )
 }
