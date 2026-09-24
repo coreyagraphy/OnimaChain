@@ -2,15 +2,15 @@ import { createFileRoute } from '@tanstack/react-router'
 import { BRAND } from '~/brand'
 
 const POINTS = [
-  ['What we collect right now', 'Almost nothing. This site has no accounts and no checkout yet. Your browser remembers two things on your own device: that you answered the age question, and what is in your cart.'],
-  ['What we don’t do', 'We don’t sell your information. We don’t track you across other websites. We don’t use your searches here to build a health profile of you.'],
+  ['What this browser keeps', 'This site has no public accounts or checkout yet. Local browser storage can keep your age answer, cart, Bond Theory picks and any goals or text entered there, Pulse follows and last-visit time, and Evidence Worlds mission completion. The Evidence Worlds record is only a list of completed fictional missions, not your answers. Editors using the Pulse review tool may also store an access key locally.'],
+  ['What remains to be checked', 'This code review has not confirmed hosting logs, analytics, email services, or other providers. The operator must verify those flows and update this draft before treating it as a complete privacy notice.'],
   ['When checkout opens', 'We will need a name, an address and a payment method to ship an order. We will say exactly who handles payment before you type anything.'],
-  ['Your choices', 'Clear your browser storage and the age answer and cart are gone. When accounts exist, you will be able to see and delete what we hold.'],
+  ['Your choices', 'Replay Evidence Worlds to clear its saved mission completion. Clearing this site’s browser storage removes the other locally saved items described above. This draft has not yet been reconciled with hosting logs, providers, or any future account service.'],
   ['Age', 'You must be 21 or older to use this site. We do not knowingly collect anything from anyone younger.'],
 ]
 
 export const Route = createFileRoute('/privacy')({
-  head: () => ({ meta: [{ title: `Privacy — ${BRAND}` }, { name: 'description', content: 'What we collect, what we never do with it, and what changes when checkout opens.' }] }),
+  head: () => ({ meta: [{ title: `Privacy — ${BRAND}` }, { name: 'description', content: 'A draft explanation of local browser storage and privacy items still to verify.' }] }),
   component: () => (
     <div className="pt-28 wrap min-h-[60vh]">
       <p className="label label-cyan">Privacy</p>

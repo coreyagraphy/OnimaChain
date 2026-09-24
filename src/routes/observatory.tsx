@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { BRAND } from '~/brand'
+import { useCanvasAllowed, useReducedMotion } from '~/motion/useReducedMotion'
 import '../styles/observatory.css'
+
+const EvidenceScene = lazy(() => import('~/scenes/EvidenceBridgeScene'))
 
 export const Route = createFileRoute('/observatory')({
   head: () => ({ meta: [
@@ -40,9 +43,23 @@ const cases = [
 ]
 
 function OrbitStage({ state, molecule = false }: { state?: 'correct' | 'incorrect' | null; molecule?: boolean }) {
-  return <div className={`obs-stage ${state || ''} ${molecule ? 'is-molecule' : ''}`} role="img" aria-label={molecule ? 'Illustrative chain of amino acid residues connected by peptide bonds' : `Conceptual model of a source connected to a claim; ${state === 'correct' ? 'supported' : state === 'incorrect' ? 'unsupported' : 'not yet evaluated'}`}>
-    <div className="obs-stage-top"><span><i/> INTERACTIVE MODEL</span><span>CONCEPTUAL VISUALIZATION</span></div>
-    <div className="obs-orbit-field" aria-hidden="true"><div className="obs-orbit obs-orbit-a"/><div className="obs-orbit obs-orbit-b"/><div className="obs-orbit obs-orbit-c"/>{molecule ? <div className="obs-chain">{['A','A','A','A','A'].map((item, i) => <span key={i}>{item}<small>{i + 1}</small></span>)}</div> : <div className="obs-bridge"><div className="obs-sphere source"><span>SOURCE</span></div><div className="obs-bridge-line"><i/></div><div className="obs-sphere claim"><span>CLAIM</span></div></div>}</div>
+  const allowed = useCanvasAllowed()
+  const calm = useReducedMotion()
+  const [view3D, setView3D] = useState(true)
+  const [yaw, setYaw] = useState(0)
+  const [onScreen, setOnScreen] = useState(true)
+  const fieldRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const element = fieldRef.current
+    if (!element || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver(entries => setOnScreen(entries.some(entry => entry.isIntersecting)), { rootMargin: '300px 0px' })
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+  const showScene = allowed && view3D
+  return <div className={`obs-stage ${state || ''} ${molecule ? 'is-molecule' : ''}`}>
+    <div className="obs-stage-top"><span><i/> {showScene ? 'INTERACTIVE MODEL' : 'ILLUSTRATIVE MODEL'}</span><span>CONCEPTUAL VISUALIZATION</span></div>
+    <div ref={fieldRef} className={`obs-orbit-field ${showScene ? 'has-canvas' : ''}`}>{showScene ? <div className="obs-canvas"><Suspense fallback={<div className="obs-canvas-fallback">Opening the model…</div>}><EvidenceScene mode={molecule ? 'molecule' : 'evidence'} result={state} calm={calm} yaw={yaw} active={onScreen}/></Suspense></div> : <div className="obs-static-model" role="img" aria-label={molecule ? 'Illustrative chain of amino acid residues connected by peptide bonds' : `Conceptual model of a source connected to a claim; ${state === 'correct' ? 'supported' : state === 'incorrect' ? 'unsupported' : 'not yet evaluated'}`}><div className="obs-orbit obs-orbit-a"/><div className="obs-orbit obs-orbit-b"/><div className="obs-orbit obs-orbit-c"/>{molecule ? <div className="obs-chain">{['A','A','A','A','A'].map((item, i) => <span key={i}>{item}<small>{i + 1}</small></span>)}</div> : <div className="obs-bridge"><div className="obs-sphere source"><span>SOURCE</span></div><div className="obs-bridge-line"><i/></div><div className="obs-sphere claim"><span>CLAIM</span></div></div>}</div>}{allowed && <div className="obs-view-controls">{showScene && <><button type="button" onClick={() => setYaw(value => value - Math.PI / 8)} aria-label="Rotate model left">↶</button><button type="button" onClick={() => setYaw(value => value + Math.PI / 8)} aria-label="Rotate model right">↷</button><span>DRAG TO ROTATE</span></>}<button type="button" onClick={() => setView3D(value => !value)}>{showScene ? 'Use static view' : 'Show 3D view'}</button></div>}</div>
     <div className="obs-stage-bottom">{molecule ? 'A VISUAL METAPHOR / NOT A MEASURED STRUCTURE' : 'OBSERVATION → INFERENCE'}<span>{state === 'correct' ? 'SUPPORTED CONNECTION' : state === 'incorrect' ? 'EVIDENCE GAP' : 'WAITING FOR YOUR REASONING'}</span></div>
   </div>
 }
@@ -50,9 +67,28 @@ function OrbitStage({ state, molecule = false }: { state?: 'correct' | 'incorrec
 function EvidenceWorlds() {
   const [index, setIndex] = useState(0)
   const [answer, setAnswer] = useState<number | null>(null)
+  const [completed, setCompleted] = useState<number[]>([])
+  const [progressLoaded, setProgressLoaded] = useState(false)
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('onimachain:evidence-worlds:v1') || '[]')
+      if (Array.isArray(saved)) setCompleted(saved.filter((value): value is number => Number.isInteger(value) && value >= 0 && value < cases.length))
+    } catch { /* storage may be disabled */ }
+    setProgressLoaded(true)
+  }, [])
+  useEffect(() => {
+    if (!progressLoaded) return
+    try { localStorage.setItem('onimachain:evidence-worlds:v1', JSON.stringify(completed)) } catch { /* storage may be disabled */ }
+  }, [completed, progressLoaded])
   const item = cases[index]
   const choice = answer === null ? null : item.choices[answer]
-  return <div className="obs-workspace"><OrbitStage state={choice ? choice.correct ? 'correct' : 'incorrect' : null}/><div className="obs-panel"><div className="obs-panel-meta"><span>CASE {index + 1} / {cases.length}</span><span>FICTIONAL TEACHING EXAMPLE</span></div><div className="obs-progress"><i style={{ width: `${((index + 1) / cases.length) * 100}%` }}/></div><h3>{item.title}</h3><div className="obs-source"><small>THE OBSERVATION</small><p>{item.source}</p></div><h4>{item.question}</h4><div className="obs-options">{item.choices.map((option, i) => <button className={answer === i ? option.correct ? 'selected correct' : 'selected incorrect' : ''} onClick={() => setAnswer(i)} key={option.text}><span>{String.fromCharCode(65 + i)}</span>{option.text}</button>)}</div><div className={`obs-feedback ${choice?.correct ? 'right' : choice ? 'wrong' : ''}`} aria-live="polite">{choice ? <><strong>{choice.correct ? 'Within the evidence.' : 'The claim travels too far.'}</strong><p>{choice.why}</p></> : <p>Choose a conclusion to test the connection.</p>}</div><div className="obs-panel-actions"><button onClick={() => { setIndex((index + cases.length - 1) % cases.length); setAnswer(null) }} aria-label="Previous case">←</button><span>{String(index + 1).padStart(2, '0')} / {String(cases.length).padStart(2, '0')}</span><button onClick={() => { setIndex((index + 1) % cases.length); setAnswer(null) }} aria-label="Next case">→</button></div></div></div>
+  const finished = completed.length === cases.length
+  function selectChoice(choiceIndex: number) {
+    setAnswer(choiceIndex)
+    if (item.choices[choiceIndex].correct) setCompleted(current => current.includes(index) ? current : [...current, index])
+  }
+  function reset() { setIndex(0); setAnswer(null); setCompleted([]) }
+  return <div className="obs-workspace"><OrbitStage state={choice ? choice.correct ? 'correct' : 'incorrect' : null}/><div className="obs-panel"><div className="obs-panel-meta"><span>CASE {index + 1} / {cases.length} · {completed.length} COMPLETE</span><span>FICTIONAL TEACHING EXAMPLE</span></div><div className="obs-progress" role="progressbar" aria-label="Evidence Worlds missions completed" aria-valuenow={completed.length} aria-valuemin={0} aria-valuemax={cases.length}><i style={{ width: `${(completed.length / cases.length) * 100}%` }}/></div><h3>{item.title}</h3><div className="obs-source"><small>THE OBSERVATION</small><p>{item.source}</p></div><h4>{item.question}</h4><div className="obs-options">{item.choices.map((option, i) => <button className={answer === i ? option.correct ? 'selected correct' : 'selected incorrect' : ''} onClick={() => selectChoice(i)} key={option.text}><span>{String.fromCharCode(65 + i)}</span>{option.text}</button>)}</div><div className={`obs-feedback ${choice?.correct ? 'right' : choice ? 'wrong' : ''}`} aria-live="polite">{choice ? <><strong>{choice.correct ? 'Within the evidence.' : 'The claim travels too far.'}</strong><p>{choice.why}</p></> : <p>Choose a conclusion to test the connection.</p>}{finished && <p className="obs-complete">All three missions complete. You can revisit any explanation or replay the set.</p>}</div><div className="obs-panel-actions"><button onClick={() => { setIndex(index - 1); setAnswer(null) }} disabled={index === 0} aria-label="Previous case">←</button><span>{String(index + 1).padStart(2, '0')} / {String(cases.length).padStart(2, '0')}</span>{index < cases.length - 1 ? <button onClick={() => { setIndex(index + 1); setAnswer(null) }} disabled={!completed.includes(index)} aria-label="Next case">→</button> : <button onClick={reset} disabled={!finished} aria-label="Replay all cases">↺</button>}</div>{finished && <button className="obs-reset obs-replay" onClick={reset}>Replay Evidence Worlds</button>}</div></div>
 }
 
 const scaleOrder = [
