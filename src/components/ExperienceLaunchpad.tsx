@@ -16,6 +16,14 @@ export function ActivitySculpture({ shape }: { shape: string }) {
 
 export function ExperienceLaunchpad({ compact = false }: { compact?: boolean }) {
   return <section className={`experience-launchpad wrap ${compact ? 'is-compact' : ''}`} aria-labelledby="experience-title">
+    <div className="experience-particles" aria-hidden="true">{Array.from({ length: 36 }, (_, i) => <span key={i} style={{
+      '--px': `${(i * 47 + 13) % 100}%`,
+      '--py': `${(i * 31 + 7) % 100}%`,
+      '--size': `${2 + (i * 7) % 5}px`,
+      '--delay': `${-((i * 11) % 27)}s`,
+      '--duration': `${19 + (i * 13) % 21}s`,
+      '--drift': `${110 + (i * 17) % 240}px`,
+    } as CSSProperties}/>)}</div>
     <div className="experience-heading"><div><p className="electric-eyebrow">OPTIONAL LESSONS / OPEN TO CURIOSITY</p><h2 id="experience-title">Less reading.<br/><em>More discovering.</em></h2></div><p>No science degree needed. Pick something that makes you curious. Every activity shows you what to do.</p></div>
     <div className="activity-grid">{ACTIVITIES.map((item, i) => <Link key={item.id} to={item.id==='molecule'?'/observatory':'/learn'} search={item.id==='molecule'?{}:{activity:item.id}} className={`activity-door door-${item.shape}`} style={{ '--activity': item.color } as CSSProperties}>
       <span className="activity-number">0{i + 1}<span>EXPLORE ↗</span></span><ActivitySculpture shape={item.shape}/>
