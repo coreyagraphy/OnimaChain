@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import type { PointerEvent } from 'react'
 import { DiscoveryStage } from '~/components/DiscoveryStage'
 import { useCanvasAllowed, useReducedMotion } from '~/motion/useReducedMotion'
 import '../styles/observatory.css'
@@ -455,19 +456,72 @@ function ScaleLab() {
   const [order, setOrder] = useState([3, 1, 0, 2])
   const [checked, setChecked] = useState(false)
   const [zoom, setZoom] = useState(0)
+  const [selectedRow, setSelectedRow] = useState<number | null>(null)
+  const [draggingRow, setDraggingRow] = useState<number | null>(null)
+  const [dropRow, setDropRow] = useState<number | null>(null)
+  const pointer = useRef<{ id: number; from: number; x: number; y: number; moved: boolean } | null>(null)
+  const suppressClick = useRef(false)
   const correct = order.every((value, index) => value === index)
-  function move(from: number, by: number) {
-    const to = from + by
-    if (to < 0 || to >= order.length) return
+  function move(from: number, to: number) {
+    if (to < 0 || to >= order.length || from === to) return
     const next = [...order]
-    ;[next[from], next[to]] = [next[to], next[from]]
+    const [item] = next.splice(from, 1)
+    next.splice(to, 0, item)
     setOrder(next)
+    setZoom(item)
     setChecked(false)
+    setSelectedRow(null)
+  }
+  function rowAt(x: number, y: number) {
+    const row = document.elementFromPoint(x, y)?.closest<HTMLElement>('.obs-scale-layout .obs-sort-row')
+    return row ? Number(row.dataset.scaleIndex) : null
+  }
+  function onRowClick(index: number) {
+    if (suppressClick.current) {
+      suppressClick.current = false
+      return
+    }
+    if (selectedRow === null) {
+      setSelectedRow(index)
+      setZoom(order[index])
+    } else if (selectedRow === index) {
+      setSelectedRow(null)
+    } else {
+      move(selectedRow, index)
+    }
+  }
+  function onPointerDown(event: PointerEvent<HTMLDivElement>, index: number) {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    pointer.current = { id: event.pointerId, from: index, x: event.clientX, y: event.clientY, moved: false }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+  function onPointerMove(event: PointerEvent<HTMLDivElement>) {
+    const active = pointer.current
+    if (!active || active.id !== event.pointerId) return
+    if (!active.moved && Math.hypot(event.clientX - active.x, event.clientY - active.y) < 7) return
+    active.moved = true
+    setDraggingRow(active.from)
+    setDropRow(rowAt(event.clientX, event.clientY))
+  }
+  function onPointerEnd(event: PointerEvent<HTMLDivElement>, cancelled = false) {
+    const active = pointer.current
+    if (!active || active.id !== event.pointerId) return
+    if (active.moved) {
+      if (!cancelled) {
+        const target = rowAt(event.clientX, event.clientY)
+        if (target !== null) move(active.from, target)
+      }
+      suppressClick.current = true
+      window.setTimeout(() => { suppressClick.current = false }, 0)
+    }
+    pointer.current = null
+    setDraggingRow(null)
+    setDropRow(null)
   }
   return (
     <>
       <DiscoveryStage mode="scale" selected={zoom} onSelect={setZoom} />
-      <div className="obs-simple-layout">
+      <div className="obs-simple-layout obs-scale-layout">
         <div className="obs-simple-intro">
           <span className="obs-kicker">SCALE LAB / ORDER THE LEVELS</span>
           <h3>
@@ -476,8 +530,8 @@ function ScaleLab() {
             Bigger. You.
           </h3>
           <p>
-            Tap the objects above to explore them. Then use the arrows to put these four things in
-            order, smallest first. The models show categories, not exact sizes.
+            Tap the objects above to explore them. Then tap a card and where it belongs, or drag it
+            into place. Put the smallest first. The models show categories, not exact sizes.
           </p>
           <div className="obs-insight">
             A cell observation and a human outcome also sit at different levels of evidence.
@@ -486,33 +540,35 @@ function ScaleLab() {
         </div>
         <div className="obs-sort-card">
           <div className="obs-sort-heading">
-            SMALLEST AT THE TOP <span>USE THE ARROWS</span>
+            SMALLEST AT THE TOP <span>TAP TWO CARDS OR DRAG</span>
           </div>
+          <p className="obs-sort-help" id="scale-sort-help">Tap one card, then tap the position you want. You can also drag a card into place.</p>
           {order.map((value, index) => {
             const item = scaleOrder[value]
             return (
-              <div className="obs-sort-row" key={item.id}>
+              <div
+                className={`obs-sort-row${selectedRow === index ? ' is-selected' : ''}${draggingRow === index ? ' is-dragging' : ''}${dropRow === index && draggingRow !== null ? ' is-drop-target' : ''}`}
+                key={item.id}
+                data-scale-index={index}
+                data-scale-id={item.id}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedRow === index}
+                aria-describedby="scale-sort-help"
+                aria-label={`${item.title}, position ${index + 1} of 4`}
+                onClick={() => onRowClick(index)}
+                onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onRowClick(index) } }}
+                onPointerDown={event => onPointerDown(event, index)}
+                onPointerMove={onPointerMove}
+                onPointerUp={onPointerEnd}
+                onPointerCancel={event => onPointerEnd(event, true)}
+              >
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <div>
                   <strong>{item.title}</strong>
                   <small>{item.detail}</small>
                 </div>
-                <div className="obs-sort-buttons">
-                  <button
-                    onClick={() => move(index, -1)}
-                    disabled={index === 0}
-                    aria-label={`Move ${item.title} up`}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    onClick={() => move(index, 1)}
-                    disabled={index === order.length - 1}
-                    aria-label={`Move ${item.title} down`}
-                  >
-                    ↓
-                  </button>
-                </div>
+                <span className="obs-sort-grip" aria-hidden="true">⠿</span>
               </div>
             )
           })}
@@ -524,7 +580,9 @@ function ScaleLab() {
               ? correct
                 ? 'Exactly. Nanometres, micrometres, millimetres, then metres; each step is one thousand times the unit before it.'
                 : 'Not quite. Start with the molecular feature, then move toward the whole person.'
-              : 'Build the sequence to explore relative scale.'}
+              : selectedRow !== null
+                ? `${scaleOrder[order[selectedRow]].title} selected. Tap the position where it belongs.`
+                : 'Build the sequence to explore relative scale.'}
           </div>
         </div>
       </div>

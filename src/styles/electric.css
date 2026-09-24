@@ -150,3 +150,29 @@ main .label-cyan,.electric-eyebrow{color:#ffab72!important}
 .mv-operator strong{font:700 clamp(20px,2vw,29px)/1.1 var(--font-display)}
 .mv-operator a{color:#d9f7f2;text-decoration:underline;text-decoration-color:#2dd4bf88;text-underline-offset:4px;font-size:14px}
 .mv-operator a:focus-visible{outline:2px solid #fbbf24;outline-offset:4px}
+
+/* Scale Lab: a luminous logarithmic ruler, rather than a generic lesson panel. */
+.discovery-scale{background:radial-gradient(ellipse 35% 65% at 75% 42%,#ff9c3260,transparent 75%),radial-gradient(ellipse 35% 70% at 23% 52%,#e7ff3b32,transparent 80%),linear-gradient(115deg,#071726,#193546 53%,#251e2f)}
+.discovery-scale:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 42px,#e8f7cb25 43px,#e8f7cb25 44px,transparent 45px 86px),linear-gradient(180deg,transparent 82%,#eaff5b26 82.3%,transparent 82.8%);mask-image:linear-gradient(90deg,transparent,#000 15% 85%,transparent);opacity:.55}
+.discovery-scale:after{content:"nm    →    µm    →    mm    →    m";position:absolute;right:4%;bottom:72px;color:#eaff93;font:700 10px/1 var(--font-mono);letter-spacing:.45em;text-shadow:0 0 16px #edff59a0;pointer-events:none}
+.observatory-page .obs-scale-layout{position:relative;overflow:hidden;background:radial-gradient(ellipse 36% 55% at 5% 75%,#ff762e30,transparent 90%),radial-gradient(ellipse 40% 65% at 95% 15%,#eaff5a1c,transparent 90%),linear-gradient(140deg,#152634,#0a1925 55%,#18242e);border-color:#ffb46d6a}
+.obs-scale-layout:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 69px,#ffffff0a 70px,#ffffff0a 71px,transparent 72px 140px);mask-image:linear-gradient(90deg,#0004,transparent 65%)}
+.obs-scale-layout>*{position:relative}
+.obs-scale-layout .obs-kicker{color:#edff6e}
+.obs-scale-layout .obs-insight{border-color:#ffae6b75;color:#ffe1b7}
+.obs-scale-layout .obs-sort-card{border:1px solid #ffc17582;border-radius:18px;background:radial-gradient(ellipse at 3% -20%,#fff4be30,transparent 50%),linear-gradient(140deg,#314450a8,#17232fdc 58%,#282838bb);box-shadow:inset 1px 1px #ffffff4b,inset -1px -1px #ffb45d30,0 0 32px #ff7a3124,0 32px 75px #0008;backdrop-filter:blur(15px)}
+.obs-scale-layout .obs-sort-heading{color:#f0ff9a;gap:16px;margin-bottom:6px}
+.obs-scale-layout .obs-sort-heading span{color:#ffd29c;text-align:right}
+.obs-sort-help{font-size:12px;color:#d2dddc;line-height:1.5;margin:0 0 16px}
+.obs-scale-layout .obs-sort-row{grid-template-columns:26px minmax(0,1fr) 24px;min-height:73px;margin:5px 0;padding:12px 11px;border:1px solid #a9b7ae40;border-radius:9px;background:linear-gradient(105deg,#e4fff20c,#ffb55a0a);cursor:grab;touch-action:none;user-select:none;transition:transform .22s,border-color .22s,background .22s,box-shadow .22s}
+.obs-scale-layout .obs-sort-row:hover,.obs-scale-layout .obs-sort-row:focus-visible{border-color:#eaff76b7;background:linear-gradient(105deg,#edff5933,#ff9d2830);box-shadow:0 0 23px #eaff5920;transform:translateX(3px);outline:none}
+.obs-scale-layout .obs-sort-row.is-selected{border-color:#edff59;background:linear-gradient(105deg,#edff5940,#ff9d2838);box-shadow:inset 3px 0 #edff59,0 0 24px #edff592d}
+.obs-scale-layout .obs-sort-row.is-dragging{opacity:.66;cursor:grabbing;transform:scale(.985)}
+.obs-scale-layout .obs-sort-row.is-drop-target{border-color:#ffad4d;box-shadow:inset 0 0 0 1px #ffad4d,0 0 25px #ff762e60;transform:translateX(5px)}
+.obs-scale-layout .obs-sort-row>span:first-child{color:#edff73}
+.obs-scale-layout .obs-sort-row strong{color:#fff9e9}
+.obs-scale-layout .obs-sort-row small{color:#c2d2d3}
+.obs-scale-layout .obs-sort-grip{font-size:22px;line-height:1;color:#ffad5e;text-align:right}
+.obs-scale-layout .obs-primary{background:linear-gradient(100deg,#edff59,#ffc252 55%,#ff762e);box-shadow:0 7px 24px #ff762e55}
+@media(max-width:700px){.discovery-scale:after{bottom:65px;right:5%;font-size:8px;letter-spacing:.2em}.obs-scale-layout .obs-sort-card{padding:18px 14px}.obs-scale-layout .obs-sort-row{min-height:75px}}
+@media(prefers-reduced-motion:reduce){.obs-scale-layout .obs-sort-row{transition:none}}
