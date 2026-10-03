@@ -6,7 +6,6 @@ import { Nav } from '~/components/Nav'
 import { Footer } from '~/components/Footer'
 import { initVisualMode } from '~/motion/useReducedMotion'
 import { NotFoundFragment } from '~/components/NotFoundFragment'
-import { AgeGate } from '~/components/AgeGate'
 import { DepthBackdrop } from '~/components/DepthBackdrop'
 import { startTilt } from '~/motion/tilt'
 import { BRAND, brand } from '~/brand'
@@ -98,7 +97,6 @@ function RootComponent() {
   }, [])
   return (
     <RootDocument>
-      <AgeGate />
       {!gameplay && <DepthBackdrop />}
       <Nav />
       {quickViewOpen && <Suspense fallback={null}><ReaderQuickView /></Suspense>}

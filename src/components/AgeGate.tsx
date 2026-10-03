@@ -56,7 +56,7 @@ export function AgeGate() {
             <ul className="relative mt-4 grid gap-1.5 text-[13px] text-bone/65">
               <li>Everything here is for research and education. It is not medical advice.</li>
               <li>We never tell you how much to take or how to use anything.</li>
-              <li>This educational site does not sell peptides or provide ordering.</li>
+              <li>Nothing is sold on this learning site. Our store is a separate site, shop.onimachain.com, with its own rules.</li>
             </ul>
             <div className="relative mt-7 flex flex-wrap gap-3">
               <button className="btn btn-primary" onClick={accept} autoFocus>Yes, I&rsquo;m 21 or older</button>

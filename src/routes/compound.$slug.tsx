@@ -76,6 +76,6 @@ function Dossier() {
 
     {tracked.length > 0 && <section className="wrap py-14 border-t hairline"><p className="label label-cyan">03 / tracked language</p><h2 className="display-md text-3xl mt-3">Claims being examined</h2><p className="text-sm muted mt-4 max-w-3xl">These are claims encountered in discussion, not endorsed conclusions. The source-to-claim interpretation remains under editorial review.</p><div className="flex flex-wrap gap-3 mt-6">{tracked.map(claim => <Link key={claim.id} to="/claim/$id" params={{ id: claim.id }} className="btn btn-sm">Inspect “{claim.title}”</Link>)}</div></section>}
     {c.sequence && <section className="wrap py-14 border-t hairline"><p className="label label-cyan">Structure key</p><h2 className="display-md text-3xl mt-3">Residues, one by one</h2><p className="text-sm muted mt-3 mb-7">A sequence representation, not an experimentally determined conformation.</p><ResidueTable geometry={geometry} /></section>}
-    <div className="wrap py-8 border-t hairline text-sm muted">Educational reference only. No ordering, personal suitability assessment, administration guidance, or product recommendation.</div>
+    <div className="wrap py-8 border-t hairline text-sm muted">Educational reference only. Nothing is sold on this page, and nothing here tells you whether something suits you, how to use it, or what to buy. Our store is a separate site with its own terms.</div>
   </article>
 }

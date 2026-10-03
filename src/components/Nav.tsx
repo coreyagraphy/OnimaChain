@@ -14,6 +14,9 @@ const links = [
   { to: '/contact', label: 'Contact' },
 ] as const
 
+// The store lives on its own site.
+const SHOP_URL = 'https://shop.onimachain.com/'
+
 export function Nav() {
   const [open, setOpen] = useState(false)
   const [menu, setMenu] = useState(false)
@@ -30,6 +33,7 @@ export function Nav() {
         <div className="wrap h-[72px] flex items-center justify-between">
           <Link to="/" className="brand-home group" aria-label={`${BRAND} home`}><BrandWordmark decorative /></Link>
           <nav className="hidden xl:flex items-center gap-4" aria-label="Primary">
+            <a href={SHOP_URL} className="nav-link" title="Our store, for researchers 21 and over">Shop <span aria-hidden>↗</span></a>
             {links.map((l) => <Link key={l.to} to={l.to} className="nav-link" activeProps={{ className: 'nav-link is-active' }}>{l.label}</Link>)}
           </nav>
           <div className="flex items-center gap-2"><Link to="/learn" className="nav-play">Jump in <span aria-hidden>↗</span></Link>
@@ -40,6 +44,7 @@ export function Nav() {
         <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan/15 to-transparent" />
         {menu && (
           <nav id="mobile-nav" className="xl:hidden bg-obsidian/95 border-b hairline px-5 py-5 grid grid-cols-2 gap-2 fade-up" aria-label="Mobile">
+            <a href={SHOP_URL} className="label !text-bone py-3">Shop · researchers 21+ <span aria-hidden>↗</span></a>
             {links.map((l) => <Link key={l.to} to={l.to} className="label !text-bone py-3" onClick={() => setMenu(false)}>{l.label}</Link>)}
             <button className="label !text-bone py-3 text-left" onClick={() => { setOpen(true); setMenu(false) }}>Search</button>
           </nav>
