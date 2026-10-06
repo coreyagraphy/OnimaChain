@@ -80,7 +80,7 @@ function SignalMap() {
             <h2 ref={nameRef} className="wordmark text-3xl mt-2 w-full whitespace-nowrap" style={wordmarkStyle(theme)}>{displayName(selected)}</h2>
             <p className="mt-3 text-sm font-semibold text-bone/82 leading-relaxed">{descriptionFor(selected)}</p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="signal-tag">Identity record · summary review pending</span>
+              <span className="signal-tag">No study summary yet</span>
             </div>
             <div className="mt-6 grid grid-cols-2 gap-2">
               <button className="btn btn-sm justify-center" onClick={() => setQuickView(selected.slug)}>Inspect model</button>
@@ -97,7 +97,7 @@ function SignalMap() {
             <div className="signal-stage-light" aria-hidden />
             <ExplorerView view={view} selected={selected} pool={visible} onSelect={setSelectedSlug} />
           </div>
-          <p className="mt-3 text-[12px] text-bone/65">Subject groups are editorial navigation. A displayed source relationship is not a clinical effectiveness finding.</p>
+          <p className="mt-3 text-[12px] text-bone/65">Subjects are for browsing. A link to a source is not proof that something works.</p>
         </div>
       </section>
 
@@ -133,7 +133,7 @@ function ConstellationView({ selected, pool, onSelect }: { selected: Compound; p
       </svg>
       <button className="signal-node signal-node-core" onClick={() => onSelect(selected.slug)} style={{ '--node': themeFor(selected).primary } as CSSProperties}><span>{displayName(selected)}</span><small>Selected identity</small></button>
       {nodes.map(({ compound, relationship }, i) => <button key={compound.slug} className="signal-node" onClick={() => onSelect(compound.slug)} title={`${displayName(compound)}: ${relationship.detail}`} style={{ left: `${positions[i][0]}%`, top: `${positions[i][1]}%`, '--node': themeFor(compound).primary, '--texture-seed': `${(i * 17) - 31}deg` } as CSSProperties}><span>{displayName(compound)}</span><small>{relationship.label}</small></button>)}
-      <p className="signal-view-note">{nodes.length ? 'Lines are source-specific identity links, not clinical claims or combination advice.' : 'Relationship edges are held for source-level review. The topic map remains available without implying a molecular link.'}</p>
+      <p className="signal-view-note">{nodes.length ? 'Lines are source-specific identity links, not clinical claims or combination advice.' : 'Links between molecules stay hidden until we review their sources. The topic map does not imply a link.'}</p>
     </div>
   )
 }

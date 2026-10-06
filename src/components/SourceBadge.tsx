@@ -38,7 +38,7 @@ export function provenanceText(c: Compound): { primary: string; secondary: strin
   if (deposited?.source.startsWith('RCSB')) return { primary: 'Rendered from deposited C-alpha coordinates', secondary: `${deposited.source}; any unresolved tail is modeled`, kind: 'pdb' }
   if (deposited?.source.startsWith('AlphaFold')) return { primary: 'Rendered from an AlphaFold model', secondary: deposited.source, kind: 'sequence' }
   const pdb = c.pdbIds.length ? `Experimentally resolved (PDB ${c.pdbIds.join(', ')}) — deposited, not rendered here` : null
-  return { primary: 'Sequence-derived illustration (not a measured structure)', secondary: pdb, kind: 'sequence' }
+  return { primary: 'Drawn from its sequence (not a measured structure)', secondary: pdb, kind: 'sequence' }
 }
 
 export function ProvenanceLabel({ compound, className = '' }: { compound: Compound; className?: string }) {

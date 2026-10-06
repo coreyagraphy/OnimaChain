@@ -50,13 +50,13 @@ function Dossier() {
         <p className="label" style={{ color: domain.palette.base }}>{domain.name} · identity record</p>
         <h1 className="wordmark text-[clamp(3rem,7.5vw,7.2rem)] mt-4 break-words" style={wordmarkStyle(theme)}>{displayName(c)}</h1>
         <p className="mt-5 text-base font-semibold text-bone/84 leading-relaxed max-w-xl">{descriptionFor(c)}</p>
-        <div className="mt-6 panel-flat p-4 max-w-xl border-l-2 border-l-cyan"><strong className="label label-cyan">Review state: summary held</strong><p className="text-sm text-bone/75 mt-2">Citation details in this record may be checked, but a source-backed benefit or safety summary has not been completed. No conclusion about personal use is provided.</p></div>
+        <div className="mt-6 panel-flat p-4 max-w-xl border-l-2 border-l-cyan"><strong className="label label-cyan">No study summary yet</strong><p className="text-sm text-bone/75 mt-2">We may have checked that the studies listed here exist. We have not reviewed what they show, so this page draws no conclusion about benefit, safety or personal use.</p></div>
         <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-w-lg">
           <div className="col-span-2"><dt className="label">Sequence record</dt><dd className="mono text-[13px] md:text-sm mt-1 break-all text-bone/90">{c.sequence ?? <span className="text-bone/50">{presentation.label}</span>}</dd></div>
           <div><dt className="label">Length</dt><dd className="mono mt-1">{c.sequence ? `${c.sequence.length} residues` : 'Unresolved'}</dd></div>
           <div><dt className="label">Molecular weight</dt><dd className="mono mt-1">{mw ? `${mw} Da${!c.mw ? ' · computed' : ''}` : 'Not listed'}</dd></div>
-          <div><dt className="label">Citation metadata</dt><dd className="mt-1 text-sm">{studies.length ? `${studies.length} indexed record${studies.length === 1 ? '' : 's'}` : 'Study review pending'}</dd></div>
-          <div><dt className="label">Scientific claim review</dt><dd className="mt-1 text-sm">Not completed for this page</dd></div>
+          <div><dt className="label">Studies</dt><dd className="mt-1 text-sm">{studies.length ? `${studies.length} listed stud${studies.length === 1 ? 'y' : 'ies'}` : 'None listed yet'}</dd></div>
+          <div><dt className="label">Claims reviewed</dt><dd className="mt-1 text-sm">Not yet</dd></div>
           <div className="col-span-2"><dt className="label">Structure provenance</dt><dd className="mt-1"><ProvenanceLabel compound={c} /></dd></div>
         </dl>
         {c.note && <p className="mt-4 text-[12px] muted max-w-lg">{c.note}</p>}
@@ -76,6 +76,6 @@ function Dossier() {
 
     {tracked.length > 0 && <section className="wrap py-14 border-t hairline"><p className="label label-cyan">03 / tracked language</p><h2 className="display-md text-3xl mt-3">Claims being examined</h2><p className="text-sm muted mt-4 max-w-3xl">These are claims encountered in discussion, not endorsed conclusions. The source-to-claim interpretation remains under editorial review.</p><div className="flex flex-wrap gap-3 mt-6">{tracked.map(claim => <Link key={claim.id} to="/claim/$id" params={{ id: claim.id }} className="btn btn-sm">Inspect “{claim.title}”</Link>)}</div></section>}
     {c.sequence && <section className="wrap py-14 border-t hairline"><p className="label label-cyan">Structure key</p><h2 className="display-md text-3xl mt-3">Residues, one by one</h2><p className="text-sm muted mt-3 mb-7">A sequence representation, not an experimentally determined conformation.</p><ResidueTable geometry={geometry} /></section>}
-    <div className="wrap py-8 border-t hairline text-sm muted">Educational reference only. Nothing is sold on this page, and nothing here tells you whether something suits you, how to use it, or what to buy. Our store is a separate site with its own terms.</div>
+    <div className="wrap py-8 border-t hairline text-sm muted">For learning only. Nothing is sold here, and nothing here says what to use or buy. Our store is a separate site.</div>
   </article>
 }

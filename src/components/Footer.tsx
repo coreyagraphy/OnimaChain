@@ -29,7 +29,7 @@ export function Footer() {
       <div className="border-t hairline">
         <div className="wrap py-6">
           <p className="text-[12px] text-bone/60 max-w-3xl">
-            <b className="text-bone/80">You must be 21 or older to use this site.</b> OnimaChain is an educational reference. We do not take product orders through this website. This is not medical advice or a recommendation to use a compound.
+            <b className="text-bone/80">OnimaChain is an educational reference, open to everyone.</b> Nothing is sold on this site; our store is a separate site for researchers 21 and over. This is not medical advice or a recommendation to use a compound.
           </p>
         </div>
       </div>

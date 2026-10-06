@@ -81,12 +81,11 @@ export function wordmarkStyle(theme: CompoundTheme): CSSProperties {
 /** Identity-only summaries shared by cards, search previews, dossiers and maps.
  * Outcome summaries remain withheld until an exact claim/source review is recorded. */
 export function descriptionFor(compound: Compound): string {
-  if (compound.slug === 'nad-plus') return 'NAD+ is a nucleotide-derived coenzyme, not a peptide. This page distinguishes its chemical identity from studies of different precursors or formulations.'
-  if (compound.slug === 'cerebrolysin' || compound.slug === 'thymalin') return `${displayName(compound)} is a mixture rather than one defined peptide sequence. Its composition and source-specific research require separate review.`
-  if (compound.slug === 'tb-500') return 'TB-500 is a name used for a thymosin β4 fragment. Its identity is not the same as the 43-residue full-length protein; source and structure review is pending.'
-  if (compound.slug === 'thymosin-beta-4') return 'Full-length thymosin β4 is a 43-residue peptide. This record is separate from the fragment commonly called TB-500.'
-  if (compound.slug === 'cjc-1295') return 'The CJC-1295 name is used across formulations. This record does not transfer findings from a long-acting analog to a separately described no-DAC form.'
-  if (compound.slug === 'ghk-cu') return 'GHK-Cu names a copper complex of the three-residue GHK peptide. Structure artwork here is illustrative, not an experimentally measured model.'
-  const identity = compound.sequence ? `${compound.sequence.length}-residue peptide` : 'compound with sequence identity under review'
-  return `${displayName(compound)} is indexed here as a ${identity}. A source-backed outcome summary has not yet been completed for this record.`
+  if (compound.slug === 'nad-plus') return 'NAD+ is a coenzyme, not a peptide. Studies of its precursors or other formulations are kept separate.'
+  if (compound.slug === 'cerebrolysin' || compound.slug === 'thymalin') return `${displayName(compound)} is a mixture, not a single peptide. Each source needs its own review.`
+  if (compound.slug === 'tb-500') return 'TB-500 is the name used for a fragment of thymosin β4. It is not the full 43-amino-acid protein.'
+  if (compound.slug === 'thymosin-beta-4') return 'Full-length thymosin β4 has 43 amino acids. It is a separate record from the fragment called TB-500.'
+  if (compound.slug === 'cjc-1295') return 'The name CJC-1295 covers more than one formulation. Findings for the long-acting form are not applied to the no-DAC form.'
+  if (compound.slug === 'ghk-cu') return 'GHK-Cu is a copper complex of the three-amino-acid peptide GHK. The artwork is an illustration, not a measured structure.'
+  return compound.sequence ? `${displayName(compound)} is a chain of ${compound.sequence.length} amino acids.` : `The sequence of ${displayName(compound)} is still being checked.`
 }

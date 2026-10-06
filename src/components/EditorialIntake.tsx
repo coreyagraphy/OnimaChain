@@ -23,7 +23,7 @@ export function EditorialIntake({ page = '' }: { page?: string }) {
   }
   return <section className="panel glass relative p-6 md:p-8 max-w-3xl" aria-labelledby="editorial-intake-title">
     <p className="relative label label-cyan">Editorial contact</p><h2 id="editorial-intake-title" className="relative display-md text-2xl mt-3">Report an error or suggest a source</h2>
-    <p className="relative text-sm text-bone/80 mt-3">Include the page, the statement you want reviewed, and an original source if available. Do not send medical records or personal treatment questions. We cannot recommend compounds, doses or combinations.</p>
+    <p className="relative text-sm text-bone/80 mt-3">Include the page, the statement, and a source if you have one. Don’t send medical records or treatment questions. We can’t recommend compounds, doses or combinations.</p>
     {channel?.operator && channel.email && <p className="relative text-sm muted mt-3">Operator: <span className="mv-operator-name">{channel.operator}</span> · Editorial inbox: <a href={`mailto:${channel.email}`} className="underline">{channel.email}</a></p>}
     {channel?.ready ? <><form onSubmit={submit} className="relative grid gap-4 mt-7">
       <label className="grid gap-1 text-sm">Site page<input name="page" required maxLength={250} defaultValue={page || (typeof window !== 'undefined' ? window.location.pathname : '')} placeholder="/compound/example" /></label>
@@ -33,6 +33,6 @@ export function EditorialIntake({ page = '' }: { page?: string }) {
       <label className="sr-only">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
       <button className="btn btn-primary justify-self-start" disabled={state === 'sending'}>{state === 'sending' ? 'Sending…' : 'Send for editorial review'}</button>
       <p role="status" aria-live="polite" className="text-sm">{state === 'sent' ? 'Submission accepted for delivery to the configured editorial inbox.' : state === 'error' ? error : ''}</p>
-    </form></> : <p className="relative text-sm text-bone/70 mt-6" role="status">The online form is closed until its sender and inbox delivery are tested. {channel?.email ? <>For now, email corrections directly to <a className="underline" href={`mailto:${channel.email}`}>{channel.email}</a>.</> : 'Public contact details are pending configuration.'}</p>}
+    </form></> : <p className="relative text-sm text-bone/70 mt-6" role="status">The form isn’t open yet. {channel?.email ? <>For now, email <a className="underline" href={`mailto:${channel.email}`}>{channel.email}</a>.</> : 'Public contact details are pending configuration.'}</p>}
   </section>
 }

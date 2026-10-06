@@ -32,14 +32,20 @@ function Explore(){
   useEffect(()=>{
     const el=grid.current
     if(!el||typeof IntersectionObserver==='undefined') return
-    const io=new IntersectionObserver((es)=>{ for(const e of es) if(e.isIntersecting){ (e.target as HTMLElement).dataset.in='1'; io.unobserve(e.target) } },{rootMargin:'0px 0px -6% 0px',threshold:0.05})
-    el.querySelectorAll<HTMLElement>('.shop-card').forEach((c)=>io.observe(c))
+    const cards=[...el.querySelectorAll<HTMLElement>('.shop-card')]
+    // Cards are visible until this runs, so a slow phone never shows an empty library. Cards already on
+    // screen stay put; only the ones further down are hidden, then fly in just before they scroll into view.
+    const fold=window.innerHeight
+    for(const c of cards) if(c.getBoundingClientRect().top<fold) c.dataset.in='1'
+    el.dataset.fly='1'
+    const io=new IntersectionObserver((es)=>{ let n=0; for(const e of es) if(e.isIntersecting){ const t=e.target as HTMLElement; t.style.setProperty('--i',String(n++)); t.dataset.in='1'; io.unobserve(t) } },{rootMargin:'0px 0px 12% 0px',threshold:0})
+    cards.filter((c)=>!c.dataset.in).forEach((c)=>io.observe(c))
     return ()=>io.disconnect()
   },[scene,view])
 
   return (
     <div className="pt-24 pb-20">
-      <header className="wrap shop-hero shop-hero-compact"><p className="label label-cyan">Research library · {COMPOUNDS.length} identity records</p><h1 className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-2 leading-[0.95]">Explore the <span className="outline-word">molecules.</span></h1><p className="lede mt-5 max-w-3xl">Browse by name or scientific subject. Each profile shows the sources attached to that record and the limits of our review. A profile is not a product listing or recommendation.</p></header>
+      <header className="wrap shop-hero shop-hero-compact"><p className="label label-cyan">Research library · {COMPOUNDS.length} identity records</p><h1 className="display text-[clamp(2.2rem,6vw,4.6rem)] mt-2 leading-[0.95]">Explore the <span className="outline-word">molecules.</span></h1><p className="lede mt-5 max-w-3xl">Browse by name or subject. Each page shows its sources and what we have not checked. Nothing here is a product listing or a recommendation.</p></header>
       <div className="shop-bar" role="search">
         <div className="wrap shop-bar-inner">
           <label className="shop-search"><svg viewBox="0 0 24 24" aria-hidden><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><span className="sr-only">Search the research library</span><input type="search" value={q} onChange={e=>setQ(e.target.value)} placeholder="Search names and aliases…" enterKeyHint="search"/></label>
@@ -50,10 +56,10 @@ function Explore(){
       </div>
       <section className="wrap">
         <p className="mt-4 mono text-[11px] text-bone/50" role="status">{rows.length} of {COMPOUNDS.length} records{domain!=='all'&&` · ${TOPIC_NAME[domain]}`}</p>
-        {view==='grid'?<div ref={grid} key={scene} className="shop-grid mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><div key={c.slug} className="shop-card" style={{'--i':Math.min(i,11)} as React.CSSProperties}><CompoundCard compound={c} index={i} fluid/></div>)}</div>:
+        {view==='grid'?<div ref={grid} key={scene} className="shop-grid mt-4 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">{rows.map((c,i)=><div key={c.slug} className="shop-card"><CompoundCard compound={c} index={i} fluid/></div>)}</div>:
         <div className="mt-6 panel-flat overflow-x-auto"><table className="data commerce-table"><thead><tr><th>Molecule record</th><th>Subject</th><th>Structure</th><th>Review state</th><th/></tr></thead><tbody>{rows.map(c=><ProductRow key={c.slug} compound={c} />)}</tbody></table></div>}
         {rows.length===0&&<div className="panel p-10 mt-8 text-center"><h2 className="display-md text-2xl">No match yet.</h2><p className="muted text-sm mt-2">Try a different name, alias, or subject.</p></div>}
-        <p className="text-[12px] muted mt-10">Identity and citation records do not establish a clinical benefit. Outcome summaries remain withheld until claim-level review.</p>
+        <p className="text-[12px] muted mt-10">A listed study does not prove a benefit. We publish summaries only after review.</p>
       </section>
     </div>
   )

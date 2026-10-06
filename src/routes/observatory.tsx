@@ -116,7 +116,7 @@ function Observatory() {
       </div>
       <div className="workbench-stage">
         <div className="workbench-stage-label">
-          EACH BEAD = ONE AMINO-ACID RESIDUE · NOT ONE ATOM
+          EACH BEAD = ONE AMINO ACID · NOT ONE ATOM
         </div>
         {allowed ? (
           <Suspense fallback={<p className="workbench-loading">Opening the molecular drawings…</p>}>
@@ -197,17 +197,15 @@ function Observatory() {
                     : isolate
                       ? 'Only this building block is shown in the 3D drawing.'
                       : 'The selected block is highlighted in the 3D drawing.'}{' '}
-                  The bead represents a residue in a chain, not its individual atoms. Its display
-                  color is a visual aid.
+                  Each bead is one amino acid, not one atom. The color is only a visual aid.
                 </p>
               </div>
               <details>
                 <summary>How was this model made?</summary>
                 <p>
-                  {prov.primary}. The chain comes from the record’s listed sequence and
-                  modifications. No deposited three-dimensional coordinates are used for these
-                  selected examples. Bending and spacing are drawing choices, not predicted folding
-                  or biological activity.
+                  {prov.primary}. The chain is drawn from the listed sequence. No measured 3D data
+                  is used here. The bends and spacing are drawing choices, not a prediction of how
+                  it folds or what it does.
                 </p>
                 <Link to="/compound/$slug" params={{ slug: record.slug }}>
                   Read this record’s sources and limitations ↗

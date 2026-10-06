@@ -25,7 +25,7 @@ function Home() {
 
 function LearningGateway() {
   return <section className="waitlist-teaser wrap" aria-labelledby="waitlist-teaser-heading">
-    <div><p className="label label-cyan">Learn by doing</p><h2 id="waitlist-teaser-heading" className="display-md">Look closer.<br /><span>Think clearer.</span></h2><p>Capture a building block, steer through the chamber, and connect a fictional sequence. Practice at your pace. Game results stay in this browser.</p></div>
+    <div><p className="label label-cyan">Learn by doing</p><h2 id="waitlist-teaser-heading" className="display-md">Look closer.<br /><span>Think clearer.</span></h2><p>Catch a building block and guide it into place. Results stay in this browser.</p></div>
     <Link to="/learn/chainforge" className="btn btn-primary">Play Chainforge <span aria-hidden>↗</span></Link>
   </section>
 }
@@ -71,7 +71,7 @@ function PulseHome() {
         <div>
           <p className="label label-cyan pulse-live-label">Research Time Machine</p>
           <h2 id="pulse-h" className="display text-[clamp(2.2rem,5.4vw,4.6rem)] mt-3 leading-[0.98]">Ideas become tools.<br />Sources mark the moments.</h2>
-          <p className="lede mt-4 max-w-xl">Travel through documented moments in peptide science. Select a year, read what happened, and open the original source.</p>
+          <p className="lede mt-4 max-w-xl">Pick a year, read what happened, open the original source.</p>
         </div>
         <Link to="/learn" search={{ activity: 'history' }} className="btn btn-primary">Explore the timeline →</Link>
       </div>
@@ -85,7 +85,7 @@ function Difference() {
       <div className="molecular-divider" aria-hidden><i/><i/><i/><i/><i/></div>
       <div className="wrap relative z-10 grid lg:grid-cols-[.75fr_1.25fr] gap-10 items-end">
         <p className="label label-violet">Why this is different</p>
-        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>name list.</h2><p className="lede mt-7 max-w-2xl">A molecule's identity, a citation record, and a reviewed scientific conclusion are different things. Explore what is indexed, where its source leads, and what remains unreviewed.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/claims" className="btn">Explore the research</Link><Link to="/observatory" className="btn btn-primary">Enter the Observatory →</Link></div></div>
+        <div><h2 className="display text-[clamp(3rem,7vw,7.2rem)]">More than a<br/>name list.</h2><p className="lede mt-7 max-w-2xl">Naming a molecule, finding a study about it, and reviewing what that study shows are three different jobs. We show how far each one has got.</p><div className="flex flex-wrap gap-3 mt-8"><Link to="/claims" className="btn">Explore the research</Link><Link to="/observatory" className="btn btn-primary">Enter the Observatory →</Link></div></div>
       </div>
     </section>
   )
@@ -135,10 +135,10 @@ function ResearchDomains() {
 }
 
 const METHOD = [
-  ['01', 'Find the source', 'We start with the original research whenever we can—not another website repeating it.'],
-  ['02', 'Check the record', 'Study titles, publication details, and identifiers are verified before we show them as confirmed research.'],
+  ['01', 'Find the source', 'We start with the original study, not a website repeating it.'],
+  ['02', 'Check the record', 'We check a study exists and is listed correctly before we show it.'],
   ['03', 'Keep stories separate', "What researchers measured and what people say online aren't the same kind of evidence."],
-  ['04', 'Show the gaps', "If we haven't checked something yet, we say that. If research stops at animals, we show where it stops."],
+  ['04', 'Show the gaps', "If we haven't checked something, we say so. If the research stops at animals, we show that."],
 ]
 function MethodPreview() {
   return (

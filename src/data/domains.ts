@@ -31,7 +31,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'repair',
     name: 'Tissue biology',
-    tagline: 'Models of tissue response and repair research.',
+    tagline: 'How tissue responds and repairs in lab studies.',
     image: '/topics/repair.webp',
     researchLabel: 'Peptides indexed in tissue-biology research',
     rig: 'branch',
@@ -42,7 +42,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'metabolic',
     name: 'Metabolic signaling',
-    tagline: 'Hormones, receptors and metabolic study settings.',
+    tagline: 'Hormones and the signals behind energy use.',
     image: '/topics/metabolic.webp',
     researchLabel: 'Peptides indexed in metabolic-signaling research',
     rig: 'dock',
@@ -53,7 +53,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'somatotropic',
     name: 'Growth-factor biology',
-    tagline: 'Study records involving growth signaling pathways.',
+    tagline: 'The signals that tell cells to grow.',
     image: '/topics/somatotropic.webp',
     researchLabel: 'Peptides indexed in growth-factor research',
     rig: 'pulse',
@@ -64,7 +64,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'dermal',
     name: 'Skin and pigment biology',
-    tagline: 'Pigment and tissue models, separated by study setting.',
+    tagline: 'Skin and pigment studies, kept apart by setting.',
     image: '/topics/dermal.webp',
     researchLabel: 'Peptides indexed in skin and pigment research',
     rig: 'bloom',
@@ -75,7 +75,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'cognitive',
     name: 'Nervous-system research',
-    tagline: 'Neural mechanisms and the limits of their models.',
+    tagline: 'How nerve cells signal, and what lab models miss.',
     image: '/topics/cognitive.webp',
     researchLabel: 'Peptides indexed in nervous-system research',
     rig: 'propagate',
@@ -86,7 +86,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'longevity',
     name: 'Cellular energy and aging',
-    tagline: 'Cellular-energy questions and evidence boundaries.',
+    tagline: 'How cells make energy, and what is still unknown.',
     image: '/topics/longevity.webp',
     researchLabel: 'Compounds indexed in cellular-energy research',
     rig: 'reknit',
@@ -97,7 +97,7 @@ export const DOMAINS: Domain[] = [
   {
     id: 'immune',
     name: 'Immune-system research',
-    tagline: 'Immune-signaling research by model and source.',
+    tagline: 'How immune cells signal, study by study.',
     image: '/topics/immune.webp',
     researchLabel: 'Peptides indexed in immune-system research',
     rig: 'sweep',

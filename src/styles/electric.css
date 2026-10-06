@@ -178,3 +178,20 @@ main .label-cyan,.electric-eyebrow{color:#ffab72!important}
 @media(prefers-reduced-motion:reduce){.obs-scale-layout .obs-sort-row{transition:none}}
 .product-card .product-molecule-fallback{opacity:.85;filter:drop-shadow(0 0 13px color-mix(in srgb,var(--product) 68%,transparent))}
 .product-card:hover .product-molecule-fallback,.product-card:focus-within .product-molecule-fallback{opacity:1}
+
+/* Library on phones and touch screens: 36 glowing cards at once used more graphics memory than a phone has
+   (Safari: "A problem repeatedly occurred"). Cards off screen are not drawn at all, and each card drops the
+   blurs, glows and looping motion that need their own graphics layer. Desktop with a mouse is unchanged. */
+.shop-card{content-visibility:auto;contain-intrinsic-height:auto 510px;min-width:0}
+@media (hover:none),(max-width:639px){
+  .shop-grid .card-tilt{will-change:auto;transform-style:flat}
+  .shop-grid .product-neon-lens{display:none}
+  .shop-grid .product-card-copy{backdrop-filter:none;-webkit-backdrop-filter:none}
+  .shop-grid .product-card-atmosphere{animation:none;filter:none;transform:none}
+  .shop-grid .product-molecule{filter:none}
+  .shop-grid .product-card .product-molecule-fallback{animation:none;filter:none}
+  .shop-grid .product-card .product-card-title{filter:none}
+  .shop-grid .product-card{box-shadow:0 14px 30px -18px #000}
+}
+/* Phone library: a solid search bar, so card text no longer shows through it. */
+@media (max-width:639px){.shop-bar{background:#090a0f;backdrop-filter:none;-webkit-backdrop-filter:none}}
