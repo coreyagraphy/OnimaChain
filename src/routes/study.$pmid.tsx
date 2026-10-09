@@ -39,7 +39,7 @@ function StudyPage() {
         <p className="label label-amber">Not in our record</p>
         <h1 className="display text-[clamp(2.2rem,5vw,4.2rem)] mt-3">We haven’t checked this study yet.</h1>
         <p className="lede mt-5 max-w-2xl">
-          {BRAND} only renders a study page when the identifier was added as a candidate and checked against NCBI at build time.
+          {BRAND} only renders a study page when the identifier was added as a candidate and its citation metadata was checked against NCBI at build time.
           We do not invent a citation to fill the gap.
         </p>
         <p className="mono text-sm text-bone/55 mt-6">Requested PMID {pmid}</p>
@@ -54,10 +54,10 @@ function StudyPage() {
   if (study.status !== 'verified' || !study.meta) {
     return (
       <main className="wrap pt-28 pb-20">
-        <p className="label label-amber">We could not confirm this study</p>
+        <p className="label label-amber">Citation metadata not confirmed</p>
         <h1 className="display text-[clamp(2.2rem,5vw,4.2rem)] mt-3">PMID {pmid} could not be verified.</h1>
         <p className="lede mt-5 max-w-2xl">
-          The identifier is on the candidate list, but NCBI eutils did not confirm the title at build time.
+          The identifier is on the candidate list, but NCBI eutils did not confirm its title at build time.
           It is not shown as a citation anywhere else in the site.
         </p>
         <a className="btn mt-8" href={pubmedUrl(pmid)} target="_blank" rel="noreferrer noopener">Check PubMed ↗</a>
@@ -70,7 +70,7 @@ function StudyPage() {
 
   return (
     <main className="wrap pt-28 pb-24">
-      <p className="label label-cyan">Study record</p>
+      <p className="label label-cyan">Citation record · interpretation review pending</p>
       <h1 className="display text-[clamp(1.8rem,4.2vw,3.4rem)] mt-4 max-w-5xl leading-[1.15]">{m.title}</h1>
       <div className="mt-6 flex flex-wrap gap-2 items-center">
         <SourceBadge pmid={study.pmid} verified />
@@ -93,7 +93,7 @@ function StudyPage() {
       )}
 
       <section className="mt-12">
-        <p className="label">Products this study is linked to</p>
+        <p className="label">Proposed identity links · form and relevance review pending</p>
         {linked.length ? (
           <ul className="mt-4 grid sm:grid-cols-2 gap-3 max-w-3xl">
             {linked.map((c) => (
@@ -106,7 +106,7 @@ function StudyPage() {
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm muted">No product in our collection is linked to this study yet.</p>
+          <p className="mt-3 text-sm muted">No research identity is linked to this citation yet.</p>
         )}
       </section>
 

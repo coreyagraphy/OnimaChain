@@ -1,6 +1,6 @@
 import { COMPOUND_BY_SLUG, type Compound } from './compounds'
 
-/** Curated, typed links. A shared shopping topic or keyword is not an evidence relationship. */
+/** Curated, typed links. A shared browsing subject or keyword is not an evidence relationship. */
 export interface PortalRelationship {
   from: string
   to: string
@@ -10,33 +10,10 @@ export interface PortalRelationship {
   kind: 'component' | 'receptor'
 }
 
-export const PORTAL_RELATIONSHIPS: PortalRelationship[] = [
-  {
-    from: 'wolverine-blend', to: 'bpc-157', kind: 'component', label: 'Blend component',
-    detail: 'The Wolverine Blend lists BPC-157 as one of its two separate components; it is not one peptide.',
-    source: 'catalog:compound:wolverine-blend',
-  },
-  {
-    from: 'wolverine-blend', to: 'tb-500', kind: 'component', label: 'Blend component',
-    detail: 'The Wolverine Blend lists TB-500 as one of its two separate components; it is not one peptide.',
-    source: 'catalog:compound:wolverine-blend',
-  },
-  {
-    from: 'semaglutide', to: 'tirzepatide', kind: 'receptor', label: 'GLP-1 receptor',
-    detail: 'Both have GLP-1 receptor activity. Tirzepatide also acts at the GIP receptor.',
-    source: 'https://pubmed.ncbi.nlm.nih.gov/39019866/',
-  },
-  {
-    from: 'semaglutide', to: 'retatrutide', kind: 'receptor', label: 'GLP-1 receptor',
-    detail: 'Both have GLP-1 receptor activity. Retatrutide also acts at the GIP and glucagon receptors.',
-    source: 'https://pubmed.ncbi.nlm.nih.gov/39019866/',
-  },
-  {
-    from: 'tirzepatide', to: 'retatrutide', kind: 'receptor', label: 'GLP-1 + GIP receptors',
-    detail: 'Both have GLP-1 and GIP receptor activity. Retatrutide additionally acts at the glucagon receptor.',
-    source: 'https://pubmed.ncbi.nlm.nih.gov/39019866/',
-  },
-]
+// The previous three edges all cited one retatrutide structural paper as if it
+// validated every paired comparison. Hold the edges until each exact relation,
+// molecular form and source scope has been reviewed. Topic navigation remains.
+export const PORTAL_RELATIONSHIPS: PortalRelationship[] = []
 
 export function relationshipsFor(slug: string, pool: Compound[] = Object.values(COMPOUND_BY_SLUG)) {
   const allowed = new Set(pool.map((compound) => compound.slug))

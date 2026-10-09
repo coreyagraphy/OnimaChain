@@ -118,12 +118,12 @@ test('test gate and redirect-origin validation fail closed', () => {
     if (oldOrigin === undefined) delete process.env.COMMERCE_SITE_ORIGIN; else process.env.COMMERCE_SITE_ORIGIN = oldOrigin
   }
 })
-test('unconfigured endpoints reject checkout and webhook requests without network calls', async () => {
+test('retired endpoints reject checkout and webhook requests without network calls', async () => {
   const old = process.env.PAYMENTS_MODE
   try {
     delete process.env.PAYMENTS_MODE
-    assert.equal((await checkout(new Request(origin, { method: 'POST' }))).status, 503)
-    assert.equal((await webhook(new Request(origin, { method: 'POST' }))).status, 503)
-    assert.equal((await checkout(new Request(origin))).status, 405)
+    assert.equal((await checkout()).status, 410)
+    assert.equal((await webhook()).status, 410)
+    assert.equal((await checkout()).status, 410)
   } finally { if (old === undefined) delete process.env.PAYMENTS_MODE; else process.env.PAYMENTS_MODE = old }
 })

@@ -13,8 +13,8 @@ function index(): Hit[] {
     hits.push({ group: 'Compounds', label: displayName(c), sub: c.slug, href: `/compound/${c.slug}` })
     for (const a of c.aliases) hits.push({ group: 'Aliases', label: a, sub: `→ ${displayName(c)}`, href: `/compound/${c.slug}` })
   }
-  for (const cl of CLAIMS) hits.push({ group: 'Claims', label: cl.title, sub: cl.id, href: `/claim/${cl.id}` })
-  for (const s of verifiedStudies()) hits.push({ group: 'Studies', label: s.title ?? '', sub: `PMID ${s.pmid} · ${s.journal} ${s.year ?? ''}`, href: `/compound/${s.compounds[0]}#sources` })
+  for (const cl of CLAIMS) hits.push({ group: 'Claims', label: cl.title, sub: `${cl.id} · interpretation review pending`, href: `/claim/${cl.id}` })
+  for (const s of verifiedStudies()) hits.push({ group: 'Studies', label: s.title ?? '', sub: `PMID ${s.pmid} · citation metadata checked`, href: `/study/${s.pmid}` })
   return hits
 }
 
@@ -23,6 +23,8 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const [q, setQ] = useState('')
   const [cursor, setCursor] = useState(0)
   const input = useRef<HTMLInputElement>(null)
+  const dialogPanel = useRef<HTMLDivElement>(null)
+  const returnFocus = useRef<HTMLElement | null>(null)
   const nav = useNavigate()
   const all = useMemo(index, [])
   const hits = useMemo(() => {
@@ -30,11 +32,22 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
     if (!t) return all.filter((h) => h.group === 'Compounds').slice(0, 8)
     return all.filter((h) => h.label.toLowerCase().includes(t) || h.sub.toLowerCase().includes(t)).slice(0, 14)
   }, [q, all])
-  useEffect(() => { if (open) { setQ(''); setCursor(0); setTimeout(() => input.current?.focus(), 10) } }, [open])
+  useEffect(() => {
+    if (open) { returnFocus.current = document.activeElement as HTMLElement | null; setQ(''); setCursor(0); setTimeout(() => input.current?.focus(), 10) }
+    else if (returnFocus.current) { returnFocus.current.focus(); returnFocus.current = null }
+  }, [open])
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
+      if (e.key === 'Tab') {
+        const focusable = Array.from(dialogPanel.current?.querySelectorAll<HTMLElement>('input, button:not([disabled])') ?? [])
+        if (focusable.length) {
+          const first = focusable[0], last = focusable[focusable.length - 1]
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+        }
+      }
       if (e.key === 'ArrowDown') { e.preventDefault(); setCursor((c) => Math.min(hits.length - 1, c + 1)) }
       if (e.key === 'ArrowUp') { e.preventDefault(); setCursor((c) => Math.max(0, c - 1)) }
       if (e.key === 'Enter' && hits[cursor]) { onClose(); nav({ to: hits[cursor].href }) }
@@ -47,7 +60,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   return (
     <div className="fixed inset-0 z-[90] flex items-start justify-center pt-[12vh] px-4" role="dialog" aria-modal="true" aria-label={`Search ${brand.name}`}>
       <button className="absolute inset-0 bg-obsidian/75" onClick={onClose} aria-label="Close search" />
-      <div className="relative w-full max-w-2xl panel overflow-hidden fade-up" data-lenis-prevent>
+      <div ref={dialogPanel} className="relative w-full max-w-2xl panel overflow-hidden fade-up" data-lenis-prevent>
         <input ref={input} type="search" value={q} onChange={(e) => { setQ(e.target.value); setCursor(0) }} placeholder="Search compounds, aliases, claims, studies…" className="w-full !rounded-none !border-0 !border-b hairline !bg-transparent !px-5 !py-4 text-base" aria-label="Search" />
         <ul className="max-h-[50vh] overflow-y-auto py-2" role="listbox">
           {hits.length === 0 && <li className="px-5 py-4 text-sm muted">We could not find that here yet. Try a peptide name or a shorter search.</li>}

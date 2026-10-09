@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
  * A lit, 3D "liquid glass" pill. The highlight inside follows the pointer (CSS variables only, no re-render),
  * a slow caustic swims under the surface, and the rim catches light. Reduced motion keeps the look, drops the motion.
  */
-export function LiquidGlassLink({ to, children }: { to: '/explore'; children: ReactNode }) {
+export function LiquidGlassLink({ to, children }: { to: '/explore' | '/learn'; children: ReactNode }) {
   return (
     <Link
       to={to}

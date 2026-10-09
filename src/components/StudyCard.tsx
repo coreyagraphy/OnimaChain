@@ -6,7 +6,7 @@ import { SourceBadge } from './SourceBadge'
 
 interface Props { study: Study; compact?: boolean; relationship?: string; basis?: string | null }
 
-/** A study record. Only verified records render title/journal; unverified render as unresolved. */
+/** A citation record. Metadata verification never implies claim review. */
 export function StudyCard({ study, compact = false, relationship, basis }: Props) {
   if (study.status !== 'verified' || !study.meta) {
     return (
@@ -23,7 +23,7 @@ export function StudyCard({ study, compact = false, relationship, basis }: Props
         <SourceBadge pmid={study.pmid} verified />
         <EvidenceChip type={study.studyType} />
         <SpeciesBadge species={study.speciesFromTitle} />
-        {relationship && <span className={`chip ${relationship === 'Backs it up' ? 'chip-cyan' : relationship === 'Pushes back' ? 'chip-amber' : ''}`}>{relationship}</span>}
+        {relationship && <span className="chip chip-amber">Proposed relation: {relationship} · review pending</span>}
       </div>
       <h4 className={`mt-3 font-semibold text-bone/95 leading-snug ${compact ? 'text-sm' : 'text-base'}`}>
         <Link to="/study/$pmid" params={{ pmid: study.pmid }} className="hover:text-cyan">
@@ -34,13 +34,14 @@ export function StudyCard({ study, compact = false, relationship, basis }: Props
         {m.journal} · {m.year ?? 'year n/a'} · {m.authors.length} authors · senior author {m.lastAuthor || 'n/a'}
         {m.doi && <> · doi {m.doi}</>}
       </p>
+      {study.plain && <p className="mt-3 text-sm text-bone/85 leading-relaxed"><span className="label label-cyan mr-2">In plain words</span>{study.plain}</p>}
       {!compact && basis && (
         <blockquote className="mt-3 text-sm text-bone/75 border-l-2 border-cyan/40 pl-3 italic">
           &ldquo;{basis}&rdquo; <span className="not-italic mono text-[10px] text-bone/45">— from the study summary, PubMed ID {study.pmid}</span>
         </blockquote>
       )}
       <p className="mono text-[10px] text-bone/40 mt-2">
-        Checked against PubMed on {new Date(m.verifiedAt).toISOString().slice(0, 10)}
+        Citation metadata checked against PubMed on {new Date(m.verifiedAt).toISOString().slice(0, 10)} · not a scientific claim review
         {' · '}
         <a href={pubmedUrl(study.pmid)} target="_blank" rel="noreferrer noopener" className="hover:text-cyan">PubMed ↗</a>
       </p>

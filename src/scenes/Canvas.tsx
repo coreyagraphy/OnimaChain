@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import { View } from '@react-three/drei/web/View'
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { useCanvasAllowed, useDocumentVisible, useQuality } from '~/motion/useReducedMotion'
-import { useCommerceStore } from '~/stores/commerce'
+import { useReaderStore } from '~/stores/reader'
 
 /**
  * One persistent R3F canvas per document, rendered fixed behind the page.
@@ -16,7 +16,7 @@ import { useCommerceStore } from '~/stores/commerce'
 export function GlobalCanvas() {
   const allowed = useCanvasAllowed()
   const visible = useDocumentVisible()
-  const quickViewOpen = useCommerceStore((s) => s.quickView !== null)
+  const quickViewOpen = useReaderStore((s) => s.quickView !== null)
   const q = useQuality()
   const [ready, setReady] = useState(false)
   useEffect(() => {

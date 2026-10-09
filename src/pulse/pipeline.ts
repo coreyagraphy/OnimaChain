@@ -11,19 +11,18 @@ import type { Activity, CompoundTrend, Label, Lane, PulseEvent, PulseSnapshot, S
  */
 
 const NAME_BY_SLUG = Object.fromEntries(COMPOUNDS.map((c) => [c.slug, c.slug === 'retatrutide' ? 'GLP3 (retatrutide)' : (c.displayName ?? c.name)]))
-/** In the U.S., only these catalog compounds have an FDA-approved use (used to catch "FDA approved X" headlines). */
-const FDA_APPROVED = new Set(['semaglutide', 'tirzepatide', 'tesamorelin', 'pt-141'])
+/** Names with an attached FDA product-specific record; not blanket approval of an ingredient or preparation. Historical collector only. */
+const FDA_APPROVED = new Set(['semaglutide', 'tirzepatide', 'tesamorelin', 'pt-141', 'ss-31'])
 const FEATURED = new Set(['bpc-157', 'tb-500', 'ghk-cu', 'mots-c', 'pt-141', 'semaglutide', 'semax', 'epitalon', 'retatrutide', 'tirzepatide'])
 /** Events leave the feed once their source date is older than MAX_AGE_DAYS. */
 const KEEP_DAYS = MAX_AGE_DAYS
 const DAY = 864e5
 
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-const MATCHERS = COMPOUNDS.filter((c) => c.slug !== 'wolverine-blend').map((c) => ({
+const MATCHERS = COMPOUNDS.map((c) => ({
   slug: c.slug,
   re: new RegExp(`(^|[^a-z0-9])(${[...termsFor(c), c.displayName ?? c.name].map((t) => escape(t).replace(/[-\s]+/g, '[-\\s]?')).join('|')})(?![a-z0-9])`, 'i'),
 }))
-MATCHERS.push({ slug: 'wolverine-blend', re: /wolverine (?:blend|stack|peptide)/i })
 // "p21" alone is a gene name; only the peptide's own names count
 MATCHERS.find((m) => m.slug === 'p21')!.re = /(^|[^a-z0-9])(P021|P21 peptide|peptide 021)(?![a-z0-9])/i
 

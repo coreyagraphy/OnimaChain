@@ -1,4 +1,5 @@
 import verifiedJson from './verified.json'
+import { ADDED_CANDIDATES } from './studies-added'
 
 /*
  * Study records. Every record here is a CANDIDATE until tools/verify-pmids.ts resolves the PMID
@@ -25,6 +26,8 @@ export interface StudyCandidate {
   tags: Array<'mechanistic' | 'tendon' | 'cell-migration' | 'wound-healing' | 'actin'>
   /** Verbatim phrase copied from the PubMed abstract of this PMID (not paraphrased). */
   abstractQuote?: string
+  /** Our own plain-English description of what the study was (model, design, stated result). Never advice. */
+  plain?: string
 }
 
 export interface VerifiedMeta {
@@ -60,6 +63,7 @@ export interface Study extends StudyCandidate {
 export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '21030672',
+    plain: 'A lab study on tendon cells and pieces of tendon kept alive outside the body. The authors reported that with BPC 157 the cells grew out, survived stress and moved more.',
     expectKeyword: 'tendon',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -70,6 +74,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '42542926',
+    plain: 'A 2026 rat study of Achilles tendon repair that compared BPC-157, TB-500, both together, and no treatment. The BPC-157 group’s scores were lower in number, but the difference was not statistically significant.',
     expectKeyword: 'tendon',
     compounds: ['bpc-157', 'tb-500'],
     speciesFromTitle: 'rat',
@@ -80,6 +85,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '41754849',
+    plain: 'A review of BPC 157 and growth factors in tendon, ligament and muscle injury research.',
     expectKeyword: 'BPC 157',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -88,6 +94,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '40789979',
+    plain: 'A narrative review that weighs the lab evidence for BPC-157 in muscle and tendon healing against what is still unknown about risk.',
     expectKeyword: 'BPC-157',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -96,6 +103,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '40756949',
+    plain: 'A systematic review of what has been published on BPC-157 in orthopaedic sports medicine.',
     expectKeyword: 'BPC-157',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -105,7 +113,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '34170491',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: ['thymosin-beta-4'],
     speciesFromTitle: null,
     studyType: 'in-vitro',
     tags: ['mechanistic', 'cell-migration', 'actin'],
@@ -115,7 +123,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '32245208',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: [], // exact molecule/form association pending review
     speciesFromTitle: 'mouse',
     studyType: 'animal',
     tags: [],
@@ -123,7 +131,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '36706591',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: [], // exact molecule/form association pending review
     speciesFromTitle: null,
     studyType: 'in-vitro',
     tags: [],
@@ -131,11 +139,12 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '41235866',
     expectKeyword: 'thymosin',
-    compounds: ['tb-500'],
+    compounds: [], // exact molecule/form association pending review
     speciesFromTitle: null,
     studyType: null,
     tags: ['wound-healing'],
   },
+  ...ADDED_CANDIDATES,
 ]
 
 const VERIFIED = verifiedJson as VerifiedFile
@@ -168,11 +177,4 @@ export function studiesForCompound(slug: string, onlyVerified = true): Study[] {
 
 export function pubmedUrl(pmid: string) {
   return `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`
-}
-
-/** Distinct last-author surnames among a study set — a crude, honest proxy for research-group count. */
-export function distinctGroups(studies: Study[]): string[] {
-  const set = new Set<string>()
-  for (const s of studies) if (s.meta?.lastAuthor) set.add(s.meta.lastAuthor)
-  return [...set]
 }

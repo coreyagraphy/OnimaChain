@@ -160,9 +160,9 @@ export const CLAIMS: Claim[] = [
   },
   {
     id: 'CLAIM-TB4-CELL-MIGRATION',
-    title: 'TB-500 supports cell migration',
+    title: 'Thymosin β4 and fragments were studied in ovarian cancer cells',
     status: 'tracked',
-    compound: 'tb-500',
+    compound: 'thymosin-beta-4',
     outcomeTheme: 'cell-migration',
     originStudy: STUDY_BY_PMID[tb4Origin]?.status === 'verified' ? tb4Origin : null,
     originalScope: {

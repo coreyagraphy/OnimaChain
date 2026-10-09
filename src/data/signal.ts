@@ -38,20 +38,20 @@ export const NOT_ASSESSED = 'Not measured yet — no reports collected'
 
 export const PLATFORMS = [
   { id: 'youtube', name: 'YouTube', adapter: 'Official API', state: 'Not connected' },
-  { id: 'reddit', name: 'Reddit', adapter: 'Licensed / manual / approved coverage', state: 'Not connected' },
-  { id: 'tiktok', name: 'TikTok', adapter: 'Creator-authorized / approved coverage', state: 'Not connected' },
+  { id: 'reddit', name: 'Reddit', adapter: 'Licensed or approved access', state: 'Not connected' },
+  { id: 'tiktok', name: 'TikTok', adapter: 'Creator-approved access', state: 'Not connected' },
   { id: 'podcasts', name: 'Podcast RSS', adapter: 'Public feeds', state: 'Not connected' },
   { id: 'forums', name: 'Public forums', adapter: 'Manual editorial entry', state: 'Not connected' },
   { id: 'publisher', name: 'Public publisher feeds', adapter: 'RSS', state: 'Not connected' },
 ] as const
 
 export const SCIENTIFIC_SOURCES = [
-  { id: 'pubmed', name: 'PubMed', state: 'Connected — every PubMed ID is checked before the site is built', enabled: true },
+  { id: 'pubmed', name: 'PubMed', state: 'Study details checked. Claims not reviewed.', enabled: true },
   { id: 'crossref', name: 'Crossref', state: 'Not connected', enabled: false },
   { id: 'clinicaltrials', name: 'ClinicalTrials.gov', state: 'Not connected', enabled: false },
-  { id: 'fda', name: 'FDA', state: 'Not connected', enabled: false },
+  { id: 'fda', name: 'FDA', state: 'A few official records, added by hand', enabled: false },
   { id: 'wada', name: 'WADA', state: 'Not connected', enabled: false },
-  { id: 'pdb', name: 'RCSB PDB (identifiers only)', state: 'IDs listed; 3D files not downloaded', enabled: false },
+  { id: 'pdb', name: 'RCSB PDB (identifiers only)', state: 'IDs listed only', enabled: false },
 ] as const
 
 export const SIGNAL_FILTERS = [

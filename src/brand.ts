@@ -7,13 +7,12 @@ export const brand = {
   displayName: 'ONIMACHAIN',
   primaryTagline: 'From amino chains to molecular insight.',
   secondaryTagline: 'See the molecule. Follow the signal. Trace the evidence.',
-  description: 'Explore commonly discussed peptides in plain English, see their molecular structure, and open the research behind each claim.',
-  meaning: 'Onima is Amino read backward. Chain connects the molecular chains, biological signals, and evidence trails we make easier to follow.',
-  cartLabel: 'OnimaChain shopping cart',
+  description: 'See what each molecule is, which studies mention it, and what nobody has checked yet.',
+  meaning: 'Onima is Amino read backward. Chain is for the chains of amino acids, and the chain of evidence behind each one.',
   socialImage: '/posters/hero.jpg',
-  logoFull: '/brand/onimachain-full.webp',
-  logoWordmark: '/brand/onimachain-wordmark.webp',
-  icon: '/favicon.png',
+  logoFull: '/brand/onimachain-clean.webp',
+  logoWordmark: '/brand/onimachain-clean-wordmark.webp',
+  icon: '/favicon-clean.png',
 } as const
 
 /** Backward-compatible alias for existing page titles and sentences. */

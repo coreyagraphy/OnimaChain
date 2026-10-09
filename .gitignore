@@ -2,6 +2,7 @@ node_modules
 dist
 .output
 shots
+test-results
 .tanstack
 
 # Local Netlify folder

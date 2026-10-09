@@ -1,4 +1,4 @@
-import { pubmedUrl } from '~/data/studies'
+import { pubmedUrl, STUDY_BY_PMID } from '~/data/studies'
 
 interface Props {
   pmid: string | null
@@ -7,10 +7,11 @@ interface Props {
   link?: boolean
 }
 
-/** A citation badge. Unverified records never render as a citation. */
+/** A citation-metadata badge. Unverified records never render as a citation. */
 export function SourceBadge({ pmid, verified, link = true }: Props) {
-  if (!pmid || !verified) return <span className="chip chip-amber">Source relationship unresolved</span>
-  const inner = <span className="mono">PMID {pmid}</span>
+  const record = pmid ? STUDY_BY_PMID[pmid] : undefined
+  if (!pmid || !verified || record?.status !== 'verified' || !record.meta) return <span className="chip chip-amber">Source relationship unresolved</span>
+  const inner = <span className="mono">PMID {pmid} · citation details checked {record.meta.verifiedAt.slice(0, 10)}</span>
   if (!link) return <span className="chip chip-cyan">{inner}</span>
   return (
     <a href={pubmedUrl(pmid)} target="_blank" rel="noreferrer noopener" className="chip chip-cyan hover:bg-cyan/10">
@@ -30,14 +31,14 @@ import { structurePresentation } from '~/data/structure-presentation'
  */
 export function provenanceText(c: Compound): { primary: string; secondary: string | null; kind: 'pdb' | 'sequence' | 'conceptual' } {
   const presentation = structurePresentation(c)
-  if (presentation.kind === 'blend' || presentation.kind === 'mixture' || presentation.kind === 'non-peptide' || presentation.kind === 'unresolved') return {
+  if (presentation.kind === 'mixture' || presentation.kind === 'non-peptide' || presentation.kind === 'unresolved') return {
     primary: presentation.label, secondary: presentation.detail, kind: 'conceptual',
   }
   const deposited = DEPOSITED_CONFORMERS[c.slug]
   if (deposited?.source.startsWith('RCSB')) return { primary: 'Rendered from deposited C-alpha coordinates', secondary: `${deposited.source}; any unresolved tail is modeled`, kind: 'pdb' }
   if (deposited?.source.startsWith('AlphaFold')) return { primary: 'Rendered from an AlphaFold model', secondary: deposited.source, kind: 'sequence' }
   const pdb = c.pdbIds.length ? `Experimentally resolved (PDB ${c.pdbIds.join(', ')}) — deposited, not rendered here` : null
-  return { primary: 'Sequence-derived illustration (not a measured structure)', secondary: pdb, kind: 'sequence' }
+  return { primary: 'Drawn from its sequence (not a measured structure)', secondary: pdb, kind: 'sequence' }
 }
 
 export function ProvenanceLabel({ compound, className = '' }: { compound: Compound; className?: string }) {

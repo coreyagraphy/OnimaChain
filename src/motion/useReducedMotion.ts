@@ -40,17 +40,19 @@ interface VisualState {
 }
 
 /** Reads the unmasked GPU renderer string when the browser exposes it. Never throws. */
+let cachedRenderer: string | null = null
 function gpuRenderer(): string {
+  if (cachedRenderer !== null) return cachedRenderer
   try {
     const c = document.createElement('canvas')
     const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext | null
-    if (!gl) return 'none'
+    if (!gl) return (cachedRenderer = 'none')
     const ext = gl.getExtension('WEBGL_debug_renderer_info')
     const r = ext ? String(gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) : String(gl.getParameter(gl.RENDERER))
     gl.getExtension('WEBGL_lose_context')?.loseContext()
-    return r
+    return (cachedRenderer = r)
   } catch {
-    return 'unknown'
+    return (cachedRenderer = 'unknown')
   }
 }
 

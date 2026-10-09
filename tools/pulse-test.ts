@@ -19,9 +19,9 @@ const test = (name: string, fn: () => void) => { fn(); passed++; console.log('  
 
 test('names and aliases resolve to compounds; the p21 gene does not', () => {
   assert.deepEqual(mentions('New BPC 157 tendon study'), ['bpc-157'])
-  assert.ok(mentions('Thymosin beta-4 in wound repair').includes('tb-500'))
+  assert.ok(mentions('Thymosin beta-4 in wound repair').includes('thymosin-beta-4'))
   assert.deepEqual(mentions('p21 regulates the cell cycle'), [])
-  assert.ok(mentions('the Wolverine stack is everywhere').includes('wolverine-blend'))
+  assert.deepEqual(mentions('the Wolverine stack is everywhere'), [])
 })
 
 test('one paper + videos about it = ONE event with downstream mentions', () => {

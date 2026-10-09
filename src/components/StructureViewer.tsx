@@ -12,7 +12,6 @@ import { environmentFor } from '~/data/environments'
 import type { ExploreState } from '~/scenes/chain/ViewerScene'
 import { DEPOSITED_CONFORMERS } from '~/data/conformers'
 import { structurePresentation } from '~/data/structure-presentation'
-import { CompositeStructure } from './CompositeStructure'
 
 const Viewer = lazy(() => import('~/scenes/chain/ViewerScene').then((m) => ({ default: m.ViewerScene })))
 
@@ -74,7 +73,7 @@ export function StructureViewer({ compound, tint, accent, scrollRef }: Props) {
   const hs = geometry.hotspots
 
   if (!compound.sequence) return <div className="relative w-full h-full min-h-[460px]" data-structure-kind={presentation.kind} style={{ '--product': tint } as React.CSSProperties}>
-    {presentation.kind === 'blend' ? <CompositeStructure dedicated /> : <div className="structure-unavailable" role="img" aria-label={presentation.detail}><strong>{presentation.label}</strong><p>{presentation.detail}</p></div>}
+    <div className="structure-unavailable" role="img" aria-label={presentation.detail}><strong>{presentation.label}</strong><p>{presentation.detail}</p></div>
     <div className="absolute right-3 top-3 z-10 text-right max-w-[65%]"><ProvenanceLabel compound={compound} /></div>
   </div>
 

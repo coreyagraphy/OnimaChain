@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { BRAND, brand } from '~/brand'
 import { BrandLogo } from '~/components/BrandWordmark'
+import { OperatorIdentity } from '~/components/OperatorIdentity'
 
 export const Route = createFileRoute('/about')({
   head: () => ({ meta: [
@@ -37,10 +38,11 @@ function About() {
       </section>
 
       <section className="wrap mt-10 grid md:grid-cols-2 gap-4 max-w-5xl">
-        <div className="panel glass relative p-6"><p className="relative label label-cyan">Who this is for</p><p className="relative mt-3 text-sm text-bone/85">Adults, 21 and older, who are curious about commonly discussed peptides and want straight answers instead of a sales pitch or a wall of science words.</p></div>
-        <div className="panel glass relative p-6"><p className="relative label label-cyan">What we promise</p><p className="relative mt-3 text-sm text-bone/85">Every study we show was checked against PubMed. Every claim shows where it started. If we have not checked something, we say so.</p></div>
-        <div className="panel glass relative p-6"><p className="relative label label-amber">What we do not do</p><p className="relative mt-3 text-sm text-bone/85">We do not give medical advice, tell you how much to take, or make up customer stories and results.</p></div>
-        <div className="panel glass relative p-6"><p className="relative label label-violet">How to use it</p><p className="relative mt-3 text-sm text-bone/85">Start with the collection, see the molecule, then open the evidence when you want the full story. Read our <Link to="/methodology" className="underline">method</Link> to see how each source is checked.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-cyan">Who this is for</p><p className="relative mt-3 text-sm text-bone/85">Anyone curious about peptides who wants straight answers, not a sales pitch or a wall of science words.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-cyan">What the labels mean</p><p className="relative mt-3 text-sm text-bone/85">“Checked” means we confirmed a study exists. It does not mean we agree with a claim made about it.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-amber">What we do not do</p><p className="relative mt-3 text-sm text-bone/85">No medical advice. No dosing. No made-up customer stories.</p></div>
+        <div className="panel glass relative p-6"><p className="relative label label-violet">How to use it</p><p className="relative mt-3 text-sm text-bone/85">Start in the <Link to="/explore" className="underline">research library</Link>, open a molecule, then follow its sources. Our <Link to="/methodology" className="underline">method</Link> explains what we check.</p></div>
+        <div className="panel glass relative p-6 md:col-span-2"><p className="relative label label-amber">Operator and review disclosure</p><OperatorIdentity/><p className="relative mt-4 text-sm text-bone/85">Commercial relationships and final scientific and legal review are still to be confirmed. This site does not claim independent scientific or legal approval.</p></div>
       </section>
     </div>
   )
