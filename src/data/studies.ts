@@ -63,6 +63,7 @@ export interface Study extends StudyCandidate {
 export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '21030672',
+    plain: 'A lab study on tendon cells and pieces of tendon kept alive outside the body. The authors reported that with BPC 157 the cells grew out, survived stress and moved more.',
     expectKeyword: 'tendon',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -73,6 +74,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '42542926',
+    plain: 'A 2026 rat study of Achilles tendon repair that compared BPC-157, TB-500, both together, and no treatment. The BPC-157 group’s scores were lower in number, but the difference was not statistically significant.',
     expectKeyword: 'tendon',
     compounds: ['bpc-157', 'tb-500'],
     speciesFromTitle: 'rat',
@@ -83,6 +85,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '41754849',
+    plain: 'A review of BPC 157 and growth factors in tendon, ligament and muscle injury research.',
     expectKeyword: 'BPC 157',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -91,6 +94,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '40789979',
+    plain: 'A narrative review that weighs the lab evidence for BPC-157 in muscle and tendon healing against what is still unknown about risk.',
     expectKeyword: 'BPC-157',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
@@ -99,6 +103,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   },
   {
     pmid: '40756949',
+    plain: 'A systematic review of what has been published on BPC-157 in orthopaedic sports medicine.',
     expectKeyword: 'BPC-157',
     compounds: ['bpc-157'],
     speciesFromTitle: null,
