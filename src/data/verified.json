@@ -1,7 +1,255 @@
 {
   "reachable": true,
-  "checkedAt": "2026-09-24T04:06:17.014Z",
+  "checkedAt": "2026-10-09T03:07:16.885Z",
   "records": {
+    "9849822": {
+      "pmid": "9849822",
+      "title": "Ipamorelin, the first selective growth hormone secretagogue.",
+      "year": 1998,
+      "journal": "Eur J Endocrinol",
+      "authors": [
+        "Raun K",
+        "Hansen BS",
+        "Johansen NL",
+        "Thøgersen H",
+        "Madsen K",
+        "Ankersen M",
+        "Andersen PH"
+      ],
+      "lastAuthor": "Andersen PH",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1530/eje.0.1390552",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "10496658": {
+      "pmid": "10496658",
+      "title": "Pharmacokinetic-pharmacodynamic modeling of ipamorelin, a growth hormone releasing peptide, in human volunteers.",
+      "year": 1999,
+      "journal": "Pharm Res",
+      "authors": [
+        "Gobburu JV",
+        "Agersø H",
+        "Jusko WJ",
+        "Ynddal L"
+      ],
+      "lastAuthor": "Ynddal L",
+      "pubTypes": [
+        "Clinical Trial",
+        "Journal Article",
+        "Randomized Controlled Trial"
+      ],
+      "doi": "10.1023/a:1018955126402",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "11381492": {
+      "pmid": "11381492",
+      "title": "Thymosin alpha-1.",
+      "year": 2001,
+      "journal": "Am J Health Syst Pharm",
+      "authors": [
+        "Ancell CD",
+        "Phipps J",
+        "Young L"
+      ],
+      "lastAuthor": "Young L",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.1093/ajhp/58.10.886",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "12750433": {
+      "pmid": "12750433",
+      "title": "Dissection of the anti-inflammatory effect of the core and C-terminal (KPV) alpha-melanocyte-stimulating hormone peptides.",
+      "year": 2003,
+      "journal": "J Pharmacol Exp Ther",
+      "authors": [
+        "Getting SJ",
+        "Schiöth HB",
+        "Perretti M"
+      ],
+      "lastAuthor": "Perretti M",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1124/jpet.103.051623",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "12937682": {
+      "pmid": "12937682",
+      "title": "Epithalon peptide induces telomerase activity and telomere elongation in human somatic cells.",
+      "year": 2003,
+      "journal": "Bull Exp Biol Med",
+      "authors": [
+        "Khavinson VKh",
+        "Bondarev IE",
+        "Butyugov AA"
+      ],
+      "lastAuthor": "Butyugov AA",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1023/a:1025493705728",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "16352683": {
+      "pmid": "16352683",
+      "title": "Prolonged stimulation of growth hormone (GH) and insulin-like growth factor I secretion by CJC-1295, a long-acting analog of GH-releasing hormone, in healthy adults.",
+      "year": 2006,
+      "journal": "J Clin Endocrinol Metab",
+      "authors": [
+        "Teichman SL",
+        "Neale A",
+        "Lawrence B",
+        "Gagnon C",
+        "Castaigne JP",
+        "Frohman LA"
+      ],
+      "lastAuthor": "Frohman LA",
+      "pubTypes": [
+        "Journal Article",
+        "Randomized Controlled Trial",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1210/jc.2005-1536",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "17147644": {
+      "pmid": "17147644",
+      "title": "Enhanced healing of ulcers in patients with diabetes by topical treatment with glycyl-l-histidyl-l-lysine copper.",
+      "year": 1994,
+      "journal": "Wound Repair Regen",
+      "authors": [
+        "Mulder GD",
+        "Patt LM",
+        "Sanders L",
+        "Rosenstock J",
+        "Altman MI",
+        "Hanley ME",
+        "Duncan GW"
+      ],
+      "lastAuthor": "Duncan GW",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1046/j.1524-475X.1994.20406.x",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "18031173": {
+      "pmid": "18031173",
+      "title": "Sermorelin: a review of its use in the diagnosis and treatment of children with idiopathic growth hormone deficiency.",
+      "year": 1999,
+      "journal": "BioDrugs",
+      "authors": [
+        "Prakash A",
+        "Goa KL"
+      ],
+      "lastAuthor": "Goa KL",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.2165/00063030-199912020-00007",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "18061177": {
+      "pmid": "18061177",
+      "title": "PepT1-mediated tripeptide KPV uptake reduces intestinal inflammation.",
+      "year": 2008,
+      "journal": "Gastroenterology",
+      "authors": [
+        "Dalmasso G",
+        "Charrier-Hisamuddin L",
+        "Nguyen HT",
+        "Yan Y",
+        "Sitaraman S",
+        "Merlin D"
+      ],
+      "lastAuthor": "Merlin D",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, N.I.H., Extramural"
+      ],
+      "doi": "10.1053/j.gastro.2007.10.026",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "18092346": {
+      "pmid": "18092346",
+      "title": "Melanocortin-derived tripeptide KPV has anti-inflammatory potential in murine models of inflammatory bowel disease.",
+      "year": 2008,
+      "journal": "Inflamm Bowel Dis",
+      "authors": [
+        "Kannengiesser K",
+        "Maaser C",
+        "Heidemann J",
+        "Luegering A",
+        "Ross M",
+        "Brzoska T",
+        "Bohm M",
+        "Luger TA",
+        "Domschke W",
+        "Kucharzik T"
+      ],
+      "lastAuthor": "Kucharzik T",
+      "pubTypes": [
+        "Comparative Study",
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1002/ibd.20334",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "18454096": {
+      "pmid": "18454096",
+      "title": "[Efficacy and possible mechanisms of action of a new peptide anxiolytic selank in the therapy of generalized anxiety disorders and neurasthenia].",
+      "year": 2008,
+      "journal": "Zh Nevrol Psikhiatr Im S S Korsakova",
+      "authors": [
+        "Zozulia AA",
+        "Neznamov GG",
+        "Siuniakov TS",
+        "Kost NV",
+        "Gabaeva MV",
+        "Sokolov OIu",
+        "Serebriakova EV",
+        "Siranchieva OA",
+        "Andriushenko AV",
+        "Telesheva ES",
+        "Siuniakov SA",
+        "Smulevich AB",
+        "Miasoedov NF",
+        "Seredenin SB"
+      ],
+      "lastAuthor": "Seredenin SB",
+      "pubTypes": [
+        "Comparative Study",
+        "Journal Article",
+        "Randomized Controlled Trial"
+      ],
+      "doi": null,
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "19997871": {
+      "pmid": "19997871",
+      "title": "Humanin and the receptors for humanin.",
+      "year": 2010,
+      "journal": "Mol Neurobiol",
+      "authors": [
+        "Matsuoka M",
+        "Hashimoto Y"
+      ],
+      "lastAuthor": "Hashimoto Y",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't",
+        "Review"
+      ],
+      "doi": "10.1007/s12035-009-8090-z",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
     "21030672": {
       "pmid": "21030672",
       "title": "The promoting effect of pentadecapeptide BPC 157 on tendon healing involves tendon outgrowth, cell survival, and cell migration.",
@@ -20,7 +268,329 @@
         "Research Support, Non-U.S. Gov't"
       ],
       "doi": "10.1152/japplphysiol.00945.2010",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "21978084": {
+      "pmid": "21978084",
+      "title": "Pinealon increases cell viability by suppression of free radical levels and activating proliferative processes.",
+      "year": 2011,
+      "journal": "Rejuvenation Res",
+      "authors": [
+        "Khavinson V",
+        "Ribakova Y",
+        "Kulebiakin K",
+        "Vladychenskaya E",
+        "Kozina L",
+        "Arutjunyan A",
+        "Boldyrev A"
+      ],
+      "lastAuthor": "Boldyrev A",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1089/rej.2011.1172",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "22567179": {
+      "pmid": "22567179",
+      "title": "Pinealon protects the rat offspring from prenatal hyperhomocysteinemia.",
+      "year": 2012,
+      "journal": "Int J Clin Exp Med",
+      "authors": [
+        "Arutjunyan A",
+        "Kozina L",
+        "Stvolinskiy S",
+        "Bulygina Y",
+        "Mashkina A",
+        "Khavinson V"
+      ],
+      "lastAuthor": "Khavinson V",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": null,
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "22962027": {
+      "pmid": "22962027",
+      "title": "Synthesis and characterization of the N-terminal acetylated 17-23 fragment of thymosin beta 4 identified in TB-500, a product suspected to possess doping potential.",
+      "year": 2012,
+      "journal": "Drug Test Anal",
+      "authors": [
+        "Esposito S",
+        "Deventer K",
+        "Goeman J",
+        "Van der Eycken J",
+        "Van Eenoo P"
+      ],
+      "lastAuthor": "Van Eenoo P",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1002/dta.1402",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "24661604": {
+      "pmid": "24661604",
+      "title": "The peptide semax affects the expression of genes related to the immune and vascular systems in rat brain focal ischemia: genome-wide transcriptional analysis.",
+      "year": 2014,
+      "journal": "BMC Genomics",
+      "authors": [
+        "Medvedeva EV",
+        "Dmitrieva VG",
+        "Povarova OV",
+        "Limborska SA",
+        "Skvortsova VI",
+        "Myasoedov NF",
+        "Dergunova LV"
+      ],
+      "lastAuthor": "Dergunova LV",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1186/1471-2164-15-228",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "25331030": {
+      "pmid": "25331030",
+      "title": "Prospective, randomized, controlled, proof-of-concept study of the Ghrelin mimetic ipamorelin for the management of postoperative ileus in bowel resection patients.",
+      "year": 2014,
+      "journal": "Int J Colorectal Dis",
+      "authors": [
+        "Beck DE",
+        "Sweeney WB",
+        "McCarter MD",
+        "Ipamorelin 201 Study Group"
+      ],
+      "lastAuthor": "McCarter MD",
+      "pubTypes": [
+        "Clinical Trial, Phase II",
+        "Journal Article",
+        "Randomized Controlled Trial",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1007/s00384-014-2030-8",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "25738459": {
+      "pmid": "25738459",
+      "title": "The mitochondrial-derived peptide MOTS-c promotes metabolic homeostasis and reduces obesity and insulin resistance.",
+      "year": 2015,
+      "journal": "Cell Metab",
+      "authors": [
+        "Lee C",
+        "Zeng J",
+        "Drew BG",
+        "Sallam T",
+        "Martin-Montalvo A",
+        "Wan J",
+        "Kim SJ",
+        "Mehta H",
+        "Hevener AL",
+        "de Cabo R",
+        "Cohen P"
+      ],
+      "lastAuthor": "Cohen P",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, N.I.H., Extramural",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1016/j.cmet.2015.02.009",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "26924987": {
+      "pmid": "26924987",
+      "title": "Selank Administration Affects the Expression of Some Genes Involved in GABAergic Neurotransmission.",
+      "year": 2016,
+      "journal": "Front Pharmacol",
+      "authors": [
+        "Volkova A",
+        "Shadrina M",
+        "Kolomin T",
+        "Andreeva L",
+        "Limborska S",
+        "Myasoedov N",
+        "Slominsky P"
+      ],
+      "lastAuthor": "Slominsky P",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.3389/fphar.2016.00031",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "27082450": {
+      "pmid": "27082450",
+      "title": "Humanin: Functional Interfaces with IGF-I.",
+      "year": 2016,
+      "journal": "Growth Horm IGF Res",
+      "authors": [
+        "Xiao J",
+        "Kim SJ",
+        "Cohen P",
+        "Yen K"
+      ],
+      "lastAuthor": "Yen K",
+      "pubTypes": [
+        "Journal Article",
+        "Review",
+        "Research Support, N.I.H., Extramural",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1016/j.ghir.2016.03.005",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "27117377": {
+      "pmid": "27117377",
+      "title": "LL-37: Cathelicidin-related antimicrobial peptide with pleiotropic activity.",
+      "year": 2016,
+      "journal": "Pharmacol Rep",
+      "authors": [
+        "Fabisiak A",
+        "Murawska N",
+        "Fichna J"
+      ],
+      "lastAuthor": "Fichna J",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.1016/j.pharep.2016.03.015",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "28280289": {
+      "pmid": "28280289",
+      "title": "Peptide Selank Enhances the Effect of Diazepam in Reducing Anxiety in Unpredictable Chronic Mild Stress Conditions in Rats.",
+      "year": 2017,
+      "journal": "Behav Neurol",
+      "authors": [
+        "Kasian A",
+        "Kolomin T",
+        "Andreeva L",
+        "Bondarenko E",
+        "Myasoedov N",
+        "Slominsky P",
+        "Shadrina M"
+      ],
+      "lastAuthor": "Shadrina M",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1155/2017/5091027",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "29986520": {
+      "pmid": "29986520",
+      "title": "Regenerative and Protective Actions of the GHK-Cu Peptide in the Light of the New Gene Data.",
+      "year": 2018,
+      "journal": "Int J Mol Sci",
+      "authors": [
+        "Pickart L",
+        "Margolina A"
+      ],
+      "lastAuthor": "Margolina A",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.3390/ijms19071987",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "30063864": {
+      "pmid": "30063864",
+      "title": "Serum thymosin alpha 1 levels in normal and pathological conditions.",
+      "year": 2018,
+      "journal": "Expert Opin Biol Ther",
+      "authors": [
+        "Pica F",
+        "Gaziano R",
+        "Casalinuovo IA",
+        "Moroni G",
+        "Buè C",
+        "Limongi D",
+        "D'Agostini C",
+        "Tomino C",
+        "Perricone R",
+        "Palamara AT",
+        "Sinibaldi Vallebona P",
+        "Garaci E"
+      ],
+      "lastAuthor": "Garaci E",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.1080/14712598.2018.1474197",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "30063866": {
+      "pmid": "30063866",
+      "title": "Thymosin alpha 1 treatment for patients with sepsis.",
+      "year": 2018,
+      "journal": "Expert Opin Biol Ther",
+      "authors": [
+        "Pei F",
+        "Guan X",
+        "Wu J"
+      ],
+      "lastAuthor": "Wu J",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't",
+        "Review"
+      ],
+      "doi": "10.1080/14712598.2018.1484104",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "31747905": {
+      "pmid": "31747905",
+      "title": "Elamipretide (SS-31) improves mitochondrial dysfunction, synaptic and memory impairment induced by lipopolysaccharide in mice.",
+      "year": 2019,
+      "journal": "J Neuroinflammation",
+      "authors": [
+        "Zhao W",
+        "Xu Z",
+        "Cao J",
+        "Fu Q",
+        "Wu Y",
+        "Zhang X",
+        "Long Y",
+        "Zhang X",
+        "Yang Y",
+        "Li Y",
+        "Mi W"
+      ],
+      "lastAuthor": "Mi W",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1186/s12974-019-1627-9",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "32019204": {
+      "pmid": "32019204",
+      "title": "AEDG Peptide (Epitalon) Stimulates Gene Expression and Protein Synthesis during Neurogenesis: Possible Epigenetic Mechanism.",
+      "year": 2020,
+      "journal": "Molecules",
+      "authors": [
+        "Khavinson V",
+        "Diomede F",
+        "Mironova E",
+        "Linkova N",
+        "Trofimova S",
+        "Trubiani O",
+        "Caputi S",
+        "Sinjari B"
+      ],
+      "lastAuthor": "Sinjari B",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.3390/molecules25030609",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "32245208": {
       "pmid": "32245208",
@@ -42,7 +612,79 @@
         "Journal Article"
       ],
       "doi": "10.3390/ijms21062166",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "32342318": {
+      "pmid": "32342318",
+      "title": "Functional Connectomic Approach to Studying Selank and Semax Effects.",
+      "year": 2020,
+      "journal": "Dokl Biol Sci",
+      "authors": [
+        "Panikratova YR",
+        "Lebedeva IS",
+        "Sokolov OY",
+        "Rumshiskaya AD",
+        "Kupriyanov DA",
+        "Kost NV",
+        "Myasoedov NF"
+      ],
+      "lastAuthor": "Myasoedov NF",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1134/S001249662001007X",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "33473109": {
+      "pmid": "33473109",
+      "title": "MOTS-c is an exercise-induced mitochondrial-encoded regulator of age-dependent physical decline and muscle homeostasis.",
+      "year": 2021,
+      "journal": "Nat Commun",
+      "authors": [
+        "Reynolds JC",
+        "Lai RW",
+        "Woodhead JST",
+        "Joly JH",
+        "Mitchell CJ",
+        "Cameron-Smith D",
+        "Lu R",
+        "Cohen P",
+        "Graham NA",
+        "Benayoun BA",
+        "Merry TL",
+        "Lee C"
+      ],
+      "lastAuthor": "Lee C",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, N.I.H., Extramural",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1038/s41467-020-20790-0",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "33842627": {
+      "pmid": "33842627",
+      "title": "A potentially effective drug for patients with recurrent glioma: sermorelin.",
+      "year": 2021,
+      "journal": "Ann Transl Med",
+      "authors": [
+        "Chang Y",
+        "Huang R",
+        "Zhai Y",
+        "Huang L",
+        "Feng Y",
+        "Wang D",
+        "Chai R",
+        "Zhang W",
+        "Hu H"
+      ],
+      "lastAuthor": "Hu H",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.21037/atm-20-6561",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "34170491": {
       "pmid": "34170491",
@@ -68,7 +710,27 @@
         "Journal Article"
       ],
       "doi": "10.1007/s13258-021-01127-7",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "34665524": {
+      "pmid": "34665524",
+      "title": "Advances in the detection of growth hormone releasing hormone synthetic analogs.",
+      "year": 2021,
+      "journal": "Drug Test Anal",
+      "authors": [
+        "Memdouh S",
+        "Gavrilović I",
+        "Ng K",
+        "Cowan D",
+        "Abbate V"
+      ],
+      "lastAuthor": "Abbate V",
+      "pubTypes": [
+        "Journal Article",
+        "Validation Study"
+      ],
+      "doi": "10.1002/dta.3183",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "36706591": {
       "pmid": "36706591",
@@ -89,7 +751,204 @@
         "Journal Article"
       ],
       "doi": "10.1016/j.intimp.2023.109743",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "36761202": {
+      "pmid": "36761202",
+      "title": "MOTS-c: A promising mitochondrial-derived peptide for therapeutic exploitation.",
+      "year": 2023,
+      "journal": "Front Endocrinol (Lausanne)",
+      "authors": [
+        "Zheng Y",
+        "Wei Z",
+        "Wang T"
+      ],
+      "lastAuthor": "Wang T",
+      "pubTypes": [
+        "Journal Article",
+        "Review",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.3389/fendo.2023.1120533",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "36769137": {
+      "pmid": "36769137",
+      "title": "LL-37 Triggers Antimicrobial Activity in Human Platelets.",
+      "year": 2023,
+      "journal": "Int J Mol Sci",
+      "authors": [
+        "Sánchez-Peña FJ",
+        "Romero-Tlalolini MLÁ",
+        "Torres-Aguilar H",
+        "Cruz-Hernández DS",
+        "Baltiérrez-Hoyos R",
+        "Sánchez-Aparicio SR",
+        "Aquino-Domínguez AS",
+        "Aguilar-Ruiz SR"
+      ],
+      "lastAuthor": "Aguilar-Ruiz SR",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.3390/ijms24032816",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "37268435": {
+      "pmid": "37268435",
+      "title": "Efficacy and Safety of Elamipretide in Individuals With Primary Mitochondrial Myopathy: The MMPOWER-3 Randomized Clinical Trial.",
+      "year": 2023,
+      "journal": "Neurology",
+      "authors": [
+        "Karaa A",
+        "Bertini E",
+        "Carelli V",
+        "Cohen BH",
+        "Enns GM",
+        "Falk MJ",
+        "Goldstein A",
+        "Gorman GS",
+        "Haas R",
+        "Hirano M",
+        "Klopstock T",
+        "Koenig MK",
+        "Kornblum C",
+        "Lamperti C",
+        "Lehman A",
+        "Longo N",
+        "Molnar MJ",
+        "Parikh S",
+        "Phan H",
+        "Pitceathly RDS",
+        "Saneto R",
+        "Scaglia F",
+        "Servidei S",
+        "Tarnopolsky M",
+        "Toscano A",
+        "Van Hove JLK",
+        "Vissing J",
+        "Vockley J",
+        "Finman JS",
+        "Brown DA",
+        "Shiffer JA",
+        "Mancuso M",
+        "MMPOWER-3 Trial Investigators"
+      ],
+      "lastAuthor": "Mancuso M",
+      "pubTypes": [
+        "Randomized Controlled Trial",
+        "Clinical Trial, Phase III",
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1212/WNL.0000000000207402",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "38382158": {
+      "pmid": "38382158",
+      "title": "Simultaneous quantification of TB-500 and its metabolites in in-vitro experiments and rats by UHPLC-Q-Exactive orbitrap MS/MS and their screening by wound healing activities in-vitro.",
+      "year": 2024,
+      "journal": "J Chromatogr B Analyt Technol Biomed Life Sci",
+      "authors": [
+        "Rahaman KA",
+        "Muresan AR",
+        "Min H",
+        "Son J",
+        "Han HS",
+        "Kang MJ",
+        "Kwon OS"
+      ],
+      "lastAuthor": "Kwon OS",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1016/j.jchromb.2024.124033",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "38642493": {
+      "pmid": "38642493",
+      "title": "Vitamin D triggers hCAP18/LL-37 production: Implications for LL-37-induced human osteoblast cytotoxicity.",
+      "year": 2024,
+      "journal": "Biochem Biophys Res Commun",
+      "authors": [
+        "Aidoukovitch A",
+        "Bankell E",
+        "Svensson D",
+        "Nilsson BO"
+      ],
+      "lastAuthor": "Nilsson BO",
+      "pubTypes": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "doi": "10.1016/j.bbrc.2024.149962",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "38879894": {
+      "pmid": "38879894",
+      "title": "The glycyl-l-histidyl-l-lysine-Cu(2+) tripeptide complex attenuates lung inflammation and fibrosis in silicosis by targeting peroxiredoxin 6.",
+      "year": 2024,
+      "journal": "Redox Biol",
+      "authors": [
+        "Bian Y",
+        "Deng M",
+        "Liu J",
+        "Li J",
+        "Zhang Q",
+        "Wang Z",
+        "Liao L",
+        "Miao J",
+        "Li R",
+        "Zhou X",
+        "Hou G"
+      ],
+      "lastAuthor": "Hou G",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1016/j.redox.2024.103237",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "39940712": {
+      "pmid": "39940712",
+      "title": "Elamipretide: A Review of Its Structure, Mechanism of Action, and Therapeutic Potential.",
+      "year": 2025,
+      "journal": "Int J Mol Sci",
+      "authors": [
+        "Tung C",
+        "Varzideh F",
+        "Farroni E",
+        "Mone P",
+        "Kansakar U",
+        "Jankauskas SS",
+        "Santulli G"
+      ],
+      "lastAuthor": "Santulli G",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.3390/ijms26030944",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "40141333": {
+      "pmid": "40141333",
+      "title": "Overview of Epitalon-Highly Bioactive Pineal Tetrapeptide with Promising Properties.",
+      "year": 2025,
+      "journal": "Int J Mol Sci",
+      "authors": [
+        "Araj SK",
+        "Brzezik J",
+        "Mądra-Gackowska K",
+        "Szeleszczuk Ł"
+      ],
+      "lastAuthor": "Szeleszczuk Ł",
+      "pubTypes": [
+        "Journal Article",
+        "Review"
+      ],
+      "doi": "10.3390/ijms26062691",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "40756949": {
       "pmid": "40756949",
@@ -111,7 +970,7 @@
         "Review"
       ],
       "doi": "10.1177/15563316251355551",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "40789979": {
       "pmid": "40789979",
@@ -131,7 +990,49 @@
         "Review"
       ],
       "doi": "10.1007/s12178-025-09990-7",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "40877234": {
+      "pmid": "40877234",
+      "title": "HUMANIN produced by human efferocytic macrophages promotes the resolution of inflammation.",
+      "year": 2025,
+      "journal": "Cell Death Dis",
+      "authors": [
+        "Maraux M",
+        "Vetter M",
+        "Zuffo LD",
+        "Bonnefoy F",
+        "Wetzel A",
+        "Varin A",
+        "Lamarthée B",
+        "Tassy O",
+        "Ducloux D",
+        "Saas P",
+        "Cherrier T"
+      ],
+      "lastAuthor": "Cherrier T",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1038/s41419-025-07909-1",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
+    },
+    "41171324": {
+      "pmid": "41171324",
+      "title": "The Effect of Peptide Semax, an ACTH(4-10) Analogue, on Intracellular Calcium Dynamics in Rat Brain Neurons.",
+      "year": 2025,
+      "journal": "Bull Exp Biol Med",
+      "authors": [
+        "Kolbaev SN",
+        "Sharonova IN",
+        "Skrebitsky VG"
+      ],
+      "lastAuthor": "Skrebitsky VG",
+      "pubTypes": [
+        "Journal Article"
+      ],
+      "doi": "10.1007/s10517-025-06501-z",
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "41235866": {
       "pmid": "41235866",
@@ -152,7 +1053,7 @@
         "Research Support, N.I.H., Extramural"
       ],
       "doi": "10.1167/iovs.66.14.31",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "41754849": {
       "pmid": "41754849",
@@ -188,7 +1089,7 @@
         "Review"
       ],
       "doi": "10.3390/ph19020309",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     },
     "42542926": {
       "pmid": "42542926",
@@ -210,7 +1111,7 @@
         "Journal Article"
       ],
       "doi": "10.52312/jdrs.2026.2951",
-      "verifiedAt": "2026-09-24T04:06:17.014Z"
+      "verifiedAt": "2026-10-09T03:07:16.885Z"
     }
   }
 }

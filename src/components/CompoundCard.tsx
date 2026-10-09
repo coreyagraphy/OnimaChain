@@ -5,6 +5,7 @@ import { descriptionFor, themeFor, wordmarkStyle } from '~/data/commerce'
 import { DOMAIN_BY_ID } from '~/data/domains'
 import { buildChain } from '~/scenes/chain/geometry'
 import { SequenceSVG } from './SequenceSVG'
+import { studiesForCompound } from '~/data/studies'
 import { useReaderStore } from '~/stores/reader'
 import { useFitText } from '~/motion/useFitText'
 import { structurePresentation } from '~/data/structure-presentation'
@@ -19,6 +20,7 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
   const lay = layout ?? (['portrait', 'wide', 'square'] as const)[index % 3]
   const domain = DOMAIN_BY_ID[compound.domain]
   const theme = themeFor(compound)
+  const summarized = studiesForCompound(compound.slug).filter((s) => s.plain).length
   const presentation = structurePresentation(compound)
   const geometry = useMemo(() => buildChain(compound), [compound])
   const setQuickView = useReaderStore((s) => s.setQuickView)
@@ -80,7 +82,7 @@ export function CompoundCard({ compound, index, layout, fluid = false, lively = 
       <span className="product-structure-kind" aria-label={`Structure provenance: ${presentation.label}`}>{presentation.label}</span>
       <div className="absolute inset-x-0 bottom-0 p-5 z-[3] pointer-events-none product-card-copy">
         <div className="min-w-0 overflow-hidden"><h3 ref={nameRef} className="wordmark product-card-title w-full min-w-0" style={titleStyle}>{displayName(compound)}</h3></div>
-        <p className="mt-3 mono text-[10px] text-bone/70">NO STUDY SUMMARY YET</p>
+        <p className="mt-3 mono text-[10px] text-bone/70">{summarized ? `${summarized} ${summarized === 1 ? 'STUDY' : 'STUDIES'} IN PLAIN WORDS` : 'NO STUDY SUMMARY YET'}</p>
         <p className="mt-2 text-[12px] font-semibold leading-relaxed text-bone/78 line-clamp-3">{descriptionFor(compound)}</p>
         <div className="product-structure-detail mt-3 text-[11px] text-bone/65 line-clamp-2">{presentation.detail}</div>
         <div className="mt-4 grid grid-cols-2 gap-2 pointer-events-auto"><button className="btn btn-sm justify-center bg-obsidian/65" onClick={() => setQuickView(compound.slug)}>Inspect model</button><Link to="/compound/$slug" params={{ slug: compound.slug }} className="btn btn-sm justify-center commerce-btn">View sources</Link></div>

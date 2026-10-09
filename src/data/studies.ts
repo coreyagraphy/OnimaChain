@@ -1,4 +1,5 @@
 import verifiedJson from './verified.json'
+import { ADDED_CANDIDATES } from './studies-added'
 
 /*
  * Study records. Every record here is a CANDIDATE until tools/verify-pmids.ts resolves the PMID
@@ -25,6 +26,8 @@ export interface StudyCandidate {
   tags: Array<'mechanistic' | 'tendon' | 'cell-migration' | 'wound-healing' | 'actin'>
   /** Verbatim phrase copied from the PubMed abstract of this PMID (not paraphrased). */
   abstractQuote?: string
+  /** Our own plain-English description of what the study was (model, design, stated result). Never advice. */
+  plain?: string
 }
 
 export interface VerifiedMeta {
@@ -71,7 +74,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
   {
     pmid: '42542926',
     expectKeyword: 'tendon',
-    compounds: ['bpc-157'],
+    compounds: ['bpc-157', 'tb-500'],
     speciesFromTitle: 'rat',
     studyType: 'animal',
     tags: ['tendon', 'wound-healing'],
@@ -136,6 +139,7 @@ export const STUDY_CANDIDATES: StudyCandidate[] = [
     studyType: null,
     tags: ['wound-healing'],
   },
+  ...ADDED_CANDIDATES,
 ]
 
 const VERIFIED = verifiedJson as VerifiedFile

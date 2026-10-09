@@ -19,7 +19,7 @@ const studiesPath = resolve(here, '../src/data/studies.ts')
 const outPath = resolve(here, '../src/data/verified.json')
 
 // Extract candidates without importing (studies.ts imports the JSON we are about to write).
-const src = readFileSync(studiesPath, 'utf8')
+const src = readFileSync(studiesPath, 'utf8') + '\n' + readFileSync(resolve(here, '../src/data/studies-added.ts'), 'utf8')
 const candidates: Array<{ pmid: string; expectKeyword: string }> = []
 const re = /pmid:\s*'(\d+)'[\s\S]*?expectKeyword:\s*'([^']+)'/g
 let m: RegExpExecArray | null

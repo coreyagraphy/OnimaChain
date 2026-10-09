@@ -34,6 +34,7 @@ export function StudyCard({ study, compact = false, relationship, basis }: Props
         {m.journal} · {m.year ?? 'year n/a'} · {m.authors.length} authors · senior author {m.lastAuthor || 'n/a'}
         {m.doi && <> · doi {m.doi}</>}
       </p>
+      {study.plain && <p className="mt-3 text-sm text-bone/85 leading-relaxed"><span className="label label-cyan mr-2">In plain words</span>{study.plain}</p>}
       {!compact && basis && (
         <blockquote className="mt-3 text-sm text-bone/75 border-l-2 border-cyan/40 pl-3 italic">
           &ldquo;{basis}&rdquo; <span className="not-italic mono text-[10px] text-bone/45">— from the study summary, PubMed ID {study.pmid}</span>
