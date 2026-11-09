@@ -1,6 +1,7 @@
 import { COMPOUND_OPTIONS, EXPERIENCES, OUTCOMES, type Experience, type Outcome } from './experiences.ts'
 
 export const TOPICS: Record<string, { label: string; aliases: string[] }> = {
+  cholesterol: { label: 'Cholesterol & blood lipids', aliases: ['cholesterol', 'high cholesterol', 'ldl', 'ldl cholesterol', 'high ldl', 'hdl', 'hdl cholesterol', 'triglycerides', 'high triglycerides', 'lipids', 'blood lipids', 'lipid panel', 'hyperlipidemia', 'dyslipidemia'] },
   sleep: { label: 'Sleep', aliases: ['sleep', 'insomnia', 'cant sleep', 'cannot sleep', 'trouble sleeping', 'sleeping'] },
   anxiety: { label: 'Anxiety', aliases: ['anxiety', 'anxious', 'social anxiety'] },
   focus: { label: 'Focus & brain fog', aliases: ['focus', 'brain fog', 'concentration', 'cognition', 'word finding', 'mental clarity'] },
@@ -50,7 +51,7 @@ export function matchesQuery(record: Experience, query: string): boolean {
     if (!record.compounds.includes(slug)) return false
     rest = (` ${rest} `).replaceAll(` ${phrase} `, ' ').trim()
   }
-  const phrases = Object.entries(TOPICS).flatMap(([topic, data]) => data.aliases.map(alias => ({ topic, phrase: normalize(alias) })))
+  const phrases = Object.entries(TOPICS).flatMap(([topic, data]) => [data.label, ...data.aliases].map(alias => ({ topic, phrase: normalize(alias) })))
     .sort((a, b) => b.phrase.length - a.phrase.length)
   for (const { topic, phrase } of phrases) {
     if (!contains(rest, phrase)) continue

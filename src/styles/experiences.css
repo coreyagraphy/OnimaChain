@@ -1,6 +1,7 @@
 .ex-page{padding-top:124px;--ex-yellow:#e3ff63;--ex-border:rgba(127,168,190,.23)}
 .ex-page button,.ex-page input,.ex-page select{font:inherit}
 .ex-page button,.ex-page summary{cursor:pointer}
+.ex-search-feedback{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 20px;border-left:2px solid var(--ex-yellow);padding:8px 14px;margin:16px 0;background:#e3ff6307;font-size:13px;color:#e1e8d1}.ex-search-feedback a{color:var(--color-cyan);padding:8px 0;min-height:40px;display:inline-flex;align-items:center}#ex-results-title{scroll-margin-top:100px}.ex-query input::-webkit-search-cancel-button{display:none}
 .ex-hero{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:50px;align-items:center;padding:25px 0 52px;background:radial-gradient(ellipse at 33% 50%,#5fe3ff09,transparent 65%)}
 .ex-hero h1{font-family:var(--font-display);font-size:clamp(3rem,6.7vw,6.5rem);line-height:.98;font-weight:700;letter-spacing:-.025em;margin:22px 0}
 .ex-hero h1 span{color:var(--color-cyan);text-shadow:0 0 28px #5fe3ff28}

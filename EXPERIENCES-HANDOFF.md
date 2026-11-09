@@ -6,7 +6,7 @@ Implemented November 8, 2026 on `codex/injectable-experiences`, based on the edu
 
 - `/experiences`, primary navigation and footer links, and a homepage entry.
 - The agreed 21 peptide names, plus a separate 5-Amino-1MQ collection.
-- 38 manually reviewed accounts, including benefits, adverse experiences, mixed outcomes and no noticeable benefit. Each compound has a benefit or mixed account and an adverse or mixed account. A mixed account can describe both; these are not independent positive/negative observations.
+- 41 manually reviewed accounts, including benefits, adverse experiences, mixed outcomes and no noticeable benefit. Each compound has a benefit or mixed account and an adverse or mixed account. A mixed account can describe both; these are not independent positive/negative observations.
 - Condition/topic and compound search, outcome filters, combination labeling, persistent URL filters, source locators and injection-route evidence.
 - Local data and route-specific styling; no remote fetch is required to render or filter the collection, and no animation library was added.
 
@@ -29,6 +29,8 @@ Examples excluded or narrowed during review:
 The shortlist is curated, not a measured “top 21” popularity ranking. Counts are coverage, not efficacy or adverse-event rates. Combination accounts are counted once in search results; coverage per compound overlaps. Product names follow the reporter, and unknown CJC formulations remain unknown. Specific conditions with no reviewed report (including fatty liver and cancer) must return a genuine empty state, not a generic peptide recommendation. Disease names are not broadened to body-system benefits. Doses and protocols were not copied into these cards.
 
 ## Verification
+
+Cholesterol follow-up (November 8): the initial collection had no cholesterol coverage, so the user's search correctly returned zero but exposed a research/testing gap. Added three route-explicit original accounts: `r/Semaglutide/1e7rrwn`, `r/Zepbound/1x8d8ju`, and `r/Zepbound_Maintenance/1rn91ou`. These include improved lipid results, a concurrent HDL decrease, nausea, and a later triglyceride increase. Statin use and other confounders remain explicit. Route-ambiguous cholesterol threads were not added. Cholesterol/LDL/HDL/triglyceride aliases now map to a clearly labeled blood-lipid topic; this is related-topic search, not a claim that every account measures every lipid. Search feedback and a results jump appear directly beneath the search box. Tests cover every topic label/alias and every topic/compound selector, including the user's exact query and mobile result navigation.
 
 - `node --experimental-strip-types tools/experiences-test.ts`: corpus integrity, all 22 compounds, outcome coverage, route/source fields, alias matching, multiple-term intersection, negation handling, named-disease gaps, non-peptide separation and invalid filters.
 - `node tools/experiences-browser-test.mjs`: desktop/mobile cards, filters, refresh persistence, empty states, category switching, keyboard details, mobile navigation and client errors. Defaults to port 8081; set `EXPERIENCES_TEST_URL` for a deploy preview or production.

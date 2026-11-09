@@ -18,6 +18,20 @@ for (const r of EXPERIENCES) {
   for (const topic of r.topics) assert.ok(Object.hasOwn(TOPICS, topic), topic)
 }
 const query = (q: string) => searchExperiences({ ...DEFAULT_FILTERS, q })
+const cholesterolIds = ['sema-lipids', 'tirz-lipids', 'tirz-lipids-reversal']
+for (const q of ['cholesterol', 'high cholesterol', 'LDL', 'HDL cholesterol', 'triglycerides', 'lipid panel', 'Cholesterol & blood lipids']) {
+  assert.deepEqual(query(q).map(r => r.id), cholesterolIds, `Cholesterol coverage: ${q}`)
+}
+assert.deepEqual(query('semaglutide cholesterol').map(r => r.id), ['sema-lipids'])
+assert.deepEqual(query('cholesterol and weight loss').map(r => r.id), cholesterolIds)
+assert.deepEqual(query('cholesterol cancer'), [], 'unrelated disease must not match cholesterol accounts')
+assert.deepEqual(searchExperiences({ ...DEFAULT_FILTERS, q: 'cholesterol', outcome: 'adverse' }).map(r => r.id), ['tirz-lipids-reversal'])
+for (const [id, { label, aliases }] of Object.entries(TOPICS)) {
+  const expected = EXPERIENCES.filter(r => r.topics.includes(id) && !r.compounds.includes('5-amino-1mq')).map(r => r.id)
+  assert.ok(expected.length, `${label} needs actual source coverage`)
+  assert.deepEqual(searchExperiences({ ...DEFAULT_FILTERS, topic: id }).map(r => r.id), expected, `Topic filter: ${label}`)
+  for (const term of [label, ...aliases]) assert.deepEqual(query(term).map(r => r.id), expected, `Search phrase: ${term}`)
+}
 assert.ok(query('sleep').some(r => r.compounds.includes('sermorelin')), 'sleep must not be mistaken for the DSIP alias')
 assert.ok(query('GHK Cu eczema').some(r => r.id === 'ghk-skin'))
 assert.deepEqual(query('cancer'), [], 'no invented coverage for cancer')
