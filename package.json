@@ -8,6 +8,8 @@
     "build": "npm run verify-pmids && tsc --noEmit && vite build",
     "start": "node .output/server/index.mjs",
     "typecheck": "tsc --noEmit",
+    "test:experiences": "node --experimental-strip-types tools/experiences-test.ts",
+    "test:experiences:browser": "node tools/experiences-browser-test.mjs",
     "test:pulse": "node --experimental-strip-types tools/pulse-test.ts",
     "test:payments": "node --experimental-strip-types --test tools/payments.test.ts",
     "test:payments:db": "node --experimental-strip-types tools/payments-db-test.ts"

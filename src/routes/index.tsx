@@ -20,7 +20,11 @@ export const Route = createFileRoute('/')({
 })
 
 function Home() {
-  return <><Hero /><ExperienceLaunchpad compact /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><LearningGateway /><FinalLearn /><MobileLearnBar /></>
+  return <><Hero /><ExperienceLaunchpad compact /><HumanExperiencesGateway /><FeaturedCollection /><ResearchDomains /><PulseHome /><Difference /><MethodPreview /><LearningGateway /><FinalLearn /><MobileLearnBar /></>
+}
+
+function HumanExperiencesGateway() {
+  return <section className="wrap py-10" aria-labelledby="human-experiences-title"><div className="panel-flat p-6 md:p-9 flex flex-wrap items-center justify-between gap-6 border-cyan/30"><div><p className="label label-cyan">Human experiences · Injectable accounts</p><h2 id="human-experiences-title" className="display-md text-3xl mt-3">The benefits. The setbacks. The source.</h2><p className="text-sm muted mt-3 max-w-xl">Search real accounts by condition across 21 peptides, with 5-Amino-1MQ in its own collection.</p></div><Link to="/experiences" className="btn btn-primary">Explore experiences →</Link></div></section>
 }
 
 function LearningGateway() {

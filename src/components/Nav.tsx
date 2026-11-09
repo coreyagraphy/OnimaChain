@@ -9,9 +9,9 @@ const links = [
   { to: '/explore', label: 'Molecules' },
   { to: '/learn', label: 'Play & Learn' },
   { to: '/claims', label: 'Research' },
+  { to: '/experiences', label: 'Experiences' },
   { to: '/observatory', label: 'Observatory' },
   { to: '/signal', label: 'Source map' },
-  { to: '/contact', label: 'Contact' },
 ] as const
 
 // The store lives on its own site.

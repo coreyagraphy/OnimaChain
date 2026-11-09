@@ -20,6 +20,7 @@ import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CorrectionsRouteImport } from './routes/corrections'
 import { Route as CoverageRouteImport } from './routes/coverage'
+import { Route as ExperiencesRouteImport } from './routes/experiences'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as MethodologyRouteImport } from './routes/methodology'
@@ -97,6 +98,11 @@ const CorrectionsRoute = CorrectionsRouteImport.update({
 const CoverageRoute = CoverageRouteImport.update({
   id: '/coverage',
   path: '/coverage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperiencesRoute = ExperiencesRouteImport.update({
+  id: '/experiences',
+  path: '/experiences',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/corrections': typeof CorrectionsRoute
   '/coverage': typeof CoverageRoute
+  '/experiences': typeof ExperiencesRoute
   '/explore': typeof ExploreRoute
   '/learn': typeof LearnRouteWithChildren
   '/methodology': typeof MethodologyRoute
@@ -264,6 +271,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/corrections': typeof CorrectionsRoute
   '/coverage': typeof CoverageRoute
+  '/experiences': typeof ExperiencesRoute
   '/explore': typeof ExploreRoute
   '/learn': typeof LearnRouteWithChildren
   '/methodology': typeof MethodologyRoute
@@ -301,6 +309,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/corrections': typeof CorrectionsRoute
   '/coverage': typeof CoverageRoute
+  '/experiences': typeof ExperiencesRoute
   '/explore': typeof ExploreRoute
   '/learn': typeof LearnRouteWithChildren
   '/methodology': typeof MethodologyRoute
@@ -339,6 +348,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corrections'
     | '/coverage'
+    | '/experiences'
     | '/explore'
     | '/learn'
     | '/methodology'
@@ -375,6 +385,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corrections'
     | '/coverage'
+    | '/experiences'
     | '/explore'
     | '/learn'
     | '/methodology'
@@ -411,6 +422,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/corrections'
     | '/coverage'
+    | '/experiences'
     | '/explore'
     | '/learn'
     | '/methodology'
@@ -448,6 +460,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CorrectionsRoute: typeof CorrectionsRoute
   CoverageRoute: typeof CoverageRoute
+  ExperiencesRoute: typeof ExperiencesRoute
   ExploreRoute: typeof ExploreRoute
   LearnRoute: typeof LearnRouteWithChildren
   MethodologyRoute: typeof MethodologyRoute
@@ -548,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/coverage'
       fullPath: '/coverage'
       preLoaderRoute: typeof CoverageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experiences': {
+      id: '/experiences'
+      path: '/experiences'
+      fullPath: '/experiences'
+      preLoaderRoute: typeof ExperiencesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -749,6 +769,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CorrectionsRoute: CorrectionsRoute,
   CoverageRoute: CoverageRoute,
+  ExperiencesRoute: ExperiencesRoute,
   ExploreRoute: ExploreRoute,
   LearnRoute: LearnRouteWithChildren,
   MethodologyRoute: MethodologyRoute,
