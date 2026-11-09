@@ -6,13 +6,13 @@ Implemented November 8, 2026 on `codex/injectable-experiences`, based on the edu
 
 - `/experiences`, primary navigation and footer links, and a homepage entry.
 - The agreed 21 peptide names, plus a separate 5-Amino-1MQ collection.
-- 41 manually reviewed accounts, including benefits, adverse experiences, mixed outcomes and no noticeable benefit. Each compound has a benefit or mixed account and an adverse or mixed account. A mixed account can describe both; these are not independent positive/negative observations.
+- 47 manually reviewed accounts, including benefits, adverse experiences, mixed outcomes and no noticeable benefit. Each compound has a benefit or mixed account and an adverse or mixed account. A mixed account can describe both; these are not independent positive/negative observations.
 - Condition/topic and compound search, outcome filters, combination labeling, persistent URL filters, source locators and injection-route evidence.
 - Local data and route-specific styling; no remote fetch is required to render or filter the collection, and no animation library was added.
 
 ## Evidence and limits
 
-`src/data/experiences.ts` is the source register. Each row contains a source URL, an original-post/comment locator, route evidence, a short paraphrase, and limitations. Source pages were opened and reviewed through web retrieval on November 8. This establishes what the public account says, not identity, authenticity, formulation, medical causation or efficacy. All included accounts are from Reddit. No video transcript was verified, and there is no live social ingestion service.
+`src/data/experiences.ts` is the source register. Each row contains a source URL, an original-post/comment locator, route evidence, a short paraphrase, and limitations. Source pages were opened and reviewed through web retrieval on November 8. This establishes what the public account says, not identity, authenticity, formulation, medical causation or efficacy. There are 46 Reddit accounts and one YouTube-linked creator account. The creator card is based on his accompanying article and video description; no video transcript was verified. There is no live social ingestion service.
 
 The source retrieval views sometimes show inconsistent relative ages. Accordingly the page shows the absolute **review date**, not a fabricated publication date or “Today.” Historical reports are retained. Updates require revisiting the specific account and reviewing changes; do not automatically refresh the review date.
 
@@ -38,5 +38,11 @@ Cholesterol follow-up (November 8): the initial collection had no cholesterol co
 - Screenshots are written under ignored `test-results/` for desktop hero, report cards and mobile.
 
 ## Deployment target
+
+Plain-English follow-up (November 8): added six reviewed accounts covering worsening knee pain (`1q49nf5`), persistent arm tingling (`1key9j8`), neck/pinched-nerve and shoulder improvement with an early blood-pressure rise (`chg2as`, same author confirms personal injection use in `cihbq1`), new leg/foot swelling (`1sopaju`), absent usual travel-related leg swelling (Outsidethebee comment in `y28l65`), and Ian Leahy's injection experience ([creator article](https://inghh.com/my-experience-with-bpc-157-to-heal-injuries/), [YouTube](https://www.youtube.com/watch?v=qfqPzo9pEag)). Same-author follow-ups count once. The swelling record includes the later resolution and possible dietary explanation; this is not proof of safety. The creator's source includes later oral use and other self-experiments, so benefits cannot be isolated to injections. The card does not reproduce instructions, and discloses course promotion and unsafe practices. Kait Malthaner videos/articles were investigated but not added because the accessible material did not establish all required injection/outcome details together.
+
+Six specific topics now cover knees, shoulders, neck, nerve symptoms, pinched nerves and leg/ankle/foot swelling. Source-specific notes distinguish improvement, no change and worsening within mixed accounts. A nerve-symptom report is not automatically diagnosed as a pinched nerve. Conversational parsing handles the user's phrases, plural/left/right grammar, and sleep, fatigue, concentration and cholesterol expressions. Unknown diseases/body parts remain required terms; negation is preserved except explicit symptom expressions such as “can't sleep” and “no energy.” Parsing runs once per search; no remote AI service or new dependency is required.
+
+The UI shows interpreted topics, compound mentions/counts and match explanations. Compound order is not an efficacy ranking. Swelling queries include condition-specific [NHS guidance](https://www.nhs.uk/conditions/oedema/). Unit and desktop/mobile browser tests cover the exact user examples, paraphrases, multi-symptom intersections, negative phrases, unknown body parts, every topic/alias and compound selector, source/video labeling, mobile overflow, URL persistence and compound-chip filtering.
 
 Only Netlify project `onimachain`, site ID `1823cc58-f887-422f-9dda-3adfb25d5293`, custom domain `onimachain.com`, team `create-ovudczw`. Its previous published deploy `6ac8617511544ce528c5180c` was titled “Plain study notes for 16 peptides.” Never deploy this work to the legacy cyravon site or the separate shop. The original local `onimachain-site` checkout has a pre-existing modified route tree and was left untouched; this work is in `C:\Users\corey\Projects\onimachain-experiences`.

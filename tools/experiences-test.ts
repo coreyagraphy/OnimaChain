@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { COMPOUND_OPTIONS, EXPERIENCES, PEPTIDES } from '../src/data/experiences.ts'
-import { DEFAULT_FILTERS, matchesQuery, searchExperiences, TOPICS, validateFilters } from '../src/data/experience-search.ts'
+import { DEFAULT_FILTERS, interpretQuery, matchesQuery, searchExperiences, TOPICS, validateFilters } from '../src/data/experience-search.ts'
 
 assert.equal(PEPTIDES.length, 21)
 assert.equal(COMPOUND_OPTIONS.length, 22)
@@ -12,12 +12,42 @@ for (const [id] of COMPOUND_OPTIONS) {
   assert.ok(accounts.some(r => ['adverse', 'mixed'].includes(r.outcome)), `${id} has an adverse or mixed account`)
 }
 for (const r of EXPERIENCES) {
-  assert.equal(new URL(r.source).hostname, 'www.reddit.com')
+  assert.ok(['www.reddit.com', 'inghh.com'].includes(new URL(r.source).hostname))
+  if (r.video) {
+    assert.equal(new URL(r.video.url).hostname, 'www.youtube.com')
+    assert.ok(r.video.reviewBasis.includes('transcript not verified'))
+  }
   assert.ok(r.route.length > 30 && r.context.length > 30 && r.locator)
   for (const id of r.compounds) assert.ok(COMPOUND_OPTIONS.some(c => c[0] === id))
   for (const topic of r.topics) assert.ok(Object.hasOwn(TOPICS, topic), topic)
 }
 const query = (q: string) => searchExperiences({ ...DEFAULT_FILTERS, q })
+const kneeIds = ['bpc-knee-worse', 'bpc-knee-video', 'bpc-tb-update']
+for (const phrase of ['my knee hurts', 'My knees are really hurting!', 'I have pain in my knee', 'my left knee is painful', 'both knees are sore', 'show me knee pain', 'what peptides help my knee pain']) {
+  assert.deepEqual(query(phrase).map(r => r.id), kneeIds, phrase)
+}
+for (const phrase of ['my leg is swollen', 'my legs are swollen', 'my left leg is swollen', 'both ankles are swelling', 'my feet are swollen', 'I have swollen ankles']) {
+  assert.deepEqual(query(phrase).map(r => r.id), ['reta-leg-swelling', 'tirz-leg-swelling'], phrase)
+}
+for (const phrase of ['pinch nerve', 'I have a pinched nerve in my neck', 'trapped nerve', 'compressed nerve']) {
+  assert.deepEqual(query(phrase).map(r => r.id), ['bpc-tb-pinched-nerve'], phrase)
+}
+for (const [phrase, topic] of [['I can’t sleep', 'sleep'], ['I am tired all the time', 'energy'], ['I have no energy', 'energy'], ['I can’t concentrate', 'focus'], ['my cholesterol is high', 'cholesterol']]) {
+  const expected = query(TOPICS[topic].label).map(r => r.id)
+  assert.deepEqual(query(phrase).map(r => r.id), expected, phrase)
+}
+assert.deepEqual(query('my elbow hurts'), [], 'do not substitute knee accounts for an unreviewed body part')
+assert.deepEqual(query('my knee is swollen'), [], 'knee swelling must not be expanded to leg edema or knee pain')
+assert.deepEqual(query('my knee hurts and my leg is swollen'), [], 'all symptoms must occur in the same account')
+assert.deepEqual(query('no knee pain'), [], 'do not discard negation')
+assert.deepEqual(query('my knee does not hurt'), [], 'do not discard negation')
+assert.equal(interpretQuery('my knee does not hurt').ambiguousNegation, true)
+assert.deepEqual(query('my'), [], 'filler alone must not match every account')
+assert.deepEqual(query('my knee hurts and TB-500').map(r => r.id), ['bpc-tb-update'])
+assert.ok(query('nerve pain').some(r => r.outcome === 'adverse'))
+for (const id of ['knee', 'shoulder', 'neck', 'nerve', 'pinched-nerve', 'leg-swelling']) {
+  for (const r of query(TOPICS[id].label)) assert.ok(r.topicNotes?.[id], `Specific match explanation required: ${r.id}/${id}`)
+}
 const cholesterolIds = ['sema-lipids', 'tirz-lipids', 'tirz-lipids-reversal']
 for (const q of ['cholesterol', 'high cholesterol', 'LDL', 'HDL cholesterol', 'triglycerides', 'lipid panel', 'Cholesterol & blood lipids']) {
   assert.deepEqual(query(q).map(r => r.id), cholesterolIds, `Cholesterol coverage: ${q}`)
