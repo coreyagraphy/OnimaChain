@@ -13,19 +13,49 @@ assert.equal(response.status(), 200)
 await page.getByRole('heading', { name: 'HUMAN STORIES. THE FULL PICTURE.' }).waitFor()
 assert.equal(await page.locator('.ex-card').count(), 45)
 const search = page.getByLabel('Search a condition, symptom or compound')
+async function checkResultsFocus() {
+  await page.waitForFunction(() => {
+    const heading = document.getElementById('ex-results-title')
+    const top = heading?.getBoundingClientRect().top
+    return document.activeElement === heading && top >= 70 && top < innerHeight
+  })
+}
+
+await search.fill('my knee hurts')
+await search.press('Enter')
+await checkResultsFocus()
+assert.equal(await page.locator('#ex-results-title').textContent(), 'Knee pain & meniscus')
+assert.equal(await page.locator('.ex-card').count(), 3)
+
+await page.getByRole('button', { name: 'my leg is swollen', exact: true }).click()
+await checkResultsFocus()
+assert.equal(await search.inputValue(), 'my leg is swollen')
+assert.deepEqual(await page.locator('.ex-card-top').allTextContents(), [
+  'RetatrutideUnwanted effects', 'TirzepatideReported benefit',
+])
+await page.getByLabel('Compound', { exact: true }).selectOption('retatrutide')
+await page.waitForFunction(() => document.querySelectorAll('.ex-card').length === 1)
+await page.getByRole('button', { name: 'my knee hurts', exact: true }).click()
+await checkResultsFocus()
+assert.equal(await search.inputValue(), 'my knee hurts')
+assert.equal(await page.getByRole('button', { name: 'my knee hurts', exact: true }).getAttribute('aria-pressed'), 'true')
+assert.equal(await page.getByLabel('Compound', { exact: true }).inputValue(), '')
+assert.deepEqual(await page.locator('.ex-compounds').allTextContents(), [
+  'BPC-157', 'BPC-157', 'BPC-157 + TB-500',
+])
+
 for (const [phrase, count, topic] of [['my knee hurts', 3, 'Knee pain'], ['my leg is swollen', 2, 'Leg, ankle'], ['pinch nerve', 1, 'Pinched nerve']]) {
   await search.fill(phrase)
   await page.waitForFunction(count => document.querySelectorAll('.ex-card').length === count, count)
   assert.ok((await page.locator('.ex-understood').textContent()).includes(topic))
   assert.equal(await page.locator('.ex-match').count(), count)
-  assert.ok(await page.locator('.ex-associated button').count() > 0)
 }
 await search.fill('my knee hurts')
 await page.getByRole('status').filter({ hasText: '3 matching accounts' }).waitFor()
 assert.ok((await page.locator('.ex-cards').textContent()).includes('Worsening reported'))
 assert.equal(await page.getByRole('link', { name: 'Watch on YouTube · Ian Leahy', exact: false }).getAttribute('href'), 'https://www.youtube.com/watch?v=qfqPzo9pEag')
 assert.ok((await page.locator('.ex-video').textContent()).includes('transcript not verified'))
-await page.locator('.ex-associated').getByRole('button', { name: 'TB-500', exact: false }).click()
+await page.getByLabel('Compound', { exact: true }).selectOption('tb-500')
 await page.waitForFunction(() => document.querySelectorAll('.ex-card').length === 1)
 await page.getByRole('button', { name: 'Clear filters' }).click()
 await search.fill('my leg is swollen')
@@ -86,6 +116,8 @@ await page.waitForFunction(() => document.querySelectorAll('.ex-card').length ==
 assert.equal(await page.locator('.ex-card[data-outcome="adverse"]').count(), 1)
 await page.getByRole('button', { name: '21 peptides', exact: false }).click()
 await page.getByLabel('Search a condition, symptom or compound').fill('fatty liver')
+await search.press('Enter')
+await checkResultsFocus()
 await page.getByRole('heading', { name: 'No reviewed account matches these filters.' }).waitFor()
 assert.equal(await page.getByRole('status').innerText(), 'No reviewed accounts match this search.')
 await page.getByRole('button', { name: 'Clear filters' }).click()
@@ -105,7 +137,9 @@ await page.waitForFunction(() => document.querySelector('#ex-results-title').get
 assert.equal(await page.locator('.ex-card').count(), 3)
 await page.screenshot({ path: 'test-results/experiences-cholesterol-mobile.png' })
 await search.fill('my leg is swollen')
-await page.getByRole('status').filter({ hasText: '2 matching accounts' }).waitFor()
+await page.getByRole('button', { name: 'Search', exact: true }).click()
+await checkResultsFocus()
+assert.equal(await page.locator('.ex-card').count(), 2)
 assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'symptom search mobile overflow')
 await page.locator('.ex-search-feedback').scrollIntoViewIfNeeded()
 await page.screenshot({ path: 'test-results/experiences-symptom-mobile.png' })

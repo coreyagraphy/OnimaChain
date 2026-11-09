@@ -18,11 +18,17 @@ export const Route = createFileRoute('/experiences')({
 function Experiences() {
   const filters = Route.useSearch()
   const navigate = Route.useNavigate()
-  const update = (patch: Partial<Filters>) => { void navigate({ search: { ...filters, ...patch }, replace: true, resetScroll: false }) }
+  const update = (patch: Partial<Filters>) => navigate({ search: { ...filters, ...patch }, replace: true, resetScroll: false })
+  const showResults = async (patch: Partial<Filters>) => {
+    await update(patch)
+    const heading = document.getElementById('ex-results-title')
+    heading?.focus({ preventScroll: true })
+    heading?.scrollIntoView({ block: 'start' })
+  }
   const results = searchExperiences(filters)
   const interpreted = interpretQuery(filters.q)
   const matchedTopics = [...new Set([...interpreted.topics, ...(filters.topic ? [filters.topic] : [])])]
-  const mentionedCompounds = COMPOUND_OPTIONS.filter(([id]) => results.some(record => record.compounds.includes(id)))
+  const topicLabels = matchedTopics.map(id => TOPICS[id].label).join(' + ')
   const other = filters.group === 'other'
   const options = other ? [OTHER] : PEPTIDES
   const total = EXPERIENCES.filter(r => r.compounds.includes(OTHER[0]) === other).length
@@ -46,17 +52,24 @@ function Experiences() {
       </div>
       {other && <p className="ex-other-note">5-Amino-1MQ is a small molecule, kept separate from the peptide collection. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11622326/" target="_blank" rel="noopener noreferrer">Research context ↗</a></p>}
       <label className="ex-query-label" htmlFor="experience-query">Search a condition, symptom or compound</label>
-      <div className="ex-query"><span aria-hidden>⌕</span><input id="experience-query" type="search" value={filters.q} maxLength={180} placeholder="Try “my knee hurts” or “my leg is swollen”…" onChange={e => update({ q: e.target.value })} aria-describedby="ex-search-help" />{filters.q && <button type="button" aria-label="Clear search text" onClick={() => update({ q: '' })}>×</button>}</div>
+      <form className="ex-query" role="search" onSubmit={event => {
+        event.preventDefault()
+        const q = new FormData(event.currentTarget).get('q')
+        void showResults({ q: typeof q === 'string' ? q : '' })
+      }}>
+        <span aria-hidden>⌕</span>
+        <input id="experience-query" name="q" type="search" enterKeyHint="search" value={filters.q} maxLength={180} placeholder="Try “my knee hurts” or “my leg is swollen”…" onChange={e => update({ q: e.target.value })} aria-describedby="ex-search-help" />
+        {filters.q && <button type="button" aria-label="Clear search text" onClick={() => update({ q: '' })}>×</button>}
+        <button type="submit">Search</button>
+      </form>
       <p id="ex-search-help" className="ex-help">Describe it in your own words. We match reviewed topics and everyday phrases, including reports of relief and worsening symptoms. Multiple conditions must occur in the same account. Results are not treatment recommendations.</p>
-      <div className="ex-examples" aria-label="Try a symptom search"><span>Try saying</span>{['my knee hurts', 'my leg is swollen', 'pinch nerve', 'I can’t sleep', 'I’m tired all the time'].map(q => <button key={q} type="button" onClick={() => update({ ...DEFAULT_FILTERS, group: filters.group, q })}>{q}</button>)}</div>
+      <div className="ex-examples" aria-label="Try a symptom search"><span>Try saying</span>{['my knee hurts', 'my leg is swollen', 'pinch nerve', 'I can’t sleep', 'I’m tired all the time'].map(q => <button key={q} type="button" aria-pressed={filters.q === q} onClick={() => void showResults({ ...DEFAULT_FILTERS, q })}>{q}</button>)}</div>
       <div className="ex-search-feedback">
         <p role="status" aria-live="polite" aria-atomic="true">{results.length ? `${results.length} matching account${results.length === 1 ? '' : 's'}` : 'No reviewed accounts match this search.'}</p>
         <a href="#ex-results-title">{results.length ? 'View results ↓' : 'See coverage details ↓'}</a>
       </div>
-      {matchedTopics.length > 0 && <p className="ex-understood"><b>Searching related accounts for:</b> {matchedTopics.map(id => TOPICS[id].label).join(' + ')}. {interpreted.words.length > 0 && <>Also requiring: {interpreted.words.join(', ')}.</>}</p>}
+      {matchedTopics.length > 0 && <p className="ex-understood"><b>Searching related accounts for:</b> {topicLabels}. {interpreted.words.length > 0 && <>Also requiring: {interpreted.words.join(', ')}.</>}</p>}
       {interpreted.ambiguousNegation && <p className="ex-understood">We can’t reliably interpret this negative phrase. Search the symptom by itself, then use the reported-outcome filter and read each account’s context.</p>}
-      {hasFilters && results.length > 0 && <div className="ex-associated"><p><b>Compounds mentioned in these accounts</b><span>Includes unwanted effects and no improvement. This is not a treatment ranking.</span></p><div>{mentionedCompounds.map(([id, name]) => <button key={id} type="button" aria-pressed={filters.compound === id} onClick={() => update({ compound: filters.compound === id ? '' : id })}>{name}<span>{results.filter(r => r.compounds.includes(id)).length} {results.filter(r => r.compounds.includes(id)).length === 1 ? 'account' : 'accounts'}</span></button>)}</div></div>}
-      {matchedTopics.includes('leg-swelling') && <aside className="ex-symptom-note"><b>If this is happening now:</b> Unexplained swelling in one leg, sudden or severe swelling, or a red or hot area needs urgent medical assessment. With chest pain or trouble breathing, seek emergency help. <a href="https://www.nhs.uk/conditions/oedema/" target="_blank" rel="noopener noreferrer">NHS guidance ↗</a></aside>}
       <div className="ex-filters">
         <label>Compound<select aria-label="Compound" value={filters.compound} onChange={e => update({ compound: e.target.value })}><option value="">{other ? '5-Amino-1MQ' : 'All 21 peptides'}</option>{options.map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
         <label>Condition / topic<select aria-label="Condition / topic" value={filters.topic} onChange={e => update({ topic: e.target.value })}><option value="">All topics</option>{Object.entries(TOPICS).map(([id, topic]) => <option key={id} value={id}>{topic.label}</option>)}</select></label>
@@ -66,7 +79,8 @@ function Experiences() {
     </section>
 
     <section className="ex-results" aria-labelledby="ex-results-title">
-      <div className="ex-result-head"><div><p className="label label-cyan">{other ? 'Separate collection / Non-peptide' : 'Field notes / Injectable accounts'}</p><h2 id="ex-results-title" tabIndex={-1}>{filters.compound ? compoundName(filters.compound) : other ? '5-Amino-1MQ experiences' : 'Every experience has another side.'}</h2></div><div className="ex-result-count"><p>{results.length} of {total} accounts</p>{hasFilters && <button type="button" onClick={() => update({ ...DEFAULT_FILTERS, group: filters.group })}>Clear filters ↺</button>}</div></div>
+      <div className="ex-result-head"><div><p className="label label-cyan">{other ? 'Separate collection / Non-peptide' : 'Field notes / Injectable accounts'}</p><h2 id="ex-results-title" tabIndex={-1}>{topicLabels || (filters.compound ? compoundName(filters.compound) : other ? '5-Amino-1MQ experiences' : 'Every experience has another side.')}</h2></div><div className="ex-result-count"><p>{results.length} of {total} accounts</p>{hasFilters && <button type="button" onClick={() => update({ ...DEFAULT_FILTERS, group: filters.group })}>Clear filters ↺</button>}</div></div>
+      {matchedTopics.includes('leg-swelling') && <aside className="ex-symptom-note"><b>If this is happening now:</b> Unexplained swelling in one leg, sudden or severe swelling, or a red or hot area needs urgent medical assessment. With chest pain or trouble breathing, seek emergency help. <a href="https://www.nhs.uk/conditions/oedema/" target="_blank" rel="noopener noreferrer">NHS guidance ↗</a></aside>}
       <p className="ex-help">“Mixed” includes both helpful and unwanted changes, or an effect that faded. Counts describe this collection, not success rates or how common a reaction is.</p>
       {results.length ? <div className="ex-cards">{results.map(record => <ExperienceCard key={record.id} record={record} matchedTopics={matchedTopics} />)}</div> : <div className="ex-empty"><span aria-hidden>∅</span><h3>No reviewed account matches these filters.</h3><p>This is a gap in our collection, not evidence that a compound works or doesn’t work for this condition. Try a shorter term or clear a filter.</p>{filters.group === 'peptides' && /5.?amino|1mq/i.test(filters.q) && <button className="btn btn-primary" type="button" onClick={() => update({ group: 'other', compound: '' })}>Search the 5-Amino-1MQ collection →</button>}<Link to="/claims">Explore the research library →</Link></div>}
     </section>
@@ -83,8 +97,11 @@ function Experiences() {
 function ExperienceCard({ record, matchedTopics }: { record: Experience; matchedTopics: string[] }) {
   const community = new URL(record.source).pathname.split('/')[2]
   return <article className="ex-card" data-outcome={record.outcome} aria-labelledby={`title-${record.id}`}>
-    <div className="ex-card-top"><span className="ex-outcome"><i aria-hidden />{OUTCOMES[record.outcome]}</span><span className="ex-source-kind">{record.video ? 'YouTube + creator article' : 'Reddit · Self-report'}</span></div>
-    <p className="ex-compounds">{record.compounds.map(compoundName).join(' + ')}</p>
+    <div className="ex-card-top">
+      <p className="ex-compounds">{record.compounds.map(compoundName).join(' + ')}</p>
+      <span className="ex-outcome"><i aria-hidden />{OUTCOMES[record.outcome]}</span>
+    </div>
+    <p className="ex-source-kind">{record.video ? 'YouTube + creator article' : 'Reddit · Self-report'}</p>
     {record.compounds.length > 1 && <p className="ex-combination">Combination account · individual effects cannot be separated</p>}
     <h3 id={`title-${record.id}`}>{record.title}</h3><p className="ex-summary">{record.summary}</p>
     {matchedTopics.length > 0 && <div className="ex-match"><b>Why this matches</b>{matchedTopics.filter(id => record.topics.includes(id)).map(id => <p key={id}><strong>{TOPICS[id].label}:</strong> {record.topicNotes?.[id] ?? 'Discussed in this account. Read the reported outcome and context above.'}</p>)}</div>}
