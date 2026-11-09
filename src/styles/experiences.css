@@ -34,3 +34,39 @@
 }
 .ex-query button[type=submit]:hover { background: #9af0ff; }
 .ex-query button[type=submit]:focus-visible { outline: 2px solid #080e17; outline-offset: -5px; }
+
+.ex-research {
+  margin: 20px 0;
+  padding: clamp(16px, 3vw, 28px);
+  border: 1px solid #5fe3ff55;
+  border-radius: 12px;
+  background: #101c25;
+  color: #d5dbe3;
+  line-height: 1.6;
+}
+.ex-research h3, .ex-report-groups h3 { margin: 8px 0; font-size: 21px; color: #f2eee6; }
+.ex-research a { color: var(--color-cyan); text-decoration: underline; text-underline-offset: 3px; }
+.ex-research details, .ex-report-groups details { margin-top: 14px; border-top: 1px solid #5fe3ff30; }
+.ex-research summary, .ex-report-groups summary { padding: 12px 0; cursor: pointer; color: #e1faff; }
+.ex-report-groups { margin-top: 24px; }
+.ex-report-groups summary span { color: #aebbc4; }
+.ex-evidence ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 0;
+  margin: 12px 0;
+  list-style: decimal inside;
+}
+.ex-evidence li {
+  padding: 14px;
+  border: 1px solid #5fe3ff30;
+  border-radius: 8px;
+  background: #0c141c;
+  font-size: 14px;
+}
+.ex-evidence li::marker { color: var(--color-cyan); font-weight: 700; }
+.ex-evidence h4 { display: inline; font-weight: 700; }
+.ex-evidence li p { margin: 8px 0; }
+.ex-evidence-limit { margin: 14px 0 8px; color: #e1efab; }
+@media (max-width: 760px) { .ex-evidence ol { grid-template-columns: 1fr; } }

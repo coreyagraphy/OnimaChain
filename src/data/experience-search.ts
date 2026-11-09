@@ -6,13 +6,14 @@ export const TOPICS: Record<string, { label: string; aliases: string[] }> = {
   neck: { label: 'Neck pain', aliases: ['neck', 'neck pain', 'neck hurts', 'sore neck', 'neck ache'] },
   'pinched-nerve': { label: 'Pinched nerve', aliases: ['pinched nerve', 'pinch nerve', 'trapped nerve', 'compressed nerve'] },
   nerve: { label: 'Nerve pain & tingling', aliases: ['nerve pain', 'nerve symptoms', 'tingling', 'pins and needles', 'tingling arm', 'arm tingling', 'tingling hand', 'hand tingling'] },
-  'leg-swelling': { label: 'Leg, ankle & foot swelling', aliases: ['leg swelling', 'swollen leg', 'swollen legs', 'leg is swollen', 'legs are swollen', 'ankle swelling', 'swollen ankles', 'swollen ankle', 'foot swelling', 'feet swelling', 'swollen feet', 'swollen foot', 'puffy ankles', 'edema', 'oedema'] },
+  'leg-swelling': { label: 'Leg, ankle & foot swelling', aliases: ['leg swelling', 'swollen leg', 'swollen legs', 'leg is swollen', 'legs are swollen', 'calf swelling', 'swollen calf', 'heel swelling', 'swollen heel', 'ankle swelling', 'swollen ankles', 'swollen ankle', 'foot swelling', 'feet swelling', 'swollen feet', 'swollen foot', 'puffy ankles', 'edema', 'oedema'] },
+  tendon: { label: 'Tendon injury & repair', aliases: ['tendon injury', 'tendon injuries', 'tendon repair', 'torn tendon', 'tendon tear', 'tendon rupture', 'ruptured tendon', 'tendon pain', 'achilles', 'achilles injury', 'achilles tear', 'torn achilles', 'torn achilles tendon', 'ruptured achilles', 'ruptured achilles tendon', 'achilles tendon', 'achilles tendon injury', 'achilles tendon tear', 'achilles tendon rupture'] },
   cholesterol: { label: 'Cholesterol & blood lipids', aliases: ['cholesterol', 'high cholesterol', 'ldl', 'ldl cholesterol', 'high ldl', 'hdl', 'hdl cholesterol', 'triglycerides', 'high triglycerides', 'lipids', 'blood lipids', 'lipid panel', 'hyperlipidemia', 'dyslipidemia'] },
   sleep: { label: 'Sleep', aliases: ['sleep', 'insomnia', 'cant sleep', 'cannot sleep', 'trouble sleeping', 'sleeping', 'cant fall asleep', 'cannot fall asleep', 'keep waking up', 'wake up at night', 'trouble falling asleep', 'not sleeping well', 'dont sleep well'] },
   anxiety: { label: 'Anxiety', aliases: ['anxiety', 'anxious', 'social anxiety'] },
   focus: { label: 'Focus & brain fog', aliases: ['focus', 'brain fog', 'concentration', 'cognition', 'word finding', 'mental clarity', 'cant concentrate', 'cannot concentrate', 'cant focus', 'cannot focus', 'brain feels foggy', 'forget words'] },
   mood: { label: 'Mood', aliases: ['mood', 'depression', 'depressed', 'emotional flatness'] },
-  recovery: { label: 'Injury & recovery', aliases: ['recovery', 'injury', 'injuries', 'joint pain', 'tendon pain'] },
+  recovery: { label: 'Injury & recovery', aliases: ['recovery', 'injury', 'injuries', 'joint pain'] },
   gut: { label: 'Digestive symptoms', aliases: ['gut', 'digestion', 'digestive', 'stomach', 'nausea', 'vomiting'] },
   skin: { label: 'Skin', aliases: ['skin'] },
   hair: { label: 'Hair', aliases: ['hair'] },
@@ -49,14 +50,15 @@ const allNames = COMPOUND_OPTIONS.flatMap(([slug, label, aliases]) => [
 const topicPhrases = Object.entries(TOPICS).flatMap(([topic, data]) => [data.label, ...data.aliases].map(alias => ({ topic, phrase: normalize(alias) })))
   .sort((a, b) => b.phrase.length - a.phrase.length)
 const filler = new Set(['and', 'with', 'for', 'the', 'a', 'an', 'of', 'in', 'on', 'around', 'my', 'i', 'im', 'ive', 'have', 'having', 'am', 'is', 'are', 'feel', 'feeling', 'been', 'lately', 'really', 'very', 'please'])
+const afterInjection = /\b(?:after (?:starting |taking |an? |my |the )?|while )(?:(?:first |last )?shots?|injections?|injecting)\b/g
 
 /** Normalize phrasing, not diagnoses. Unknown body parts and diseases remain required words. */
 function conversationalQuery(query: string) {
   return normalize(query)
     .replace(/\b(cholesterol|ldl|triglycerides) (?:is |are )?(?:too )?high\b/g, 'high $1')
     .replace(/^(?:can you |could you )?(?:show me|find|search for|looking for|what peptides (?:help|are associated with)|which peptides (?:help|are associated with))\b/, '')
-    .replace(/\b(knees?|shoulders?|neck|legs?|ankles?|feet|foot)\s+(?:is |are |feels? |has been |have been )?(?:really |very )?(hurting|aching|sore|painful|swelling|swollen)\b/g, (_, site: string, symptom: string) => `${site} ${['swelling', 'swollen'].includes(symptom) ? 'swelling' : 'pain'}`)
-    .replace(/\b(?:left|right|both) (?=(?:knees?|shoulders?|legs?|ankles?|feet|foot)\b)/g, '')
+    .replace(/\b(knees?|shoulders?|neck|legs?|calf|heel|ankles?|feet|foot)\s+(?:is |are |got |feels? |has been |have been )?(?:really |very )?(hurting|aching|sore|painful|swelling|swollen)\b/g, (_, site: string, symptom: string) => `${site} ${['swelling', 'swollen'].includes(symptom) ? 'swelling' : 'pain'}`)
+    .replace(/\b(?:left|right|both) (?=(?:knees?|shoulders?|legs?|calf|heel|ankles?|feet|foot)\b)/g, '')
     .replace(/\bknees pain\b/g, 'knee pain').replace(/\bshoulders pain\b/g, 'shoulder pain')
     .replace(/\blegs swelling\b/g, 'leg swelling').replace(/\bankles swelling\b/g, 'ankle swelling')
     .trim()
@@ -76,16 +78,31 @@ export function interpretQuery(query: string) {
     if (!topics.includes(topic)) topics.push(topic)
     rest = (` ${rest} `).replaceAll(` ${phrase} `, ' ').trim()
   }
-  const words = rest.split(/\s+/).filter(w => w && !filler.has(w))
+  const withoutTiming = topics.includes('leg-swelling') ? rest.replace(afterInjection, '') : rest
+  const swellingAfterInjections = withoutTiming !== rest
+  const words = withoutTiming.split(/\s+/).filter(w => w && !filler.has(w))
   // Known phrases such as "can't sleep" and "no energy" are consumed first.
   // Other negation cannot safely be interpreted as asking for a benefit or absence of harm.
   const ambiguousNegation = words.some(w => ['no', 'not', 'without', 'dont', 'doesnt', 'isnt', 'arent', 'never', 'cant', 'cannot'].includes(w))
-  return { compounds, topics, words, ambiguousNegation }
+  return { compounds, topics, words, ambiguousNegation, swellingAfterInjections }
+}
+
+export function tendonResearchContext(filters: Filters, parsed: ReturnType<typeof interpretQuery>) {
+  if (filters.group !== 'peptides' || filters.outcome || parsed.ambiguousNegation || parsed.swellingAfterInjections) return null
+  const topics = [...parsed.topics, ...(filters.topic ? [filters.topic] : [])]
+  if (topics.some(id => !['leg-swelling', 'tendon', 'recovery'].includes(id))) return null
+  if (parsed.words.some(word => !['after', 'from', 'due', 'to', 'because'].includes(word))) return null
+
+  const compounds = [...parsed.compounds, ...(filters.compound ? [filters.compound] : [])]
+  if (topics.includes('tendon') && compounds.every(id => id === 'bpc-157' || id === 'tb-500')) return 'tendon'
+  if (topics.includes('leg-swelling') && compounds.length === 0) return 'possible-injury'
+  return null
 }
 
 function matchesInterpretation(record: Experience, parsed: ReturnType<typeof interpretQuery>, query: string): boolean {
   if (!query.trim()) return true
   if (parsed.ambiguousNegation || !(parsed.compounds.length || parsed.topics.length || parsed.words.length)) return false
+  if (parsed.swellingAfterInjections && record.swellingContext !== 'after-start') return false
   const text = normalize(`${record.title} ${record.summary}`)
   return parsed.compounds.every(id => record.compounds.includes(id)) && parsed.topics.every(id => record.topics.includes(id)) && parsed.words.every(word => contains(text, word))
 }

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, type SearchSchemaInput } from '@tanstack/react-router'
 import { COMPOUND_OPTIONS, EXPERIENCES, OTHER, OUTCOMES, PEPTIDES, REVIEWED, type Experience } from '~/data/experiences'
-import { compoundName, DEFAULT_FILTERS, interpretQuery, searchExperiences, TOPICS, validateFilters, type Filters } from '~/data/experience-search'
+import { compoundName, DEFAULT_FILTERS, interpretQuery, searchExperiences, tendonResearchContext, TOPICS, validateFilters, type Filters } from '~/data/experience-search'
 import experienceCss from '~/styles/experiences.css?url'
 
 export const Route = createFileRoute('/experiences')({
@@ -29,6 +29,13 @@ function Experiences() {
   const interpreted = interpretQuery(filters.q)
   const matchedTopics = [...new Set([...interpreted.topics, ...(filters.topic ? [filters.topic] : [])])]
   const topicLabels = matchedTopics.map(id => TOPICS[id].label).join(' + ')
+  const swellingSearch = matchedTopics.includes('leg-swelling')
+  const researchContext = tendonResearchContext(filters, interpreted)
+  const reportGroups = [
+    { timing: 'existing-pattern', label: 'Swelling described as a usual problem' },
+    { timing: 'after-start', label: 'New swelling reported after starting injections' },
+    { timing: undefined, label: 'Swelling with unclear timing' },
+  ]
   const other = filters.group === 'other'
   const options = other ? [OTHER] : PEPTIDES
   const total = EXPERIENCES.filter(r => r.compounds.includes(OTHER[0]) === other).length
@@ -65,8 +72,8 @@ function Experiences() {
       <p id="ex-search-help" className="ex-help">Describe it in your own words. We match reviewed topics and everyday phrases, including reports of relief and worsening symptoms. Multiple conditions must occur in the same account. Results are not treatment recommendations.</p>
       <div className="ex-examples" aria-label="Try a symptom search"><span>Try saying</span>{['my knee hurts', 'my leg is swollen', 'pinch nerve', 'I can’t sleep', 'I’m tired all the time'].map(q => <button key={q} type="button" aria-pressed={filters.q === q} onClick={() => void showResults({ ...DEFAULT_FILTERS, q })}>{q}</button>)}</div>
       <div className="ex-search-feedback">
-        <p role="status" aria-live="polite" aria-atomic="true">{results.length ? `${results.length} matching account${results.length === 1 ? '' : 's'}` : 'No reviewed accounts match this search.'}</p>
-        <a href="#ex-results-title">{results.length ? 'View results ↓' : 'See coverage details ↓'}</a>
+        <p role="status" aria-live="polite" aria-atomic="true">{results.length ? `${results.length} matching account${results.length === 1 ? '' : 's'}` : researchContext ? 'Research context available. No matching personal accounts.' : 'No reviewed accounts match this search.'}</p>
+        <a href="#ex-results-title">{results.length || researchContext ? 'View results ↓' : 'See coverage details ↓'}</a>
       </div>
       {matchedTopics.length > 0 && <p className="ex-understood"><b>Searching related accounts for:</b> {topicLabels}. {interpreted.words.length > 0 && <>Also requiring: {interpreted.words.join(', ')}.</>}</p>}
       {interpreted.ambiguousNegation && <p className="ex-understood">We can’t reliably interpret this negative phrase. Search the symptom by itself, then use the reported-outcome filter and read each account’s context.</p>}
@@ -80,9 +87,35 @@ function Experiences() {
 
     <section className="ex-results" aria-labelledby="ex-results-title">
       <div className="ex-result-head"><div><p className="label label-cyan">{other ? 'Separate collection / Non-peptide' : 'Field notes / Injectable accounts'}</p><h2 id="ex-results-title" tabIndex={-1}>{topicLabels || (filters.compound ? compoundName(filters.compound) : other ? '5-Amino-1MQ experiences' : 'Every experience has another side.')}</h2></div><div className="ex-result-count"><p>{results.length} of {total} accounts</p>{hasFilters && <button type="button" onClick={() => update({ ...DEFAULT_FILTERS, group: filters.group })}>Clear filters ↺</button>}</div></div>
-      {matchedTopics.includes('leg-swelling') && <aside className="ex-symptom-note"><b>If this is happening now:</b> Unexplained swelling in one leg, sudden or severe swelling, or a red or hot area needs urgent medical assessment. With chest pain or trouble breathing, seek emergency help. <a href="https://www.nhs.uk/conditions/oedema/" target="_blank" rel="noopener noreferrer">NHS guidance ↗</a></aside>}
+      {swellingSearch && <aside className="ex-symptom-note"><b>If this is happening now:</b> Unexplained swelling in one leg, sudden or severe swelling, or a red or hot area needs urgent medical assessment. With chest pain or trouble breathing, seek emergency help. <a href="https://www.nhs.uk/conditions/oedema/" target="_blank" rel="noopener noreferrer">NHS guidance ↗</a></aside>}
+      {researchContext === 'possible-injury' && <section className="ex-research" aria-labelledby="ex-swelling-context">
+        <p className="label label-cyan">Symptom context</p>
+        <h3 id="ex-swelling-context">Swelling can have several causes</h3>
+        <p>Injury is one possibility. Other causes include blood clots, infection, and fluid buildup. Swelling alone cannot tell you which cause applies. <a href="https://www.nhs.uk/conditions/oedema/">NHS guide to swelling ↗</a></p>
+        <details>
+          <summary>Did swelling follow an injury? Explore an Achilles tendon example</summary>
+          <TendonResearch />
+        </details>
+      </section>}
+      {researchContext === 'tendon' && <section className="ex-research" aria-labelledby="ex-tendon-research">
+        <p className="label label-cyan">Research evidence</p>
+        <h3 id="ex-tendon-research">How tendon injury connects to the research</h3>
+        <TendonResearch />
+      </section>}
       <p className="ex-help">“Mixed” includes both helpful and unwanted changes, or an effect that faded. Counts describe this collection, not success rates or how common a reaction is.</p>
-      {results.length ? <div className="ex-cards">{results.map(record => <ExperienceCard key={record.id} record={record} matchedTopics={matchedTopics} />)}</div> : <div className="ex-empty"><span aria-hidden>∅</span><h3>No reviewed account matches these filters.</h3><p>This is a gap in our collection, not evidence that a compound works or doesn’t work for this condition. Try a shorter term or clear a filter.</p>{filters.group === 'peptides' && /5.?amino|1mq/i.test(filters.q) && <button className="btn btn-primary" type="button" onClick={() => update({ group: 'other', compound: '' })}>Search the 5-Amino-1MQ collection →</button>}<Link to="/claims">Explore the research library →</Link></div>}
+      {results.length > 0 && swellingSearch && <section className="ex-report-groups" aria-label="Personal accounts by timing">
+        <h3>Personal accounts by timing</h3>
+        {reportGroups.map(({ timing, label }) => {
+          const reports = results.filter(record => record.swellingContext === timing)
+          if (!reports.length) return null
+          return <details key={label} open={Boolean(interpreted.swellingAfterInjections || filters.outcome || filters.compound || interpreted.compounds.length) || undefined}>
+            <summary>{label} <span>({reports.length})</span></summary>
+            <div className="ex-cards">{reports.map(record => <ExperienceCard key={record.id} record={record} matchedTopics={matchedTopics} />)}</div>
+          </details>
+        })}
+      </section>}
+      {results.length > 0 && !swellingSearch && <div className="ex-cards">{results.map(record => <ExperienceCard key={record.id} record={record} matchedTopics={matchedTopics} />)}</div>}
+      {results.length === 0 && <div className="ex-empty"><span aria-hidden>∅</span><h3>No reviewed account matches these filters.</h3><p>This is a gap in our collection, not evidence that a compound works or doesn’t work for this condition. Try a shorter term or clear a filter.</p>{filters.group === 'peptides' && /5.?amino|1mq/i.test(filters.q) && <button className="btn btn-primary" type="button" onClick={() => update({ group: 'other', compound: '' })}>Search the 5-Amino-1MQ collection →</button>}<Link to="/claims">Explore the research library →</Link></div>}
     </section>
 
     <details className="ex-coverage"><summary>Browse all 21 peptides + the separate compound <span>Coverage, not a popularity ranking</span></summary><div className="ex-coverage-grid">{COMPOUND_OPTIONS.map(([id, name]) => {
@@ -91,6 +124,18 @@ function Experiences() {
     })}</div></details>
 
     <section id="ex-method" className="ex-method" aria-labelledby="ex-method-title"><p className="label label-cyan">Behind the index</p><h2 id="ex-method-title">The source matters as much as the story.</h2><div className="ex-method-grid"><div><h3>Firsthand, injection-specific</h3><p>Cards summarize public Reddit accounts and creator-written accounts linked to YouTube videos. The reporter must explicitly describe injecting. Oral, cream and nasal-only experiences are excluded. Some linked threads discuss other routes; the card identifies the exact account used.</p></div><div><h3>Good, bad and inconclusive</h3><p>We sought benefits, unwanted effects and no-effect accounts for every compound. Coverage is uneven. Mixed reports keep their downsides, and combinations stay labeled. CJC formulations and products sold as TB-500 can differ; names here follow the reports.</p></div><div><h3>A reviewed collection</h3><p>This is a manually assembled snapshot, not a live feed or a representative sample. Sources may change or disappear. Identities, products, diagnoses and outcomes are unverified. YouTube cards identify the material actually reviewed. A linked video is not counted as a second person; an accompanying article is not presented as a verified transcript. Commercial interests are noted when visible.</p></div><div><h3>Human accounts ≠ clinical evidence</h3><p>Animal findings do not establish human benefit. A discussion of a condition does not show that it was treated. Compare these stories with the <Link to="/claims">research library</Link> and its study context.</p></div></div><p className="ex-corrections">Found a source problem? <Link to="/corrections">Request a correction →</Link></p></section>
+  </div>
+}
+
+function TendonResearch() {
+  return <div className="ex-evidence">
+    <ol>
+      <li><h4>Clinical context · Achilles tear</h4><p>A tear can cause swelling and pain near the heel, sometimes with a pop or difficulty walking. A clinician uses the injury history and exam to assess it.</p><a href="https://www.orthoinfo.org/bodypart/foot-ankle/achilles-tendon-rupture-tear/">AAOS clinical overview ↗</a></li>
+      <li><h4>Lab study · Rat tendon cells</h4><p>The paper behind the tracked BPC-157 claim measured cell movement, outgrowth and survival in lab cultures made from rat Achilles tendon.</p><a href="https://pubmed.ncbi.nlm.nih.gov/21030672/">Chang et al., 2011 · PubMed ↗</a></li>
+      <li><h4>Animal study · Surgically repaired rat tendons</h4><p>At four weeks, the BPC-157 group did not show a statistically significant difference from controls in total tissue scores or the load needed to break the repaired tendon. The TB-500 group showed a difference in maximum load.</p><a href="https://pubmed.ncbi.nlm.nih.gov/42542926/">2026 rat study · PubMed ↗</a></li>
+    </ol>
+    <p className="ex-evidence-limit"><strong>Human evidence:</strong> These studies leave open whether BPC-157 helps repair a torn tendon or reduce injury-related swelling in people.</p>
+    <Link to="/claim/$id" params={{ id: 'CLAIM-BPC157-TENDON-REPAIR' }}>Open the tracked tendon-repair claim and its sources →</Link>
   </div>
 }
 

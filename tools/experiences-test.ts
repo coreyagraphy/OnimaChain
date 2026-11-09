@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { COMPOUND_OPTIONS, EXPERIENCES, PEPTIDES } from '../src/data/experiences.ts'
-import { DEFAULT_FILTERS, interpretQuery, matchesQuery, searchExperiences, TOPICS, validateFilters } from '../src/data/experience-search.ts'
+import { DEFAULT_FILTERS, interpretQuery, matchesQuery, searchExperiences, tendonResearchContext, TOPICS, validateFilters } from '../src/data/experience-search.ts'
 
 assert.equal(PEPTIDES.length, 21)
 assert.equal(COMPOUND_OPTIONS.length, 22)
@@ -22,6 +22,19 @@ for (const r of EXPERIENCES) {
   for (const topic of r.topics) assert.ok(Object.hasOwn(TOPICS, topic), topic)
 }
 const query = (q: string) => searchExperiences({ ...DEFAULT_FILTERS, q })
+const research = (q: string) => tendonResearchContext({ ...DEFAULT_FILTERS, q }, interpretQuery(q))
+assert.equal(research('my leg is swollen'), 'possible-injury')
+for (const phrase of ['torn tendon', 'torn Achilles tendon', 'my leg is swollen after a torn tendon', 'my heel is swollen from an Achilles tendon tear']) {
+  assert.equal(research(phrase), 'tendon', phrase)
+  assert.deepEqual(query(phrase), [], 'research never becomes a personal account')
+}
+for (const phrase of ['my leg got swollen after injecting retatrutide', 'my leg is swollen while injecting', 'leg swelling after my first shot']) {
+  assert.equal(research(phrase), null, phrase)
+  assert.deepEqual(query(phrase).map(record => record.id), ['reta-leg-swelling'], phrase)
+}
+for (const phrase of ['my leg is swollen cancer', 'no tendon pain', 'tirzepatide tendon tear', 'my knee hurts']) {
+  assert.equal(research(phrase), null, phrase)
+}
 const kneeIds = ['bpc-knee-worse', 'bpc-knee-video', 'bpc-tb-update']
 for (const phrase of ['my knee hurts', 'My knees are really hurting!', 'I have pain in my knee', 'my left knee is painful', 'both knees are sore', 'show me knee pain', 'what peptides help my knee pain']) {
   assert.deepEqual(query(phrase).map(r => r.id), kneeIds, phrase)
@@ -58,7 +71,8 @@ assert.deepEqual(query('cholesterol cancer'), [], 'unrelated disease must not ma
 assert.deepEqual(searchExperiences({ ...DEFAULT_FILTERS, q: 'cholesterol', outcome: 'adverse' }).map(r => r.id), ['tirz-lipids-reversal'])
 for (const [id, { label, aliases }] of Object.entries(TOPICS)) {
   const expected = EXPERIENCES.filter(r => r.topics.includes(id) && !r.compounds.includes('5-amino-1mq')).map(r => r.id)
-  assert.ok(expected.length, `${label} needs actual source coverage`)
+  if (id === 'tendon') assert.equal(research(label), 'tendon', 'Tendon searches have research coverage')
+  else assert.ok(expected.length, `${label} needs actual source coverage`)
   assert.deepEqual(searchExperiences({ ...DEFAULT_FILTERS, topic: id }).map(r => r.id), expected, `Topic filter: ${label}`)
   for (const term of [label, ...aliases]) assert.deepEqual(query(term).map(r => r.id), expected, `Search phrase: ${term}`)
 }
